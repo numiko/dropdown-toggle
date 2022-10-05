@@ -1,2 +1,2 @@
 ## Installation
-`npm install @numiko/dropdown-toggle`
+`npm install bitbucket:numiko/@numiko/dropdown-toggle`
