@@ -1,4 +1,4 @@
-import { slideDown, slideUp } from 'animation';
+import { slideDown, slideUp } from '@numiko/animation';
 
 class DropdownToggle {
   constructor(button, options) {
