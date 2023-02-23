@@ -1,103 +1,151 @@
 import { slideDown, slideUp } from './animation';
 
 class DropdownToggle {
+
   constructor(button, options) {
-    this.button = button;
-    this.dropdownId = this.button.getAttribute('aria-controls');
-    this.dropdownItem = document.getElementById(this.dropdownId);
-    this.buttonText = this.button.querySelector('[data-js-dropdown-label]');
-    this.isCurrentlyAnimating = false;
-
-    this.openClass = options.openClass || 'dropdown-toggle-is-open'
 
     /**
-     * Event handlers with `this` bound to the instance of the class
-     * rather than the element that fired the event
+     * The dropdown button element.
+     *
+     * @type {HTMLElement}
      */
-    this.onEscKeyPressHandler = this.onEscKeyPress.bind(this);
-    this.onButtonClickHandler = this.onButtonClick.bind(this);
+    this.button = typeof button === 'string' ? document.querySelector(button) : button;
 
     /**
-     * openOnLoad
+     * The button label element.
+     *
+     * @type {HTMLElement}
+     */
+    this.buttonLabelEl = typeof options.buttonLabelEl === 'string' ? this.button.querySelector(options.buttonLabelEl) : options.buttonLabelEl;
+
+    /**
+     * The dropdown item ID.
+     *
+     * @type {string}
+     */
+    this.dropdownId = this.button.getAttribute('aria-controls');
+
+    /**
+     * The dropdown item element.
+     *
+     * @type {HTMLElement}
+     */
+    this.dropdownItem = document.getElementById(this.dropdownId);
+
+    /**
+     * Determines whether the dropdown is currently animating.
      *
      * @type {Boolean}
+     */
+    this.isCurrentlyAnimating = false;
+
+    /**
+     * Determines whether the dropdown is open on load.
      *
-     * Determines whether the instance should be open or closed on load
+     * @type {Boolean}
      */
     this.openOnLoad = !!options.openOnLoad;
 
     /**
-     * openLabel
+     * The class added to the button when the dropdown is open.
      *
      * @type {String}
+     */
+    this.openClass = options.openClass || 'dropdown-toggle-is-open'
+
+    /**
+     * The class added to the button when the dropdown is closed.
      *
-     * Label to show to instruct user to open dropdown
+     * @type {String}
+     */
+    this.closeClass = options.closeClass || 'dropdown-toggle-is-closed'
+
+    /**
+     * Event handler for the "Escape" key press event
+     * @type {function}
+     */
+    this.onEscKeyPressHandler = this.onEscKeyPress.bind(this);
+
+    /**
+     * Event handler for the button click event
+     * @type {function}
+     */
+    this.onButtonClickHandler = this.onButtonClick.bind(this);
+
+    /**
+     * The label for the button when the dropdown is closed.
+     *
+     * @type {String}
      */
     this.openLabel = options.openLabel || 'Open'
 
-
     /**
-     * closeLabel
+     * The label for the button when the dropdown is open.
      *
      * @type {String}
-     *
-     * Label to show to instruct user to close dropdown
      */
     this.closeLabel = options.closeLabel || 'Close'
 
     /**
-     * closeOnEsc
+     * Allow user to close the dropdown with the 'esc' key
      *
      * @type {Boolean}
-     *
-     * Determines whether component should close when esc key is pressed
-     * Useful for navigation
      */
     this.closeOnEsc = options.closeOnEsc;
 
     /**
-     * Callback functions when dropdown is opened
+     * Callback function before drodown opens
+     * @type {Function}
      */
     this.onOpenStart = options.onOpenStart;
+
+    /**
+     * Callback functionswhen dropdown finishes opening
+     * @type {Function}
+     */
     this.onOpenEnd = options.onOpenEnd;
 
     /**
-     * Callback functions when dropdown is closed
+     * Callback function before dropdown closes
+     * @type {Function}
      */
     this.onCloseStart = options.onCloseStart;
+
+    /**
+     * Callback function when dropdown is closed
+     * @type {Function}
+     */
     this.onCloseEnd = options.onCloseEnd;
   }
 
   /**
-   * isOpen
-   *
-   * Checks whether dropdown is open or not
+   * Returns a boolean value indicating whether the button element has the open class.
+   * @return {boolean} `true` if the button has the open class, `false` otherwise.
    */
   get isOpen() {
     return this.button.classList.contains(this.openClass);
   }
 
   /**
-   * isAnmating
+   * Returns a boolean indicating whether the menu button is currently animating.
    *
-   * Return wether the dropdown is currently animating
+   * @returns {boolean} True if the menu button is currently animating, false otherwise.
    */
   get isAnimating() {
     return this.isCurrentlyAnimating;
   }
 
   /**
-   * open
-   *
-   * @param {Object} options - Options that can be passed to slideUp function
-   *
-   * Animates dropdown into view and sets relevant aria- attributes
-   */
+  * Opens the dropdown menu.
+  * @param {Object} options - The options for the animation.
+  * @returns {Promise} - The gsap animation
+  */
   open(options = {}) {
     this.isCurrentlyAnimating = true;
     this.button.classList.add(this.openClass);
+    this.button.classList.remove(this.closeClass);
     this.setAria();
-    this.setButtonText();
+    this.setButtonLabel();
 
     if (typeof this.onOpenStart === 'function') {
       this.onOpenStart();
@@ -118,19 +166,17 @@ class DropdownToggle {
     return slideDown(this.dropdownItem, options);
   }
 
-
   /**
-   * close
-   *
-   * @param {Object} options - Options that can be passed to slideUp function
-   *
-   * Animates dropdown out of view and sets relevant aria- attributes
-   */
+  * Closes the dropdown menu.
+  * @param {Object} options - The options for the animation.
+  * @returns {Promise} - The gsap animation
+  */
   close(options = {}) {
     this.isCurrentlyAnimating = true;
+    this.button.classList.add(this.closeClass);
     this.button.classList.remove(this.openClass);
     this.setAria();
-    this.setButtonText();
+    this.setButtonLabel();
 
     if (typeof this.onCloseStart === 'function') {
       this.onCloseStart();
@@ -153,27 +199,26 @@ class DropdownToggle {
 
 
   /**
-   * toggle
-   *
    * Determines whether to open or close the dropdown
+   * @returns {void}
    */
   toggle() {
     this.isOpen ? this.close() : this.open();
   }
 
   /**
-   * setButtonText
+   * Set button label based on if the dropdown is open/closed
+   * @returns {void}
    */
-  setButtonText() {
-    if (this.buttonText) {
-      this.buttonText.innerText = this.isOpen ? this.closeLabel : this.openLabel;
+  setButtonLabel() {
+    if (this.buttonLabelEl) {
+      this.buttonLabelEl.innerHTML = this.isOpen ? this.closeLabel : this.openLabel;
     }
   }
 
   /**
-   * setAria
-   *
-   * Sets aria state on button and item
+   * Set aria attributes on button and dropdown item
+   * @returns {void}
    */
   setAria() {
     this.button.setAttribute('aria-expanded', this.isOpen ? 'true' : 'false');
@@ -181,13 +226,12 @@ class DropdownToggle {
   }
 
   /**
-   * resetState
-   *
-   * Resets the state when switching breakpoints
+   * Reset attributes & classes
+   * @returns {void}
    */
   resetState() {
     this.button.removeAttribute('aria-expanded');
-    this.button.classList.remove(this.openClass);
+    this.button.classList.remove(this.openClass, this.closeClass);
     this.dropdownItem.removeAttribute('aria-hidden');
     this.dropdownItem.removeAttribute('style');
   }
@@ -202,9 +246,6 @@ class DropdownToggle {
     this.toggle();
   }
 
-  /**
-   * addEventListeners
-   */
   addEventListeners() {
     /**
      * Toggle item when button is clicked
@@ -219,12 +260,8 @@ class DropdownToggle {
     }
   }
 
-  /**
-   * removeEventListeners
-   */
   removeEventListeners() {
     this.button.removeEventListener('click', this.onButtonClickHandler);
-
     document.removeEventListener('keydown', this.onEscKeyPressHandler);
   }
 
@@ -243,11 +280,11 @@ class DropdownToggle {
     return isValid;
   }
 
-  /**
-   * init
-   *
-   * Set up initial state add event listeners
-   */
+  destroy() {
+    this.resetState();
+    this.removeEventListeners();
+  }
+
   init() {
     if (this.validateInstance()) {
       if (this.openOnLoad) {
@@ -261,16 +298,6 @@ class DropdownToggle {
 
       this.addEventListeners();
     }
-  }
-
-  /**
-   * destroy
-   *
-   * Remove aria attributes and event listeners
-   */
-  destroy() {
-    this.resetState();
-    this.removeEventListeners();
   }
 }
 
