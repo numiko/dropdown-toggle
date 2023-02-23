@@ -1,20 +1,21 @@
-import { slideDown, slideUp } from '@numiko/animation';
+import { slideDown, slideUp } from './animation';
 
 class DropdownToggle {
   constructor(button, options) {
-    this.activeClass = '-is-active';
     this.button = button;
     this.dropdownId = this.button.getAttribute('aria-controls');
     this.dropdownItem = document.getElementById(this.dropdownId);
     this.buttonText = this.button.querySelector('[data-js-dropdown-label]');
-    this.isAnimating = false;
+    this.isCurrentlyAnimating = false;
+
+    this.openClass = options.openClass || 'dropdown-toggle-is-open'
 
     /**
      * Event handlers with `this` bound to the instance of the class
      * rather than the element that fired the event
      */
     this.onEscKeyPressHandler = this.onEscKeyPress.bind(this);
-    this.toggleHandler = this.toggle.bind(this);
+    this.onButtonClickHandler = this.onButtonClick.bind(this);
 
     /**
      * openOnLoad
@@ -23,7 +24,7 @@ class DropdownToggle {
      *
      * Determines whether the instance should be open or closed on load
      */
-    this.openOnLoad = options.openOnLoad || false;
+    this.openOnLoad = !!options.openOnLoad;
 
     /**
      * openLabel
@@ -68,12 +69,21 @@ class DropdownToggle {
   }
 
   /**
-   * isActive
+   * isOpen
    *
    * Checks whether dropdown is open or not
    */
-  get isActive() {
-    return this.button.classList.contains(this.activeClass);
+  get isOpen() {
+    return this.button.classList.contains(this.openClass);
+  }
+
+  /**
+   * isAnmating
+   *
+   * Return wether the dropdown is currently animating
+   */
+  get isAnimating() {
+    return this.isCurrentlyAnimating;
   }
 
   /**
@@ -84,31 +94,30 @@ class DropdownToggle {
    * Animates dropdown into view and sets relevant aria- attributes
    */
   open(options = {}) {
-    if (!this.isAnimating) {
-      this.isAnimating = true;
-      this.button.classList.add(this.activeClass);
-      this.setAria();
-      this.setButtonText();
+    this.isCurrentlyAnimating = true;
+    this.button.classList.add(this.openClass);
+    this.setAria();
+    this.setButtonText();
 
-      if (typeof this.onOpenStart === 'function') {
-        this.onOpenStart();
-      } else if (this.onOpenStart) {
-        console.warn('this.onOpenStart must be a function. Type %s detected', typeof this.onOpenStart);
-      }
-
-      options.callback = () => {
-        this.isAnimating = false;
-
-        if (typeof this.onOpenEnd === 'function') {
-          this.onOpenEnd();
-        } else if (this.onOpenEnd) {
-          console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
-        }
-      }
-
-      return slideDown(this.dropdownItem, options);
+    if (typeof this.onOpenStart === 'function') {
+      this.onOpenStart();
+    } else if (this.onOpenStart) {
+      console.warn('this.onOpenStart must be a function. Type %s detected', typeof this.onOpenStart);
     }
+
+    options.callback = () => {
+      this.isCurrentlyAnimating = false;
+
+      if (typeof this.onOpenEnd === 'function') {
+        this.onOpenEnd();
+      } else if (this.onOpenEnd) {
+        console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
+      }
+    }
+
+    return slideDown(this.dropdownItem, options);
   }
+
 
   /**
    * close
@@ -118,31 +127,30 @@ class DropdownToggle {
    * Animates dropdown out of view and sets relevant aria- attributes
    */
   close(options = {}) {
-    if (!this.isAnimating) {
-      this.isAnimating = true;
-      this.button.classList.remove(this.activeClass);
-      this.setAria();
-      this.setButtonText();
+    this.isCurrentlyAnimating = true;
+    this.button.classList.remove(this.openClass);
+    this.setAria();
+    this.setButtonText();
 
-      if (typeof this.onCloseStart === 'function') {
-        this.onCloseStart();
-      } else if (this.onCloseStart) {
-        console.warn('this.onCloseStart must be a function. Type %s detected', typeof this.onCloseStart);
-      }
-
-      options.callback = () => {
-        this.isAnimating = false;
-
-        if (typeof this.onCloseEnd === 'function') {
-          this.onCloseEnd();
-        } else if (this.onCloseEnd) {
-          console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
-        }
-      };
-
-      return slideUp(this.dropdownItem, options);
+    if (typeof this.onCloseStart === 'function') {
+      this.onCloseStart();
+    } else if (this.onCloseStart) {
+      console.warn('this.onCloseStart must be a function. Type %s detected', typeof this.onCloseStart);
     }
+
+    options.callback = () => {
+      this.isCurrentlyAnimating = false;
+
+      if (typeof this.onCloseEnd === 'function') {
+        this.onCloseEnd();
+      } else if (this.onCloseEnd) {
+        console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
+      }
+    };
+
+    return slideUp(this.dropdownItem, options);
   }
+
 
   /**
    * toggle
@@ -150,11 +158,7 @@ class DropdownToggle {
    * Determines whether to open or close the dropdown
    */
   toggle() {
-    if (this.isActive) {
-      this.close();
-    } else {
-      this.open();
-    }
+    this.isOpen ? this.close() : this.open();
   }
 
   /**
@@ -162,7 +166,7 @@ class DropdownToggle {
    */
   setButtonText() {
     if (this.buttonText) {
-      this.buttonText.innerText = this.isActive ? this.closeLabel : this.openLabel;
+      this.buttonText.innerText = this.isOpen ? this.closeLabel : this.openLabel;
     }
   }
 
@@ -172,8 +176,8 @@ class DropdownToggle {
    * Sets aria state on button and item
    */
   setAria() {
-    this.button.setAttribute('aria-expanded', this.isActive ? 'true' : 'false');
-    this.dropdownItem.setAttribute('aria-hidden', this.isActive ? 'false' : 'true');
+    this.button.setAttribute('aria-expanded', this.isOpen ? 'true' : 'false');
+    this.dropdownItem.setAttribute('aria-hidden', this.isOpen ? 'false' : 'true');
   }
 
   /**
@@ -183,15 +187,19 @@ class DropdownToggle {
    */
   resetState() {
     this.button.removeAttribute('aria-expanded');
-    this.button.classList.remove(this.activeClass);
+    this.button.classList.remove(this.openClass);
     this.dropdownItem.removeAttribute('aria-hidden');
     this.dropdownItem.removeAttribute('style');
   }
 
   onEscKeyPress(e) {
-    if (e.key === "Escape") {
-      this.close();
-    }
+    if (e.key !== "Escape") { return }
+    this.close();
+  }
+
+  onButtonClick(e) {
+    if (this.isAnimating) { return };
+    this.toggle();
   }
 
   /**
@@ -201,7 +209,7 @@ class DropdownToggle {
     /**
      * Toggle item when button is clicked
      */
-    this.button.addEventListener('click', this.toggleHandler);
+    this.button.addEventListener('click', this.onButtonClickHandler);
 
     /**
      * Close when Escape key is press
@@ -215,7 +223,7 @@ class DropdownToggle {
    * removeEventListeners
    */
   removeEventListeners() {
-    this.button.removeEventListener('click', this.toggleHandler);
+    this.button.removeEventListener('click', this.onButtonClickHandler);
 
     document.removeEventListener('keydown', this.onEscKeyPressHandler);
   }
@@ -248,8 +256,8 @@ class DropdownToggle {
         this.close({ duration: '0' });
       }
 
-      // Ensures isAnimating is set to false when callback isn't fired on tweens with  `duration: 0`
-      this.isAnimating = false;
+      // Ensures isCurrentlyAnimating is set to false when callback isn't fired on tweens with  `duration: 0`
+      this.isCurrentlyAnimating = false;
 
       this.addEventListeners();
     }
