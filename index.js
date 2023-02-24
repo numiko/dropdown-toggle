@@ -291,11 +291,13 @@ class DropdownToggle {
         this.open({ duration: '0' });
       } else {
         this.close({ duration: '0' });
+        // In case you are hiding the dropdown element via tailwind classes to avoid CLS issues
+        // we will remove this after the initial close() on load
+        this.dropdownItem.classList.remove('hidden');
       }
 
       // Ensures isCurrentlyAnimating is set to false when callback isn't fired on tweens with  `duration: 0`
       this.isCurrentlyAnimating = false;
-
       this.addEventListeners();
     }
   }
