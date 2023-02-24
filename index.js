@@ -51,14 +51,14 @@ class DropdownToggle {
      *
      * @type {String}
      */
-    this.openClass = options.openClass || 'dropdown-toggle-is-open'
+    this.openClass = options.openClass || ''
 
     /**
      * The class added to the button when the dropdown is closed.
      *
      * @type {String}
      */
-    this.closeClass = options.closeClass || 'dropdown-toggle-is-closed'
+    this.closeClass = options.closeClass || ''
 
     /**
      * Event handler for the "Escape" key press event
