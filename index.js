@@ -91,7 +91,7 @@ class DropdownToggle {
      *
      * @type {Boolean}
      */
-    this.closeOnEsc = options.closeOnEsc;
+    this.closeOnEsc = !!options.closeOnEsc;
 
     /**
      * Callback function before drodown opens
