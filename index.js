@@ -1,4 +1,4 @@
-import { slideDown, slideUp } from '@numiko/animation';
+import { slideDown, slideUp, isTweening } from '@numiko/animation';
 
 class DropdownToggle {
 
@@ -10,7 +10,6 @@ class DropdownToggle {
    * @type {Object}
    */
     this.state = {
-      isAnimating: false,
       isOpen: false
     }
 
@@ -135,7 +134,7 @@ class DropdownToggle {
    * @returns {boolean} True if the menu button is currently animating, false otherwise.
    */
   get isAnimating() {
-    return this.state.isAnimating;
+    return isTweening(this.dropdownItem);
   }
 
   /**
@@ -146,7 +145,6 @@ class DropdownToggle {
   open(options = {}) {
     if(this.isOpen) return;
 
-    this.state.isAnimating = true;
     this.state.isOpen = true;
 
     this.openClass && this.button.classList.add(this.openClass);
@@ -159,8 +157,6 @@ class DropdownToggle {
     }
 
     options.callback = () => {
-      this.state.isAnimating = false;
-
       if (typeof this.onOpenEnd === 'function') {
         this.onOpenEnd();
       } else if (this.onOpenEnd) {
@@ -179,7 +175,6 @@ class DropdownToggle {
   close(options = {}) {
     if(!this.isOpen) return;
 
-    this.state.isAnimating = true;
     this.state.isOpen = false;
 
     this.closeClass && this.button.classList.add(this.closeClass);
@@ -192,8 +187,6 @@ class DropdownToggle {
     }
 
     options.callback = () => {
-      this.state.isAnimating = false;
-
       if (typeof this.onCloseEnd === 'function') {
         this.onCloseEnd();
       } else if (this.onCloseEnd) {
@@ -320,8 +313,6 @@ class DropdownToggle {
       this.dropdownItem.classList.remove('hidden');
     }
 
-    // Ensures isCurrentlyAnimating is set to false when callback isn't fired on tweens with  `duration: 0`
-    this.state.isAnimating = false;
     this.addEventListeners();
     this.setAria();
     this.setButtonLabel();
