@@ -148,6 +148,9 @@ class DropdownToggle {
 
     this.state.isOpen = true;
 
+    this.setAria();
+    this.setButtonLabel();
+
     this.openClass && this.button.classList.add(this.openClass);
     this.closeClass && this.button.classList.remove(this.closeClass);
 
@@ -177,6 +180,9 @@ class DropdownToggle {
     if(!this.isOpen) return;
 
     this.state.isOpen = false;
+
+    this.setAria();
+    this.setButtonLabel();
 
     this.closeClass && this.button.classList.add(this.closeClass);
     this.openClass && this.button.classList.remove(this.openClass);
@@ -256,9 +262,6 @@ class DropdownToggle {
       this.open();
       document.addEventListener('keydown', this.onEscKeyPressHandler);
     }
-
-    this.setAria();
-    this.setButtonLabel();
   }
 
   addEventListeners() {
@@ -313,10 +316,7 @@ class DropdownToggle {
       // we will remove this after the initial close() on load
       this.dropdownItem.classList.remove('hidden');
     }
-
     this.addEventListeners();
-    this.setAria();
-    this.setButtonLabel();
 }
 }
 
