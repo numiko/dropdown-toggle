@@ -140,7 +140,7 @@ class DropdownToggle {
   /**
   * Opens the dropdown menu.
   * @param {Object} options - The options for the animation.
-  * @returns {Promise} - The gsap animation
+  * @returns {Tween} - The gsap animation
   */
   open(options = {}) {
     if(this.isOpen) return;
@@ -170,7 +170,7 @@ class DropdownToggle {
   /**
   * Closes the dropdown menu.
   * @param {Object} options - The options for the animation.
-  * @returns {Promise} - The gsap animation
+  * @returns {Tween} - The gsap animation
   */
   close(options = {}) {
     if(!this.isOpen) return;
