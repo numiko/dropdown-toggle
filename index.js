@@ -1,4 +1,5 @@
-import { slideDown, slideUp, isTweening } from '@numiko/animation';
+import { slideDown, slideUp } from '@numiko/animation';
+import gsap from 'gsap';
 
 class DropdownToggle {
 
@@ -134,7 +135,7 @@ class DropdownToggle {
    * @returns {boolean} True if the menu button is currently animating, false otherwise.
    */
   get isAnimating() {
-    return isTweening(this.dropdownItem);
+    return gsap.isTweening(this.dropdownItem);
   }
 
   /**
