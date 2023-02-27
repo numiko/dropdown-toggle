@@ -16,6 +16,6 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/numiko/dropdown-toggle#readme",
   "dependencies": {
-    "@numiko/animation": "bitbucket:numiko/@numiko/animation"
+    "@numiko/animation": "bitbucket:numiko/@numiko/animation#0.2.0"
   }
 }
