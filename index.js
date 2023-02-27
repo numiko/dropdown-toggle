@@ -1,4 +1,4 @@
-import { slideDown, slideUp } from '@numiko/animation';
+import { slideDown, slideUp } from './animation';
 
 class DropdownToggle {
 
@@ -51,14 +51,14 @@ class DropdownToggle {
      *
      * @type {String}
      */
-    this.openClass = options.openClass || ''
+    this.openClass = options.openClass || 'dropdown-toggle-is-open'
 
     /**
      * The class added to the button when the dropdown is closed.
      *
      * @type {String}
      */
-    this.closeClass = options.closeClass || ''
+    this.closeClass = options.closeClass || 'dropdown-toggle-is-closed'
 
     /**
      * Event handler for the "Escape" key press event
@@ -144,8 +144,6 @@ class DropdownToggle {
     this.isCurrentlyAnimating = true;
     this.button.classList.add(this.openClass);
     this.button.classList.remove(this.closeClass);
-    this.setAria();
-    this.setButtonLabel();
 
     if (typeof this.onOpenStart === 'function') {
       this.onOpenStart();
@@ -175,8 +173,6 @@ class DropdownToggle {
     this.isCurrentlyAnimating = true;
     this.button.classList.add(this.closeClass);
     this.button.classList.remove(this.openClass);
-    this.setAria();
-    this.setButtonLabel();
 
     if (typeof this.onCloseStart === 'function') {
       this.onCloseStart();
@@ -238,12 +234,26 @@ class DropdownToggle {
 
   onEscKeyPress(e) {
     if (e.key !== "Escape") { return }
-    this.close();
+
+    if(this.isOpen) {
+      this.close();
+      document.removeEventListener('keydown', this.onEscKeyPressHandler);
+    }
   }
 
   onButtonClick(e) {
     if (this.isAnimating) { return };
-    this.toggle();
+
+    if( this.isOpen ) {
+      this.close();
+      document.removeEventListener('keydown', this.onEscKeyPressHandler);
+    } else {
+      this.open();
+      document.addEventListener('keydown', this.onEscKeyPressHandler);
+    }
+
+    this.setAria();
+    this.setButtonLabel();
   }
 
   addEventListeners() {
@@ -299,6 +309,8 @@ class DropdownToggle {
       // Ensures isCurrentlyAnimating is set to false when callback isn't fired on tweens with  `duration: 0`
       this.isCurrentlyAnimating = false;
       this.addEventListeners();
+      this.setAria();
+      this.setButtonLabel();
     }
   }
 }
