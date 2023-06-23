@@ -1,9 +1,8 @@
 ## Installation
-`npm install bitbucket:numiko/@numiko/dropdown-toggle`
+---
+We want to install a specific tag because currently npm packages hosted privately on Bitbucket do not support semantic versioning.
 
-Install specific tag
-
-`npm install bitbucket:numiko/@numiko/dropdown-toggle#<TAG_NAME>`
+`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<TAG_NAME>`
 
 
 ## JS Setup & Options
