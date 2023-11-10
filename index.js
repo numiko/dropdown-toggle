@@ -12,7 +12,7 @@ class DropdownToggle {
    */
     this.state = {
       isOpen: false
-    }
+    };
 
     /**
      * The dropdown button element.
@@ -47,28 +47,28 @@ class DropdownToggle {
      *
      * @type {String}
      */
-    this.openLabel = options.openLabel || 'Open'
+    this.openLabel = options.openLabel || 'Open';
 
     /**
      * The label for the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.closeLabel = options.closeLabel || 'Close'
+    this.closeLabel = options.closeLabel || 'Close';
 
     /**
      * The class added to the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.openClass = options.openClass || ''
+    this.openClass = options.openClass;
 
     /**
      * The class added to the button when the dropdown is closed.
      *
      * @type {String}
      */
-    this.closeClass = options.closeClass || ''
+    this.closeClass = options.closeClass;
 
     /**
      * Determines whether the dropdown is open on load.
@@ -144,7 +144,7 @@ class DropdownToggle {
   * @returns {Tween} - The gsap animation
   */
   open(options = {}) {
-    if(this.isOpen) return;
+    if (this.isOpen) return;
 
     this.state.isOpen = true;
 
@@ -166,7 +166,7 @@ class DropdownToggle {
       } else if (this.onOpenEnd) {
         console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
       }
-    }
+    };
 
     return slideDown(this.dropdownItem, options);
   }
@@ -177,7 +177,7 @@ class DropdownToggle {
   * @returns {Tween} - The gsap animation
   */
   close(options = {}) {
-    if(!this.isOpen) return;
+    if (!this.isOpen) return;
 
     this.state.isOpen = false;
 
@@ -238,24 +238,25 @@ class DropdownToggle {
    */
   resetState() {
     this.button.removeAttribute('aria-expanded');
-    this.button.classList.remove(this.openClass, this.closeClass);
+    this.openClass && this.button.classList.remove(this.openClass);
+    this.closeClass && this.button.classList.remove(this.closeClass);
     this.dropdownItem.removeAttribute('aria-hidden');
     this.dropdownItem.removeAttribute('style');
   }
 
   onEscKeyPress(e) {
-    if (e.key !== "Escape") { return }
+    if (e.key !== 'Escape') { return; }
 
-    if(this.isOpen) {
+    if (this.isOpen) {
       this.close();
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     }
   }
 
-  onButtonClick(e) {
-    if (this.isAnimating) { return };
+  onButtonClick() {
+    if (this.isAnimating) { return; }
 
-    if( this.isOpen ) {
+    if ( this.isOpen ) {
       this.close();
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     } else {
@@ -291,7 +292,7 @@ class DropdownToggle {
     } else {
       console.warn(
         this.button,
-        `Element doesn't have an associated dropdown. To add this, create an aria-controls attribute on the button and an associated id on the element you want to use as the dropdown.`
+        'Element doesn\'t have an associated dropdown. To add this, create an aria-controls attribute on the button and an associated id on the element you want to use as the dropdown.'
       );
     }
 
@@ -312,9 +313,6 @@ class DropdownToggle {
     } else {
       this.state.isOpen = true;
       this.close({ duration: '0' });
-      // In case you are hiding the dropdown element via tailwind classes to avoid CLS issues
-      // we will remove this after the initial close() on load
-      this.dropdownItem.classList.remove('hidden');
     }
     this.addEventListeners();
 }
