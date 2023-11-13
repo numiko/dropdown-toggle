@@ -41,6 +41,32 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   onCloseEnd: () => {
     console.log('Event:Dropdown close end');
   },
+  customOpenTween: (dropdownItem) => {
+    // You must return the tween or timeline
+    // timeline example
+    const tl = gsap.timeline();
+    return tl
+      .set(dropdownItem, {'display': 'block'})
+      .to(dropdownItem, {
+        height: 'auto',
+        duration: 0.5,
+        ease: 'power2.easeInOut',
+      });
+  },
+  customCloseTween: (dropdownItem) => {
+   // You must return the tween or timeline
+   // tween example
+   return gsap
+     .to(dropdownItem, {
+       height: 0,
+       duration: 2,
+       paused: true,
+       ease: 'power2.easeInOut',
+       onComplete: () => {
+        gsap.set(dropdownItem, {'display': 'none'});
+       }
+     });
+  },
 });
 
 myDropdown.init(); // initialise
