@@ -133,7 +133,7 @@ class DropdownToggle {
      */
     this.onCloseEnd = options.onCloseEnd;
 
-     /**
+    /**
      * Custom tween function to be used for opening dropdown
      * @type {Function}
      */
@@ -179,7 +179,7 @@ class DropdownToggle {
     this.openClass && this.button.classList.add(this.openClass);
     this.closeClass && this.button.classList.remove(this.closeClass);
 
-    if(this.customOpenTween) {
+    if (this.customOpenTween) {
       // Store a reference to the custom tween and pass in the dropdownItem as a paramter
       const tween = this.customOpenTween(this.dropdownItem);
 
@@ -188,17 +188,17 @@ class DropdownToggle {
       const tweenOnComplete = tween.eventCallback('onComplete');
 
       // Pass on any custom duration settings e.g. when openOnLoad is true
-      if(options.duration) {
+      if (options.duration) {
         tween.duration(options.duration);
       }
 
-      tween.eventCallback("onStart", () => {
+      tween.eventCallback('onStart', () => {
         // Call both the callbacks - from custom tween and the options
         typeof tweenOnStart === 'function' && tweenOnStart();
         typeof this.onOpenStart === 'function' && this.onOpenStart();
       });
 
-      tween.eventCallback("onComplete", () => {
+      tween.eventCallback('onComplete', () => {
         // Call both the callbacks - from custom tween and the options
         typeof tweenOnComplete === 'function' && tweenOnComplete();
         typeof this.onOpenEnd === 'function' && this.onOpenEnd();
@@ -236,7 +236,7 @@ class DropdownToggle {
     this.openClass && this.button.classList.remove(this.openClass);
 
 
-    if(this.customCloseTween) {
+    if (this.customCloseTween) {
       // Store a reference to the custom tween and pass in the dropdownItem as a paramter
       const tween = this.customCloseTween(this.dropdownItem);
 
@@ -244,13 +244,13 @@ class DropdownToggle {
       const tweenOnStart = tween.eventCallback('onStart');
       const tweenOnComplete = tween.eventCallback('onComplete');
 
-      tween.eventCallback("onStart", () => {
+      tween.eventCallback('onStart', () => {
         // Call both the callbacks - from custom tween and the options
         typeof tweenOnStart === 'function' && tweenOnStart();
         typeof this.onCloseStart === 'function' && this.onCloseStart();
       });
 
-      tween.eventCallback("onComplete", () => {
+      tween.eventCallback('onComplete', () => {
         // Call both the callbacks - from custom tween and the options
         typeof tweenOnComplete === 'function' && tweenOnComplete();
         typeof this.onCloseEnd === 'function' && this.onCloseEnd();
@@ -389,21 +389,21 @@ class DropdownToggle {
       );
     }
 
-    if( this.onOpenStart && typeof this.onOpenStart !== 'function' ) {
+    if ( this.onOpenStart && typeof this.onOpenStart !== 'function' ) {
       console.warn('this.onOpenStart must be a function. Type \'%s\' detected', typeof this.onOpenStart);
-    };
+    }
 
-    if( this.onOpenEnd  && typeof this.onOpenEnd !== 'function' ) {
+    if ( this.onOpenEnd  && typeof this.onOpenEnd !== 'function' ) {
       console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
-    };
+    }
 
-    if( this.onCloseStart && typeof this.onCloseStart !== 'function' ) {
+    if ( this.onCloseStart && typeof this.onCloseStart !== 'function' ) {
       console.warn('this.onCloseStart must be a function. Type \'%s\' detected', typeof this.onCloseStart);
-    };
+    }
 
-    if( this.onCloseEnd && typeof this.onCloseEnd !== 'function' ) {
+    if ( this.onCloseEnd && typeof this.onCloseEnd !== 'function' ) {
       console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
-    };
+    }
 
     return isValid;
   }
