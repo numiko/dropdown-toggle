@@ -43,7 +43,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   onCloseEnd: () => {
     console.log('Event:Dropdown close end');
   },
-  customOpenTween: (dropdownItem) => {
+  openTween: (dropdownItem) => {
     // You must return the tween or timeline
     // timeline example
     const tl = gsap.timeline();
@@ -55,7 +55,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
         ease: 'power2.easeInOut',
       });
   },
-  customCloseTween: (dropdownItem) => {
+  closeTween: (dropdownItem) => {
    // You must return the tween or timeline
    // tween example
    return gsap
@@ -65,6 +65,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
        paused: true,
        ease: 'power2.easeInOut',
        onComplete: () => {
+        // These callbacks will still happen along side the onCloseEnd option
         gsap.set(dropdownItem, {'display': 'none'});
        }
      });
