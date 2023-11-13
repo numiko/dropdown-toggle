@@ -350,19 +350,19 @@ class DropdownToggle {
       );
     }
 
-    if( typeof this.onOpenStart !== 'function' ) {
+    if( this.onOpenStart && typeof this.onOpenStart !== 'function' ) {
       console.warn('this.onOpenStart must be a function. Type \'%s\' detected', typeof this.onOpenStart);
     };
 
-    if( typeof this.onOpenEnd !== 'function' ) {
+    if( this.onOpenEnd  && typeof this.onOpenEnd !== 'function' ) {
       console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
     };
 
-    if( typeof this.onCloseStart !== 'function' ) {
+    if( this.onCloseStart && typeof this.onCloseStart !== 'function' ) {
       console.warn('this.onCloseStart must be a function. Type \'%s\' detected', typeof this.onCloseStart);
     };
 
-    if( typeof this.onCloseEnd !== 'function' ) {
+    if( this.onCloseEnd && typeof this.onCloseEnd !== 'function' ) {
       console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
     };
 
