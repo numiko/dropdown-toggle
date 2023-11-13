@@ -15,7 +15,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   buttonLabelEl: '[data-js-my-dropdown-button-label]',
   // open label for the button
   openLabel: 'Open',
-  // open label for the button
+  // close label for the button
   closeLabel: 'Close',
   // class applied to button in open state
   openClass: '',
@@ -25,6 +25,8 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   openOnLoad: false,
   // close on escape key
   closeOnEsc: true,
+  // close when clicking outside the dropdown
+  closeOnOutsideClick: false,
   // callback when open animation starts
   onOpenStart: () => {
     console.log('Event:Dropdown open start');
