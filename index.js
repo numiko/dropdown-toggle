@@ -174,6 +174,11 @@ class DropdownToggle {
       const tweenOnStart = tween.eventCallback('onStart');
       const tweenOnComplete = tween.eventCallback('onComplete');
 
+      // Pass on any custom duration settings e.g. when openOnLoad is true
+      if(options.duration) {
+        tween.duration(options.duration);
+      }
+
       tween.eventCallback("onStart", () => {
         // Call both the callbacks - from custom tween and the options
         typeof tweenOnStart === 'function' && tweenOnStart();
