@@ -12,7 +12,7 @@ class DropdownToggle {
    */
     this.state = {
       isOpen: false
-    }
+    };
 
     /**
      * The dropdown button element.
@@ -47,28 +47,28 @@ class DropdownToggle {
      *
      * @type {String}
      */
-    this.openLabel = options.openLabel || 'Open'
+    this.openLabel = options.openLabel || 'Open';
 
     /**
      * The label for the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.closeLabel = options.closeLabel || 'Close'
+    this.closeLabel = options.closeLabel || 'Close';
 
     /**
      * The class added to the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.openClass = options.openClass || ''
+    this.openClass = options.openClass || '';
 
     /**
      * The class added to the button when the dropdown is closed.
      *
      * @type {String}
      */
-    this.closeClass = options.closeClass || ''
+    this.closeClass = options.closeClass || '';
 
     /**
      * Determines whether the dropdown is open on load.
@@ -85,6 +85,13 @@ class DropdownToggle {
     this.closeOnEsc = !!options.closeOnEsc;
 
     /**
+     * Allow user to close the dropdown by clicking outside the dropdown
+     *
+     * @type {Boolean}
+     */
+    this.closeOnOutsideClick = !!options.closeOnOutsideClick;
+
+    /**
      * Event handler for the "Escape" key press event
      * @type {function}
      */
@@ -95,6 +102,12 @@ class DropdownToggle {
      * @type {function}
      */
     this.onButtonClickHandler = this.onButtonClick.bind(this);
+
+    /**
+     * Event handler for the click event outside the dropdown
+     * @type {function}
+     */
+    this.onOutsideClickHandler = this.onClickOutside.bind(this);
 
     /**
      * Callback function before drodown opens
@@ -264,6 +277,24 @@ class DropdownToggle {
     }
   }
 
+  /**
+   *
+   * @param {Event} event
+   *
+   * Close active dropdown when user clicks outside of dropdown
+   */
+  onClickOutside(event) {
+
+    if (!this.isOpen) return;
+
+    const isInsideDropdown = this.dropdownItem.contains(event.target);
+    const isInsideDropdownBtn = this.button.contains(event.target);
+
+    if (!isInsideDropdown && !isInsideDropdownBtn) {
+      this.close();
+    }
+  }
+
   addEventListeners() {
     /**
      * Toggle item when button is clicked
@@ -276,11 +307,19 @@ class DropdownToggle {
     if (this.closeOnEsc) {
       document.addEventListener('keydown', this.onEscKeyPressHandler);
     }
+
+    /**
+     * Close when element outside of dropdown is clicked
+     */
+    if (this.closeOnOutsideClick) {
+      document.addEventListener('click', this.onOutsideClickHandler);
+    }
   }
 
   removeEventListeners() {
     this.button.removeEventListener('click', this.onButtonClickHandler);
     document.removeEventListener('keydown', this.onEscKeyPressHandler);
+    document.removeEventListener('click', this.onOutsideClickHandler);
   }
 
   validateInstance() {
@@ -317,7 +356,7 @@ class DropdownToggle {
       this.dropdownItem.classList.remove('hidden');
     }
     this.addEventListeners();
-}
+  }
 }
 
-export { DropdownToggle as default }
+export { DropdownToggle as default };
