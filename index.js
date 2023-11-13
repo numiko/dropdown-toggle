@@ -133,17 +133,18 @@ class DropdownToggle {
      */
     this.onCloseEnd = options.onCloseEnd;
 
-    /**
-     * Custom tween function to be used for opening dropdown
+     /**
+     * Tween used for open animation
      * @type {Function}
      */
-    this.customOpenTween = options.customOpenTween;
+    this.openTween = options.openTween ? options.openTween : slideDown;
 
     /**
-     * Custom tween function to be used for closing dropdown
+     * Tween used for close animation
      * @type {Function}
      */
-    this.customCloseTween = options.customCloseTween;
+    this.closeTween = options.closeTween ? options.closeTween : slideUp;
+
   }
 
   /**
@@ -179,44 +180,27 @@ class DropdownToggle {
     this.openClass && this.button.classList.add(this.openClass);
     this.closeClass && this.button.classList.remove(this.closeClass);
 
-    if (this.customOpenTween) {
-      // Store a reference to the custom tween and pass in the dropdownItem as a paramter
-      const tween = this.customOpenTween(this.dropdownItem);
+    const tween = this.openTween(this.dropdownItem);
+    const tweenOnStart = tween.eventCallback('onStart');
+    const tweenOnComplete = tween.eventCallback('onComplete');
 
-      // Cache the onStart & onComplete functions of the custom tween before we overwrite it below to append stuff to it
-      const tweenOnStart = tween.eventCallback('onStart');
-      const tweenOnComplete = tween.eventCallback('onComplete');
-
-      // Pass on any custom duration settings e.g. when openOnLoad is true
-      if (options.duration) {
-        tween.duration(options.duration);
-      }
-
-      tween.eventCallback('onStart', () => {
-        // Call both the callbacks - from custom tween and the options
-        typeof tweenOnStart === 'function' && tweenOnStart();
-        typeof this.onOpenStart === 'function' && this.onOpenStart();
-      });
-
-      tween.eventCallback('onComplete', () => {
-        // Call both the callbacks - from custom tween and the options
-        typeof tweenOnComplete === 'function' && tweenOnComplete();
-        typeof this.onOpenEnd === 'function' && this.onOpenEnd();
-      });
-
-      tween.play();
-
-    } else {
-      // We play the default slideDown animation
-      // TODO: We should probably hook into the onStart callback properly!
+    tween.eventCallback('onStart', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnStart === 'function' && tweenOnStart();
       typeof this.onOpenStart === 'function' && this.onOpenStart();
+    });
 
-      options.callback = () => {
-        typeof this.onOpenEnd === 'function' && this.onOpenEnd();
-      };
+    tween.eventCallback('onComplete', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnComplete === 'function' && tweenOnComplete();
+      typeof this.onOpenEnd === 'function' && this.onOpenEnd();
+    });
 
-      return slideDown(this.dropdownItem, options);
+    if (options.duration) {
+      tween.duration(options.duration);
     }
+
+    tween.play();
   }
 
   /**
@@ -235,41 +219,27 @@ class DropdownToggle {
     this.closeClass && this.button.classList.add(this.closeClass);
     this.openClass && this.button.classList.remove(this.openClass);
 
+    const tween = this.closeTween(this.dropdownItem);
+    const tweenOnStart = tween.eventCallback('onStart');
+    const tweenOnComplete = tween.eventCallback('onComplete');
 
-    if (this.customCloseTween) {
-      // Store a reference to the custom tween and pass in the dropdownItem as a paramter
-      const tween = this.customCloseTween(this.dropdownItem);
-
-      // Cache the onStart & onComplete functions of the custom tween before we overwrite it below to append stuff to it
-      const tweenOnStart = tween.eventCallback('onStart');
-      const tweenOnComplete = tween.eventCallback('onComplete');
-
-      tween.eventCallback('onStart', () => {
-        // Call both the callbacks - from custom tween and the options
-        typeof tweenOnStart === 'function' && tweenOnStart();
-        typeof this.onCloseStart === 'function' && this.onCloseStart();
-      });
-
-      tween.eventCallback('onComplete', () => {
-        // Call both the callbacks - from custom tween and the options
-        typeof tweenOnComplete === 'function' && tweenOnComplete();
-        typeof this.onCloseEnd === 'function' && this.onCloseEnd();
-      });
-
-      tween.play();
-
-    } else {
-      // We play the default slideUp animation
-      // TODO: We should probably hook into the onStart callback properly!
+    tween.eventCallback('onStart', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnStart === 'function' && tweenOnStart();
       typeof this.onCloseStart === 'function' && this.onCloseStart();
+    });
 
-      options.callback = () => {
-        typeof this.onCloseEnd === 'function' && this.onCloseEnd();
-      };
+    tween.eventCallback('onComplete', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnComplete === 'function' && tweenOnComplete();
+      typeof this.onCloseEnd === 'function' && this.onCloseEnd();
+    });
 
-      return slideUp(this.dropdownItem, options);
+    if (options.duration) {
+      tween.duration(options.duration);
     }
 
+    tween.play();
   }
 
   /**
