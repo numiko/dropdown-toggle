@@ -16,7 +16,9 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/numiko/dropdown-toggle#readme",
   "dependencies": {
-    "@numiko/animation": "bitbucket:numiko/@numiko/animation#0.2.0",
-    "gsap": "^3.11.4"
+    "@numiko/animation": "bitbucket:numiko/@numiko/animation#0.2.0"
+  },
+  "peerDependencies": {
+    "gsap": "file:gsap-bonus.tgz"
   }
 }
