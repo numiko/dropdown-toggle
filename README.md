@@ -27,25 +27,36 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   closeOnEsc: true,
   // close when clicking outside the dropdown
   closeOnOutsideClick: false,
+  // duration for default open tween
+  openDuration: 0.3,
+  // ease for default open tween
+  openEase: 'power2.easeInOut',
+  // duration for default close tween
+  closeDuration: 0.3,
+  // ease for default close tween
+  closeEase: 'power2.easeInOut',
   // callback when open animation starts
-  onOpenStart: () => {
-    console.log('Event:Dropdown open start');
-  },
+  onOpenStart: () => {},
   // callback when open animation ends
-  onOpenEnd: () => {
-    console.log('Event:Dropdown open end');
-  },
+  onOpenEnd: () => {},
   // callback when close animation starts
-  onCloseStart: () => {
-    console.log('Event:Dropdown close start');
-  },
+  onCloseStart: () => {},
   // callback when close animation ends
-  onCloseEnd: () => {
-    console.log('Event:Dropdown close end');
-  },
-  openTween: (dropdownItem) => {
+  onCloseEnd: () => {},
+});
+
+
+myDropdown.init(); // initialise
+```
+
+## Custom Tweens (Advanced)
+You can overwrite the default tween used and provide your own.
+
+```javascript
+const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
+  customOpenTween: (dropdownItem) => {
     // You must return the tween or timeline
-    // timeline example
+    // Only use these options if your confident knowing what you're doing
     const tl = gsap.timeline();
     return tl
       .set(dropdownItem, {'display': 'block'})
@@ -55,24 +66,24 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
         ease: 'power2.easeInOut',
       });
   },
-  closeTween: (dropdownItem) => {
-   // You must return the tween or timeline
-   // tween example
-   return gsap
-     .to(dropdownItem, {
-       height: 0,
-       duration: 2,
-       paused: true,
-       ease: 'power2.easeInOut',
-       onComplete: () => {
-        // These callbacks will still happen along side the onCloseEnd option
-        gsap.set(dropdownItem, {'display': 'none'});
-       }
-     });
+  customCloseTween: (dropdownItem) => {
+    // You must return the tween or timeline
+    // Only use these options if your confident knowing what you're doing
+    return gsap
+      .to(dropdownItem, {
+        height: 0,
+        duration: 2,
+        paused: true,
+        ease: 'power2.easeInOut',
+        onComplete: () => {
+          // These callbacks will still happen along side the onCloseEnd option
+          gsap.set(dropdownItem, {'display': 'none'});
+        }
+      });
   },
 });
 
-myDropdown.init(); // initialise
+
 ```
 ## Example HTML
 ---
@@ -90,6 +101,7 @@ myDropdown.init(); // initialise
 ```javascript
 // Methods
 myDropdown.init();        // initialise
+myDropdown.destroy();     // destroy the dropdown and event listeners
 myDropdown.open();        // open dropdown
 myDropdown.close();       // close dropdown
 myDropdown.toggle();      // toggle dropdown
