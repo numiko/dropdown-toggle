@@ -1,6 +1,9 @@
 import { slideDown, slideUp } from '@numiko/animation';
 import gsap from 'gsap';
 
+const DEFAULT_DURATION = 0.3;
+const DEFAULT_EASE = 'power2.easeInOut';
+
 class DropdownToggle {
 
   constructor(button, options) {
@@ -137,14 +140,31 @@ class DropdownToggle {
      * Tween used for open animation
      * @type {Function}
      */
-    this.openTween = options.openTween ? options.openTween : slideDown;
+    this.openTween = options.customOpenTween ? options.customOpenTween : slideDown;
 
     /**
      * Tween used for close animation
      * @type {Function}
      */
-    this.closeTween = options.closeTween ? options.closeTween : slideUp;
+    this.closeTween = options.customCloseTween ? options.customCloseTween : slideUp;
 
+    /**
+     * Open Options
+     * @type {Object}
+     */
+    this.openOptions = {
+      'duration': options.openDuration ? options.openDuration : DEFAULT_DURATION,
+      'ease' : options.openEase ? options.openEase : DEFAULT_EASE
+    },
+
+    /**
+     * Close Options
+     * @type {Object}
+     */
+    this.closeOptions = {
+      'duration': options.closeDuration ? options.closeDuration : DEFAULT_DURATION,
+      'ease' : options.closeEase ? options.closeEase : DEFAULT_EASE
+    };
   }
 
   /**
@@ -167,9 +187,10 @@ class DropdownToggle {
   /**
   * Opens the dropdown menu.
   * @param {Object} options - The options for the animation.
+  * @param {Boolean} openOnLoad - Instantly move playhead to end of tween
   * @returns {Tween} - The gsap animation
   */
-  open(options = {}) {
+  open(options = {}, openOnLoad = false) {
     if (this.isOpen) return;
 
     this.state.isOpen = true;
@@ -180,7 +201,7 @@ class DropdownToggle {
     this.openClass && this.button.classList.add(this.openClass);
     this.closeClass && this.button.classList.remove(this.closeClass);
 
-    const tween = this.openTween(this.dropdownItem);
+    const tween = this.openTween(this.dropdownItem, options);
     const tweenOnStart = tween.eventCallback('onStart');
     const tweenOnComplete = tween.eventCallback('onComplete');
 
@@ -196,11 +217,11 @@ class DropdownToggle {
       typeof this.onOpenEnd === 'function' && this.onOpenEnd();
     });
 
-    if (options.duration) {
-      tween.duration(options.duration);
+    if (openOnLoad) {
+      tween.time(tween.duration);
+    } else {
+      tween.play();
     }
-
-    tween.play();
   }
 
   /**
@@ -219,7 +240,7 @@ class DropdownToggle {
     this.closeClass && this.button.classList.add(this.closeClass);
     this.openClass && this.button.classList.remove(this.openClass);
 
-    const tween = this.closeTween(this.dropdownItem);
+    const tween = this.closeTween(this.dropdownItem, options);
     const tweenOnStart = tween.eventCallback('onStart');
     const tweenOnComplete = tween.eventCallback('onComplete');
 
@@ -235,10 +256,6 @@ class DropdownToggle {
       typeof this.onCloseEnd === 'function' && this.onCloseEnd();
     });
 
-    if (options.duration) {
-      tween.duration(options.duration);
-    }
-
     tween.play();
   }
 
@@ -247,7 +264,7 @@ class DropdownToggle {
    * @returns {void}
    */
   toggle() {
-    this.isOpen ? this.close() : this.open();
+    this.isOpen ? this.close(this.closeOptions) : this.open(this.openOptions);
   }
 
   /**
@@ -294,10 +311,10 @@ class DropdownToggle {
     if (this.isAnimating) { return; }
 
     if ( this.isOpen ) {
-      this.close();
+      this.close(this.closeOptions);
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     } else {
-      this.open();
+      this.open(this.openOptions);
       document.addEventListener('keydown', this.onEscKeyPressHandler);
     }
   }
@@ -387,7 +404,7 @@ class DropdownToggle {
     if (!this.validateInstance()) return;
 
     if (this.openOnLoad) {
-      this.open({ duration: '0' });
+      this.open(this.openOptions, true);
     }
 
     this.addEventListeners();
