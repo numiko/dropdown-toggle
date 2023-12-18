@@ -382,7 +382,7 @@ class DropdownToggle {
       console.warn('this.onOpenStart must be a function. Type \'%s\' detected', typeof this.onOpenStart);
     }
 
-    if ( this.onOpenEnd  && typeof this.onOpenEnd !== 'function' ) {
+    if ( this.onOpenEnd && typeof this.onOpenEnd !== 'function' ) {
       console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
     }
 
