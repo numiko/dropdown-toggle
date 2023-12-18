@@ -187,12 +187,10 @@ class DropdownToggle {
   /**
   * Opens the dropdown menu.
   * @param {Object} options - The options for the animation.
-  * @param {Boolean} openOnLoad - Instantly move playhead to end of tween
+  * @param {Boolean} openInstantly - Instantly move playhead to end of tween
   * @returns {Tween} - The gsap animation
   */
-  open(options = {}, openOnLoad = false) {
-    if (this.isOpen) return;
-
+  open(options = {}, openInstantly = false) {
     this.state.isOpen = true;
 
     this.setAria();
@@ -217,7 +215,7 @@ class DropdownToggle {
       typeof this.onOpenEnd === 'function' && this.onOpenEnd();
     });
 
-    if (openOnLoad) {
+    if (openInstantly) {
       tween.time(tween.duration);
     } else {
       tween.play();
@@ -227,11 +225,10 @@ class DropdownToggle {
   /**
   * Closes the dropdown menu.
   * @param {Object} options - The options for the animation.
+  * @param {Boolean} closeInstantly - Instantly move playhead to end of tween
   * @returns {Tween} - The gsap animation
   */
-  close(options = {}) {
-    if (!this.isOpen) return;
-
+  close(options = {}, closeInstantly = false) {
     this.state.isOpen = false;
 
     this.setAria();
@@ -256,7 +253,12 @@ class DropdownToggle {
       typeof this.onCloseEnd === 'function' && this.onCloseEnd();
     });
 
-    tween.play();
+
+    if (closeInstantly) {
+      tween.time(tween.duration);
+    } else {
+      tween.play();
+    }
   }
 
   /**
@@ -310,7 +312,7 @@ class DropdownToggle {
   onButtonClick() {
     if (this.isAnimating) { return; }
 
-    if ( this.isOpen ) {
+    if (this.isOpen) {
       this.close(this.closeOptions);
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     } else {
@@ -405,6 +407,8 @@ class DropdownToggle {
 
     if (this.openOnLoad) {
       this.open(this.openOptions, true);
+    } else {
+      this.close(this.closeOptions, true)
     }
 
     this.addEventListeners();
