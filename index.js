@@ -1,6 +1,9 @@
 import { slideDown, slideUp } from '@numiko/animation';
 import gsap from 'gsap';
 
+const DEFAULT_DURATION = 0.3;
+const DEFAULT_EASE = 'power2.easeInOut';
+
 class DropdownToggle {
 
   constructor(button, options) {
@@ -12,7 +15,7 @@ class DropdownToggle {
    */
     this.state = {
       isOpen: false
-    }
+    };
 
     /**
      * The dropdown button element.
@@ -47,28 +50,28 @@ class DropdownToggle {
      *
      * @type {String}
      */
-    this.openLabel = options.openLabel || 'Open'
+    this.openLabel = options.openLabel || 'Open';
 
     /**
      * The label for the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.closeLabel = options.closeLabel || 'Close'
+    this.closeLabel = options.closeLabel || 'Close';
 
     /**
      * The class added to the button when the dropdown is open.
      *
      * @type {String}
      */
-    this.openClass = options.openClass || ''
+    this.openClass = options.openClass;
 
     /**
      * The class added to the button when the dropdown is closed.
      *
      * @type {String}
      */
-    this.closeClass = options.closeClass || ''
+    this.closeClass = options.closeClass;
 
     /**
      * Determines whether the dropdown is open on load.
@@ -85,6 +88,13 @@ class DropdownToggle {
     this.closeOnEsc = !!options.closeOnEsc;
 
     /**
+     * Allow user to close the dropdown by clicking outside the dropdown
+     *
+     * @type {Boolean}
+     */
+    this.closeOnOutsideClick = !!options.closeOnOutsideClick;
+
+    /**
      * Event handler for the "Escape" key press event
      * @type {function}
      */
@@ -95,6 +105,12 @@ class DropdownToggle {
      * @type {function}
      */
     this.onButtonClickHandler = this.onButtonClick.bind(this);
+
+    /**
+     * Event handler for the click event outside the dropdown
+     * @type {function}
+     */
+    this.onOutsideClickHandler = this.onClickOutside.bind(this);
 
     /**
      * Callback function before drodown opens
@@ -119,6 +135,36 @@ class DropdownToggle {
      * @type {Function}
      */
     this.onCloseEnd = options.onCloseEnd;
+
+     /**
+     * Tween used for open animation
+     * @type {Function}
+     */
+    this.openTween = options.customOpenTween ? options.customOpenTween : slideDown;
+
+    /**
+     * Tween used for close animation
+     * @type {Function}
+     */
+    this.closeTween = options.customCloseTween ? options.customCloseTween : slideUp;
+
+    /**
+     * Open Options
+     * @type {Object}
+     */
+    this.openOptions = {
+      'duration': options.openDuration ? options.openDuration : DEFAULT_DURATION,
+      'ease' : options.openEase ? options.openEase : DEFAULT_EASE
+    },
+
+    /**
+     * Close Options
+     * @type {Object}
+     */
+    this.closeOptions = {
+      'duration': options.closeDuration ? options.closeDuration : DEFAULT_DURATION,
+      'ease' : options.closeEase ? options.closeEase : DEFAULT_EASE
+    };
   }
 
   /**
@@ -141,11 +187,10 @@ class DropdownToggle {
   /**
   * Opens the dropdown menu.
   * @param {Object} options - The options for the animation.
+  * @param {Boolean} openInstantly - Instantly move playhead to end of tween
   * @returns {Tween} - The gsap animation
   */
-  open(options = {}) {
-    if(this.isOpen) return;
-
+  open(options = {}, openInstantly = false) {
     this.state.isOpen = true;
 
     this.setAria();
@@ -154,31 +199,36 @@ class DropdownToggle {
     this.openClass && this.button.classList.add(this.openClass);
     this.closeClass && this.button.classList.remove(this.closeClass);
 
-    if (typeof this.onOpenStart === 'function') {
-      this.onOpenStart();
-    } else if (this.onOpenStart) {
-      console.warn('this.onOpenStart must be a function. Type %s detected', typeof this.onOpenStart);
-    }
+    const tween = this.openTween(this.dropdownItem, options);
+    const tweenOnStart = tween.eventCallback('onStart');
+    const tweenOnComplete = tween.eventCallback('onComplete');
 
-    options.callback = () => {
-      if (typeof this.onOpenEnd === 'function') {
-        this.onOpenEnd();
-      } else if (this.onOpenEnd) {
-        console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
-      }
-    }
+    tween.eventCallback('onStart', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnStart === 'function' && tweenOnStart();
+      typeof this.onOpenStart === 'function' && this.onOpenStart();
+    });
 
-    return slideDown(this.dropdownItem, options);
+    tween.eventCallback('onComplete', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnComplete === 'function' && tweenOnComplete();
+      typeof this.onOpenEnd === 'function' && this.onOpenEnd();
+    });
+
+    if (openInstantly) {
+      tween.time(tween.duration);
+    } else {
+      tween.play();
+    }
   }
 
   /**
   * Closes the dropdown menu.
   * @param {Object} options - The options for the animation.
+  * @param {Boolean} closeInstantly - Instantly move playhead to end of tween
   * @returns {Tween} - The gsap animation
   */
-  close(options = {}) {
-    if(!this.isOpen) return;
-
+  close(options = {}, closeInstantly = false) {
     this.state.isOpen = false;
 
     this.setAria();
@@ -187,30 +237,36 @@ class DropdownToggle {
     this.closeClass && this.button.classList.add(this.closeClass);
     this.openClass && this.button.classList.remove(this.openClass);
 
-    if (typeof this.onCloseStart === 'function') {
-      this.onCloseStart();
-    } else if (this.onCloseStart) {
-      console.warn('this.onCloseStart must be a function. Type %s detected', typeof this.onCloseStart);
+    const tween = this.closeTween(this.dropdownItem, options);
+    const tweenOnStart = tween.eventCallback('onStart');
+    const tweenOnComplete = tween.eventCallback('onComplete');
+
+    tween.eventCallback('onStart', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnStart === 'function' && tweenOnStart();
+      typeof this.onCloseStart === 'function' && this.onCloseStart();
+    });
+
+    tween.eventCallback('onComplete', () => {
+      // Call both the callbacks - from custom tween and the options
+      typeof tweenOnComplete === 'function' && tweenOnComplete();
+      typeof this.onCloseEnd === 'function' && this.onCloseEnd();
+    });
+
+
+    if (closeInstantly) {
+      tween.time(tween.duration);
+    } else {
+      tween.play();
     }
-
-    options.callback = () => {
-      if (typeof this.onCloseEnd === 'function') {
-        this.onCloseEnd();
-      } else if (this.onCloseEnd) {
-        console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
-      }
-    };
-
-    return slideUp(this.dropdownItem, options);
   }
-
 
   /**
    * Determines whether to open or close the dropdown
    * @returns {void}
    */
   toggle() {
-    this.isOpen ? this.close() : this.open();
+    this.isOpen ? this.close(this.closeOptions) : this.open(this.openOptions);
   }
 
   /**
@@ -238,29 +294,48 @@ class DropdownToggle {
    */
   resetState() {
     this.button.removeAttribute('aria-expanded');
-    this.button.classList.remove(this.openClass, this.closeClass);
+    this.openClass && this.button.classList.remove(this.openClass);
+    this.closeClass && this.button.classList.remove(this.closeClass);
     this.dropdownItem.removeAttribute('aria-hidden');
     this.dropdownItem.removeAttribute('style');
   }
 
   onEscKeyPress(e) {
-    if (e.key !== "Escape") { return }
+    if (e.key !== 'Escape') { return; }
 
-    if(this.isOpen) {
+    if (this.isOpen) {
       this.close();
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     }
   }
 
-  onButtonClick(e) {
-    if (this.isAnimating) { return };
+  onButtonClick() {
+    if (this.isAnimating) { return; }
 
-    if( this.isOpen ) {
-      this.close();
+    if (this.isOpen) {
+      this.close(this.closeOptions);
       document.removeEventListener('keydown', this.onEscKeyPressHandler);
     } else {
-      this.open();
+      this.open(this.openOptions);
       document.addEventListener('keydown', this.onEscKeyPressHandler);
+    }
+  }
+
+  /**
+   *
+   * @param {Event} event
+   *
+   * Close active dropdown when user clicks outside of dropdown
+   */
+  onClickOutside(event) {
+
+    if (!this.isOpen) return;
+
+    const isInsideDropdown = this.dropdownItem.contains(event.target);
+    const isInsideDropdownBtn = this.button.contains(event.target);
+
+    if (!isInsideDropdown && !isInsideDropdownBtn) {
+      this.close();
     }
   }
 
@@ -276,11 +351,19 @@ class DropdownToggle {
     if (this.closeOnEsc) {
       document.addEventListener('keydown', this.onEscKeyPressHandler);
     }
+
+    /**
+     * Close when element outside of dropdown is clicked
+     */
+    if (this.closeOnOutsideClick) {
+      document.addEventListener('click', this.onOutsideClickHandler);
+    }
   }
 
   removeEventListeners() {
     this.button.removeEventListener('click', this.onButtonClickHandler);
     document.removeEventListener('keydown', this.onEscKeyPressHandler);
+    document.removeEventListener('click', this.onOutsideClickHandler);
   }
 
   validateInstance() {
@@ -291,8 +374,24 @@ class DropdownToggle {
     } else {
       console.warn(
         this.button,
-        `Element doesn't have an associated dropdown. To add this, create an aria-controls attribute on the button and an associated id on the element you want to use as the dropdown.`
+        'Element doesn\'t have an associated dropdown. To add this, create an aria-controls attribute on the button and an associated id on the element you want to use as the dropdown.'
       );
+    }
+
+    if ( this.onOpenStart && typeof this.onOpenStart !== 'function' ) {
+      console.warn('this.onOpenStart must be a function. Type \'%s\' detected', typeof this.onOpenStart);
+    }
+
+    if ( this.onOpenEnd && typeof this.onOpenEnd !== 'function' ) {
+      console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
+    }
+
+    if ( this.onCloseStart && typeof this.onCloseStart !== 'function' ) {
+      console.warn('this.onCloseStart must be a function. Type \'%s\' detected', typeof this.onCloseStart);
+    }
+
+    if ( this.onCloseEnd && typeof this.onCloseEnd !== 'function' ) {
+      console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
     }
 
     return isValid;
@@ -307,17 +406,13 @@ class DropdownToggle {
     if (!this.validateInstance()) return;
 
     if (this.openOnLoad) {
-      this.state.isOpen = false;
-      this.open({ duration: '0' });
+      this.open(this.openOptions, true);
     } else {
-      this.state.isOpen = true;
-      this.close({ duration: '0' });
-      // In case you are hiding the dropdown element via tailwind classes to avoid CLS issues
-      // we will remove this after the initial close() on load
-      this.dropdownItem.classList.remove('hidden');
+      this.close(this.closeOptions, true)
     }
+
     this.addEventListeners();
-}
+  }
 }
 
-export { DropdownToggle as default }
+export { DropdownToggle as default };
