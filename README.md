@@ -43,6 +43,8 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   closeDuration: 0.3,
   // ease for default close tween
   closeEase: 'power2.easeInOut',
+  // assign the dropdown to a group - only one dropdown in a group will be open at one time
+  group: '',
   // callback when open animation starts
   onOpenStart: () => {},
   // callback when open animation ends
@@ -75,17 +77,18 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | Option | Description | Type | Default
 | --- | --- | --- | --- |
 | `buttonLabelEl` | Element that will hold the button label.  Will also accept a valid querySelector string | `HTMLElement` / `string`| `null` |
-| `openLabel` | Text to set for button label when open | `string` | "Open" |
-| `closeLabel` | Text to set for button label when closed | `string` | "Close" |
-| `openClass` | Class applied to dropdown button when closed | `string` | "" |
-| `closeClass` | Class applied to dropdown button when closed | `string` | "" |
+| `openLabel` | Text to set for button label when open | `string` | `'Open'` |
+| `closeLabel` | Text to set for button label when closed | `string` | `'Close'` |
+| `openClass` | Class applied to dropdown button when closed | `string` | `''` |
+| `closeClass` | Class applied to dropdown button when closed | `string` | `''` |
 | `openOnLoad` | Have the dropdown in its open state on load | `boolean` | `false` |
 | `closeOnEsc` | Close dropdown when clicking the escape button | `boolean` | `false` |
 | `closeOnClickOutside` | Close dropdown when clicking outside of it | `boolean` | `false` |
 | `openDuration` | Tween duration for open animation | `number` | 0.3 |
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
-| `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | "power2.easeInOut"|
-| `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | "power2.easeInOut" |
+| `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
+| `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'` |
+| `group` | Assign a group name to a dropdown. Dropdowns in the same group will close others before opening.  Useful for menus or accordions where you want only one open at a time.  |  `string` | `''` |
 | `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
 | `onOpenEnd` | Callback that fires after open animation | `function` | `null` |
 | `onCloseStart` | Callback that fires before close animation | `function` | `null` |
