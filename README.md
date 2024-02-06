@@ -1,10 +1,29 @@
+# Dropdown Toggle
+
+A package for creating interactive dropdown menus. Utilizing the GreenSock Animation Platform (GSAP) for smooth animations, this class offers a comprehensive set of features for managing dropdown states and behaviors.
+
 ## Table of Contents
 
+- [Features](#features)
+- [Dependencies](#dependencies)
 - [Installation](#installation)
-- [Example JS](#example-js)
+- [Usage](#usage)
 - [Example HTML](#example-html)
 - [API](#api)
 - [Release Notes](#release-notes)
+
+## Features
+- **Dynamic State Management**: Maintains the open or closed state of the dropdown, ensuring interactions are responsive and state-aware.
+- **Accessibility Support**: Sets ARIA attributes dynamically, improving accessibility by indicating the expanded or collapsed state of the dropdown to assistive technologies.
+- **Customizable Animations**: Leverages GSAP for animating dropdown open and close actions, with customizable duration and easing options for tailored visual effects.
+- **Group Behavior**: Supports grouping of dropdowns, allowing for the management of multiple dropdowns in a cohesive manner. Only one dropdown within a group can be open at a time, enhancing the user experience by preventing overlapping dropdowns.
+- **Extended Options**: Offers a range of configurable options such as open and close labels, CSS classes for open and closed states, and callbacks for open and close events, providing flexibility for various use cases.
+- **Event Handling**: Includes built-in event listeners for toggle actions, keyboard interactions (e.g., closing dropdowns with the Escape key), and clicks outside of the dropdown to automatically close it, ensuring a seamless user interaction.
+- **Lifecycle Management**: Features methods for initializing and destroying dropdown instances, enabling proper setup and teardown of components to prevent memory leaks and ensure clean transitions between states.
+
+## Dependencies
+
+- GSAP
 
 ## Installation
 
@@ -13,7 +32,9 @@
 `npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<TAG_NAME>`
 
 
-## Example JS
+## Usage
+
+### Example JS
 
 ```javascript
 import { DropdownToggle } from '@numiko/dropdown-toggle';
@@ -58,7 +79,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
 
 myDropdown.init(); // initialise
 ```
-## Example HTML
+### Example HTML
 ---
 ```HTML
 <!-- Link your button to your content via the aria-controls attribute -->
