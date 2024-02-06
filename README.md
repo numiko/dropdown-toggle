@@ -107,10 +107,12 @@ The `dropdownToggle` constructor accepts options as a second argument.
 ### v1.0.0
 
 **Breaking changes**
+
 - Removed ability to use custom tweens.  DropdownToggle is specifically built to work with a height transition of the dropdownItem element.  The  `openDuration`, `closeDuration`, `openEase`, and `closeEase` should be enough to fit into the motion language of different sites.
 - `isOpen` and `isAnimating` are now methods so need to be invoked with `isOpen()`, `isAnimating()`
 - `DropdownToggle` is now a named export so needs to be imported using `import { DropdownToggle } from '@numiko/dropdown-toggle';`
 
 **Notes**
+
 - Add `group` option. this was specifically added to make the dropdownToggle work better when used with the Sitekit menus.  It will allo you to group a collection of dropdowns so that any open dropdowns in a group will close before another one opens.  Could also be useful for accordions where you don't want to be able to have them all open.
 - Removed `@numiko/animation` dependency.  Instead default tweens are part of this codebase for simplicity.
