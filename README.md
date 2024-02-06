@@ -4,13 +4,12 @@ A package for creating interactive dropdown menus. Utilizing the GreenSock Anima
 
 ## Table of Contents
 
-- [Features](#features)
-- [Dependencies](#dependencies)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Example HTML](#example-html)
-- [API](#api)
-- [Release Notes](#release-notes)
+- [Features](#markdown-header-features)
+- [Dependencies](#markdown-header-dependencies)
+- [Installation](#markdown-header-installation)
+- [Usage](#markdown-header-usage)
+- [API](#markdown-header-api)
+- [Release Notes](#markdown-header-release-notes)
 
 ## Features
 - **Dynamic State Management**: Maintains the open or closed state of the dropdown, ensuring interactions are responsive and state-aware.
