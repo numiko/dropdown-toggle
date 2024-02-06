@@ -1,24 +1,24 @@
 {
-  "name": "@numiko/dropdown-toggle",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
+  "name": "-",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/numiko/dropdown-toggle.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/numiko/dropdown-toggle#readme",
-  "dependencies": {
-    "gsap": "^3.11.4"
+  "module":"./dist/DropdownToggle.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/DropdownToggle.es.js",
+      "require": "./dist/DropdownToggle.umd.js"
+    }
   },
   "devDependencies": {
-    "vite": "^5.0.12"
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5"
   }
 }
