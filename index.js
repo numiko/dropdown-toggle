@@ -1,297 +1,256 @@
-import { slideDown, slideUp } from '@numiko/animation';
 import gsap from 'gsap';
 
 const DEFAULT_DURATION = 0.3;
 const DEFAULT_EASE = 'power2.easeInOut';
 
-class DropdownToggle {
+export class DropdownToggle {
+  static groupInstances = {};
 
-  constructor(button, options) {
-
-    /**
-   * Determines state of the dropdown
-   *
-   * @type {Object}
-   */
+  constructor(button, options = {}) {
+    this.bindThisToMemberFunctions();
     this.state = {
-      isOpen: false
+      isOpen: false,
+      isAnimating: false,
     };
-
-    /**
-     * The dropdown button element.
-     *
-     * @type {HTMLElement}
-     */
     this.button = typeof button === 'string' ? document.querySelector(button) : button;
-
-    /**
-     * The button label element.
-     *
-     * @type {HTMLElement}
-     */
     this.buttonLabelEl = typeof options.buttonLabelEl === 'string' ? this.button.querySelector(options.buttonLabelEl) : options.buttonLabelEl;
-
-    /**
-     * The dropdown item ID.
-     *
-     * @type {string}
-     */
     this.dropdownId = this.button.getAttribute('aria-controls');
-
-    /**
-     * The dropdown item element.
-     *
-     * @type {HTMLElement}
-     */
     this.dropdownItem = document.getElementById(this.dropdownId);
-
-    /**
-     * The label for the button when the dropdown is closed.
-     *
-     * @type {String}
-     */
     this.openLabel = options.openLabel || 'Open';
-
-    /**
-     * The label for the button when the dropdown is open.
-     *
-     * @type {String}
-     */
     this.closeLabel = options.closeLabel || 'Close';
-
-    /**
-     * The class added to the button when the dropdown is open.
-     *
-     * @type {String}
-     */
     this.openClass = options.openClass;
-
-    /**
-     * The class added to the button when the dropdown is closed.
-     *
-     * @type {String}
-     */
     this.closeClass = options.closeClass;
-
-    /**
-     * Determines whether the dropdown is open on load.
-     *
-     * @type {Boolean}
-     */
     this.openOnLoad = !!options.openOnLoad;
-
-    /**
-     * Allow user to close the dropdown with the 'esc' key
-     *
-     * @type {Boolean}
-     */
     this.closeOnEsc = !!options.closeOnEsc;
-
-    /**
-     * Allow user to close the dropdown by clicking outside the dropdown
-     *
-     * @type {Boolean}
-     */
     this.closeOnOutsideClick = !!options.closeOnOutsideClick;
-
-    /**
-     * Event handler for the "Escape" key press event
-     * @type {function}
-     */
-    this.onEscKeyPressHandler = this.onEscKeyPress.bind(this);
-
-    /**
-     * Event handler for the button click event
-     * @type {function}
-     */
-    this.onButtonClickHandler = this.onButtonClick.bind(this);
-
-    /**
-     * Event handler for the click event outside the dropdown
-     * @type {function}
-     */
-    this.onOutsideClickHandler = this.onClickOutside.bind(this);
-
-    /**
-     * Callback function before drodown opens
-     * @type {Function}
-     */
     this.onOpenStart = options.onOpenStart;
-
-    /**
-     * Callback functionswhen dropdown finishes opening
-     * @type {Function}
-     */
     this.onOpenEnd = options.onOpenEnd;
-
-    /**
-     * Callback function before dropdown closes
-     * @type {Function}
-     */
     this.onCloseStart = options.onCloseStart;
-
-    /**
-     * Callback function when dropdown is closed
-     * @type {Function}
-     */
     this.onCloseEnd = options.onCloseEnd;
-
-     /**
-     * Tween used for open animation
-     * @type {Function}
-     */
-    this.openTween = options.customOpenTween ? options.customOpenTween : slideDown;
-
-    /**
-     * Tween used for close animation
-     * @type {Function}
-     */
-    this.closeTween = options.customCloseTween ? options.customCloseTween : slideUp;
-
-    /**
-     * Open Options
-     * @type {Object}
-     */
     this.openOptions = {
-      'duration': options.openDuration ? options.openDuration : DEFAULT_DURATION,
-      'ease' : options.openEase ? options.openEase : DEFAULT_EASE
-    },
-
-    /**
-     * Close Options
-     * @type {Object}
-     */
-    this.closeOptions = {
-      'duration': options.closeDuration ? options.closeDuration : DEFAULT_DURATION,
-      'ease' : options.closeEase ? options.closeEase : DEFAULT_EASE
+      duration: options.openDuration || DEFAULT_DURATION,
+      ease: options.openEase || DEFAULT_EASE,
     };
+    this.closeOptions = {
+      duration: options.closeDuration || DEFAULT_DURATION,
+      ease: options.closeEase || DEFAULT_EASE,
+    };
+    this.group = options.group || null;
+
+    this.init();
   }
 
   /**
-   * Returns a boolean value indicating whether the button element has the open class.
-   * @return {boolean} `true` if the button has the open class, `false` otherwise.
+   * Binds instance to member functions to preserve the `this` context.
    */
-  get isOpen() {
+  bindThisToMemberFunctions() {
+    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
+    methods.forEach(method => {
+      if (typeof this[method] === 'function') {
+        this[method] = this[method].bind(this);
+      }
+    });
+  }
+
+  /**
+   * Toggles the open/close state of the dropdown.
+   */
+  async toggle() {
+    if (this.state.isAnimating) return;
+
+    await DropdownToggle.closeAllInGroup(this.group, this);
+
+    if (this.isOpen()) {
+      await this.close();
+    } else {
+      await this.open();
+    }
+  }
+
+  /**
+   * Closes all dropdowns in the specified group except for the current instance.
+   * @param {string} group - The name of the group.
+   * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
+   */
+  static async closeAllInGroup(group, currentInstance) {
+    const groupInstances = DropdownToggle.groupInstances[group] || [];
+    const closePromises = groupInstances.filter(instance => instance !== currentInstance && instance.isOpen()).map(instance => instance.close());
+    await Promise.all(closePromises);
+  }
+
+  /**
+   * Checks if the dropdown is open.
+   * @returns {boolean} True if the dropdown is open, false otherwise.
+   */
+  isOpen() {
     return this.state.isOpen;
   }
 
   /**
-   * Returns a boolean indicating whether the menu button is currently animating.
-   *
-   * @returns {boolean} True if the menu button is currently animating, false otherwise.
+   * Checks if the dropdown is animating.
+   * @returns {boolean} True if the dropdown is animating, false otherwise.
    */
-  get isAnimating() {
-    return gsap.isTweening(this.dropdownItem);
+  isAnimating() {
+    return this.state.isAnimating;
   }
 
   /**
-  * Opens the dropdown menu.
-  * @param {Object} options - The options for the animation.
-  * @param {Boolean} openInstantly - Instantly move playhead to end of tween
-  * @returns {Tween} - The gsap animation
-  */
-  open(options = {}, openInstantly = false) {
-    this.state.isOpen = true;
+   * Opens the dropdown.
+   * @param {Object} [options=this.openOptions] - The options for the animation.
+   * @returns {Promise} A promise that resolves when the animation is complete.
+   */
+  open(options = this.openOptions) {
+    if (this.state.isOpen) return Promise.resolve();
 
-    this.setAria();
+    this.setAria(true);
+    this.setButtonLabel();
+    return this.animate(true, options);
+  }
+
+  /**
+   * Closes the dropdown.
+   * @param {Object} [options=this.closeOptions] - The options for the animation.
+   * @returns {Promise} A promise that resolves when the animation is complete.
+   */
+  close(options = this.closeOptions) {
+    if (!this.state.isOpen) return Promise.resolve();
+
+    this.setAria(false);
     this.setButtonLabel();
 
-    this.openClass && this.button.classList.add(this.openClass);
-    this.closeClass && this.button.classList.remove(this.closeClass);
-
-    const tween = this.openTween(this.dropdownItem, options);
-    const tweenOnStart = tween.eventCallback('onStart');
-    const tweenOnComplete = tween.eventCallback('onComplete');
-
-    tween.eventCallback('onStart', () => {
-      // Call both the callbacks - from custom tween and the options
-      typeof tweenOnStart === 'function' && tweenOnStart();
-      typeof this.onOpenStart === 'function' && this.onOpenStart();
-    });
-
-    tween.eventCallback('onComplete', () => {
-      // Call both the callbacks - from custom tween and the options
-      typeof tweenOnComplete === 'function' && tweenOnComplete();
-      typeof this.onOpenEnd === 'function' && this.onOpenEnd();
-    });
-
-    if (openInstantly) {
-      tween.time(tween.duration);
-    } else {
-      tween.play();
-    }
+    return this.animate(false, options);
   }
 
   /**
-  * Closes the dropdown menu.
-  * @param {Object} options - The options for the animation.
-  * @param {Boolean} closeInstantly - Instantly move playhead to end of tween
-  * @returns {Tween} - The gsap animation
-  */
-  close(options = {}, closeInstantly = false) {
-    this.state.isOpen = false;
-
-    this.setAria();
-    this.setButtonLabel();
-
-    this.closeClass && this.button.classList.add(this.closeClass);
-    this.openClass && this.button.classList.remove(this.openClass);
-
-    const tween = this.closeTween(this.dropdownItem, options);
-    const tweenOnStart = tween.eventCallback('onStart');
-    const tweenOnComplete = tween.eventCallback('onComplete');
-
-    tween.eventCallback('onStart', () => {
-      // Call both the callbacks - from custom tween and the options
-      typeof tweenOnStart === 'function' && tweenOnStart();
-      typeof this.onCloseStart === 'function' && this.onCloseStart();
-    });
-
-    tween.eventCallback('onComplete', () => {
-      // Call both the callbacks - from custom tween and the options
-      typeof tweenOnComplete === 'function' && tweenOnComplete();
-      typeof this.onCloseEnd === 'function' && this.onCloseEnd();
-    });
-
-
-    if (closeInstantly) {
-      tween.time(tween.duration);
-    } else {
-      tween.play();
-    }
-  }
-
-  /**
-   * Determines whether to open or close the dropdown
-   * @returns {void}
+   * Animates the opening or closing of the dropdown.
+   * @param {boolean} opening - Indicates if the dropdown is being opened or closed.
+   * @param {Object} options - The options for the animation, including duration and ease.
+   * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  toggle() {
-    this.isOpen ? this.close(this.closeOptions) : this.open(this.openOptions);
+  animate(opening, options = {}) {
+    const tween = opening ? this.defaultOpenTween(this.dropdownItem, options) : this.defaultCloseTween(this.dropdownItem, options);
+
+    return new Promise(resolve => {
+      // Handling onStart callback
+      if (opening) {
+        this.onOpenStart?.(this.dropdownItem);
+      } else {
+        this.onCloseStart?.(this.dropdownItem);
+      }
+
+      // Update state before starting animation
+      this.state.isAnimating = true;
+      this.state.isOpen = opening;
+
+      // Animation completed - Setting up onComplete directly on the GSAP tween as gsap returns a promise
+      tween.then(() => {
+        this.state.isAnimating = false;
+        if (opening) {
+          this.onOpenEnd?.(this.dropdownItem);
+        } else {
+          this.onCloseEnd?.(this.dropdownItem);
+        }
+        resolve();
+      });
+    });
+  }
+
+
+  /**
+   * The default opening tween animation.
+   * @param {HTMLElement} element - The element to animate.
+   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
+   */
+  defaultOpenTween(element, options = {}) {
+    const duration = options.duration || 0.5;
+    const ease = options.ease || 'power2.inOut';
+    this.dropdownItem.style.display = 'block';
+    return gsap.fromTo(element, { height: 0 }, { height: 'auto', duration, ease });
   }
 
   /**
-   * Set button label based on if the dropdown is open/closed
-   * @returns {void}
+   * The default closing tween animation.
+   * @param {HTMLElement} element - The element to animate.
+   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
+   */
+  defaultCloseTween(element, options = {}) {
+    const duration = options.duration || 0.5;
+    const ease = options.ease || 'power2.inOut';
+    return gsap.to(element, {
+      height: 0,
+      duration, ease,
+      onComplete: () => {
+        this.dropdownItem.style.display = 'none';
+      }
+    });
+  }
+
+  /**
+   * Sets the ARIA attributes for the button and dropdown item.
+   * @param {boolean} expanded - Indicates whether the dropdown is expanded or not.
+   */
+  setAria(expanded) {
+    this.button.setAttribute('aria-expanded', expanded);
+    this.dropdownItem.setAttribute('aria-hidden', !expanded);
+  }
+
+  /**
+   * Sets the label of the button based on the dropdown's state.
    */
   setButtonLabel() {
     if (this.buttonLabelEl) {
-      this.buttonLabelEl.innerHTML = this.isOpen ? this.closeLabel : this.openLabel;
+      this.buttonLabelEl.textContent = this.isOpen() ? this.closeLabel : this.openLabel;
     }
   }
 
   /**
-   * Set aria attributes on button and dropdown item
-   * @returns {void}
+   * Adds event listeners for the dropdown toggle, including click, keydown, and outside click.
    */
-  setAria() {
-    this.button.setAttribute('aria-expanded', this.isOpen ? 'true' : 'false');
-    this.dropdownItem.setAttribute('aria-hidden', this.isOpen ? 'false' : 'true');
+  addEventListeners() {
+    this.button.addEventListener('click', this.toggle);
+
+    if (this.closeOnEsc) {
+      document.addEventListener('keydown', this.onEscKeyPress);
+    }
+
+    if (this.closeOnOutsideClick) {
+      document.addEventListener('click', this.onClickOutside);
+    }
   }
 
   /**
-   * Reset attributes & classes
-   * @returns {void}
+   * Handles the Escape key press to close the dropdown.
+   * @param {KeyboardEvent} e - The keyboard event.
    */
+  onEscKeyPress(e) {
+    if (e.key === 'Escape' && this.isOpen()) {
+      this.close();
+    }
+  }
+
+  /**
+   * Handles clicks outside the dropdown to close it.
+   * @param {MouseEvent} e - The mouse event.
+   */
+  onClickOutside(e) {
+    if (!this.isOpen()) return;
+
+    const isClickInside = this.dropdownItem.contains(e.target) || this.button.contains(e.target);
+    if (!isClickInside) {
+      this.close();
+    }
+  }
+
+  destroy() {
+    this.resetState();
+    this.removeEventListeners();
+    this.removeFromGroup();
+  }
+
+  /**
+  * Resets the visual and ARIA state of the dropdown to its initial state. This method is typically
+  * called as part of the component teardown process to ensure the component is cleanly reset.
+  */
   resetState() {
     this.button.removeAttribute('aria-expanded');
     this.openClass && this.button.classList.remove(this.openClass);
@@ -300,119 +259,57 @@ class DropdownToggle {
     this.dropdownItem.removeAttribute('style');
   }
 
-  onEscKeyPress(e) {
-    if (e.key !== 'Escape') { return; }
-
-    if (this.isOpen) {
-      this.close();
-      document.removeEventListener('keydown', this.onEscKeyPressHandler);
-    }
+  /**
+  * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
+  * memory leaks and ensuring that event handlers do not trigger after the component has been destroyed.
+  */
+  removeEventListeners() {
+    this.button.removeEventListener('click', this.toggle);
+    document.removeEventListener('keydown', this.onEscKeyPress);
+    document.removeEventListener('click', this.onClickOutside);
   }
 
-  onButtonClick() {
-    if (this.isAnimating) { return; }
-
-    if (this.isOpen) {
-      this.close(this.closeOptions);
-      document.removeEventListener('keydown', this.onEscKeyPressHandler);
-    } else {
-      this.open(this.openOptions);
-      document.addEventListener('keydown', this.onEscKeyPressHandler);
+  /**
+   * Removes the current instance from its associated group in `groupInstances`.
+   * If this leaves the group empty, the group is also removed from `groupInstances` to clean up.
+   * This method is part of the cleanup process to ensure proper teardown of dropdown instances,
+   * preventing memory leaks and ensuring the global state remains accurate.
+   */
+  removeFromGroup() {
+  // Check if this instance belongs to a group and that the group exists
+    if (this.group && DropdownToggle.groupInstances[this.group]) {
+      // Find the index of this instance in its group
+      const index = DropdownToggle.groupInstances[this.group].indexOf(this);
+      // If found, remove this instance from the group
+      if (index > -1) {
+        DropdownToggle.groupInstances[this.group].splice(index, 1);
+      }
+      // If the group is now empty, delete it from `groupInstances`
+      if (DropdownToggle.groupInstances[this.group].length === 0) {
+        delete DropdownToggle.groupInstances[this.group];
+      }
     }
   }
 
   /**
-   *
-   * @param {Event} event
-   *
-   * Close active dropdown when user clicks outside of dropdown
+   * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
-  onClickOutside(event) {
-
-    if (!this.isOpen) return;
-
-    const isInsideDropdown = this.dropdownItem.contains(event.target);
-    const isInsideDropdownBtn = this.button.contains(event.target);
-
-    if (!isInsideDropdown && !isInsideDropdownBtn) {
-      this.close();
-    }
-  }
-
-  addEventListeners() {
-    /**
-     * Toggle item when button is clicked
-     */
-    this.button.addEventListener('click', this.onButtonClickHandler);
-
-    /**
-     * Close when Escape key is press
-     */
-    if (this.closeOnEsc) {
-      document.addEventListener('keydown', this.onEscKeyPressHandler);
-    }
-
-    /**
-     * Close when element outside of dropdown is clicked
-     */
-    if (this.closeOnOutsideClick) {
-      document.addEventListener('click', this.onOutsideClickHandler);
-    }
-  }
-
-  removeEventListeners() {
-    this.button.removeEventListener('click', this.onButtonClickHandler);
-    document.removeEventListener('keydown', this.onEscKeyPressHandler);
-    document.removeEventListener('click', this.onOutsideClickHandler);
-  }
-
-  validateInstance() {
-    let isValid = false;
-
-    if (this.dropdownId && this.dropdownItem) {
-      isValid = true;
-    } else {
-      console.warn(
-        this.button,
-        'Element doesn\'t have an associated dropdown. To add this, create an aria-controls attribute on the button and an associated id on the element you want to use as the dropdown.'
-      );
-    }
-
-    if ( this.onOpenStart && typeof this.onOpenStart !== 'function' ) {
-      console.warn('this.onOpenStart must be a function. Type \'%s\' detected', typeof this.onOpenStart);
-    }
-
-    if ( this.onOpenEnd && typeof this.onOpenEnd !== 'function' ) {
-      console.warn('this.onOpenEnd must be a function. Type \'%s\' detected', typeof this.onOpenEnd);
-    }
-
-    if ( this.onCloseStart && typeof this.onCloseStart !== 'function' ) {
-      console.warn('this.onCloseStart must be a function. Type \'%s\' detected', typeof this.onCloseStart);
-    }
-
-    if ( this.onCloseEnd && typeof this.onCloseEnd !== 'function' ) {
-      console.warn('this.onCloseEnd must be a function. Type \'%s\' detected', typeof this.onCloseEnd);
-    }
-
-    return isValid;
-  }
-
-  destroy() {
-    this.resetState();
-    this.removeEventListeners();
-  }
-
   init() {
-    if (!this.validateInstance()) return;
-
     if (this.openOnLoad) {
-      this.open(this.openOptions, true);
-    } else {
-      this.close(this.closeOptions, true)
+      this.open({}, true); // Optionally pass true to open instantly without animation
+    }
+
+    if (this.group) {
+      // Ensure the group array exists for this.group
+      DropdownToggle.groupInstances[this.group] = DropdownToggle.groupInstances[this.group] || [];
+
+      // Add this instance to the group if it's not already included
+      const groupIncludesInstance = DropdownToggle.groupInstances[this.group].includes(this);
+      if (!groupIncludesInstance) {
+        DropdownToggle.groupInstances[this.group].push(this);
+      }
     }
 
     this.addEventListeners();
   }
 }
-
-export { DropdownToggle as default };

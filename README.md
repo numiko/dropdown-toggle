@@ -1,17 +1,25 @@
+## Table of Contents
+
+- [Installation](#installation)
+- [Example JS](#example-js)
+- [Example HTML](#example-html)
+- [API](#api)
+- [Release Notes](#release-notes)
+
 ## Installation
----
-We want to install a specific tag because currently npm packages hosted privately on Bitbucket do not support semantic versioning.
+
+**Please install a specific tagged version.**
 
 `npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<TAG_NAME>`
 
 
-## JS Setup & Options
----
+## Example JS
+
 ```javascript
-import DropdownToggle from './dropdown-toggle';
+import { DropdownToggle } from '@numiko/dropdown-toggle';
 
 const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
-  // selector|element for the button label - this is usually a span within the button along side an svg icon for exmaple
+  // selector|element for the button label - this is usually a span within the button along side an svg icon for example
   buttonLabelEl: '[data-js-my-dropdown-button-label]',
   // open label for the button
   openLabel: 'Open',
@@ -48,43 +56,6 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
 
 myDropdown.init(); // initialise
 ```
-
-## Custom Tweens (Advanced)
-You can overwrite the default tween used and provide your own.
-
-```javascript
-const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
-  customOpenTween: (dropdownItem) => {
-    // You must return the tween or timeline
-    // Only use these options if your confident knowing what you're doing
-    const tl = gsap.timeline();
-    return tl
-      .set(dropdownItem, {'display': 'block'})
-      .to(dropdownItem, {
-        height: 'auto',
-        duration: 0.5,
-        ease: 'power2.easeInOut',
-      });
-  },
-  customCloseTween: (dropdownItem) => {
-    // You must return the tween or timeline
-    // Only use these options if your confident knowing what you're doing
-    return gsap
-      .to(dropdownItem, {
-        height: 0,
-        duration: 2,
-        paused: true,
-        ease: 'power2.easeInOut',
-        onComplete: () => {
-          // These callbacks will still happen along side the onCloseEnd option
-          gsap.set(dropdownItem, {'display': 'none'});
-        }
-      });
-  },
-});
-
-
-```
 ## Example HTML
 ---
 ```HTML
@@ -93,20 +64,52 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   <span data-js-my-dropdown-button-label>Open</span>
 </button>
 
-<div id="mydropdown-container">This is the dropdown content</div>
+<div id="mydropdown-container" class="hidden overflow-hidden">This is the dropdown content</div>
 ```
 
-## Methods & Getters
----
-```javascript
-// Methods
-myDropdown.init();        // initialise
-myDropdown.destroy();     // destroy the dropdown and event listeners
-myDropdown.open();        // open dropdown
-myDropdown.close();       // close dropdown
-myDropdown.toggle();      // toggle dropdown
+## API
 
-// Getters
-myDropdown.isOpen;        // returns if the dropdown is open
-myDropdown.isAnimating;   // returns if the dropdown is animating
-```
+### Options
+The `dropdownToggle` constructor accepts options as a second argument.
+| Option | Description | Type | Default
+| --- | --- | --- | --- |
+| `buttonLabelEl` | Element that will hold the button label.  Will also accept a valid querySelector string | `HTMLElement` / `string`| |
+| `openLabel` | Text to set for button label when open | `string` | "Open" |
+| `closeLabel` | Text to set for button label when closed | `string` | "Close" |
+| `openClass` | Class applied to dropdown button when closed | `string` | "" |
+| `closeClass` | Class applied to dropdown button when closed | `string` | "" |
+| `openOnLoad` | Have the dropdown in its open state on load | `boolean` | `false` |
+| `closeOnEsc` | Close dropdown when clicking the escape button | `boolean` | `false` |
+| `closeOnClickOutside` | Close dropdown when clicking outside of it | `boolean` | `false` |
+| `openDuration` | Tween duration for open animation | `number` | 0.3 |
+| `closeDuration` | Tween duration for close animation | `number` | 0.3 |
+| `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | "power2.easeInOut"|
+| `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | "power2.easeInOut" |
+| `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
+| `onOpenEnd` | Callback that fires after open animation | `function` | `null` |
+| `onCloseStart` | Callback that fires before close animation | `function` | `null` |
+| `onCloseEnd` | Callback that fires after close animation | `function` | `null` |
+
+### Methods
+| Method | Description |
+| --- | --- |
+| `init()` | Initalise the dropdown |
+| `destroy()` | Destroy the dropdown |
+| `open()` | Programatically open the dropdown |
+| `close()` | Programatically close the dropdown |
+| `toggle()` | Programatically toggle the dropdown (open/close depending on current state) |
+| `isOpen()` | Return `true/false` is the dropdown is currently open |
+| `isAnimating()` | Return `true/false` is the dropdown is currently animating |
+
+
+## Release notes
+### v1.0.0
+
+**Breaking changes**
+- Removed ability to use custom tweens.  DropdownToggle is specifically built to work with a height transition of the dropdownItem element.  The  `openDuration`, `closeDuration`, `openEase`, and `closeEase` should be enough to fit into the motion language of different sites.
+- `isOpen` and `isAnimating` are now methods so need to be invoked with `isOpen()`, `isAnimating()`
+- `DropdownToggle` is now a named export so needs to be imported using `import { DropdownToggle } from '@numiko/dropdown-toggle';`
+
+**Notes**
+- Add `group` option. this was specifically added to make the dropdownToggle work better when used with the Sitekit menus.  It will allo you to group a collection of dropdowns so that any open dropdowns in a group will close before another one opens.  Could also be useful for accordions where you don't want to be able to have them all open.
+- Removed `@numiko/animation` dependency.  Instead default tweens are part of this codebase for simplicity.
