@@ -17,5 +17,8 @@
   "homepage": "https://bitbucket.org/numiko/dropdown-toggle#readme",
   "dependencies": {
     "gsap": "^3.11.4"
+  },
+  "devDependencies": {
+    "vite": "^5.0.12"
   }
 }
