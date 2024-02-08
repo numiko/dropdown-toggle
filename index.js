@@ -2,6 +2,9 @@ import gsap from 'gsap';
 
 const DEFAULT_DURATION = 0.3;
 const DEFAULT_EASE = 'power2.easeInOut';
+// Set a very low duration but not 0 - we still want all the callbacks to fire and they won't if the duration is 0
+const DURATION_REDUCED_MOTION = 0.001;
+
 
 export class DropdownToggle {
   static groupInstances = {};
@@ -94,6 +97,12 @@ export class DropdownToggle {
     return this.state.isAnimating;
   }
 
+  // Method to check for prefers-reduced-motion
+  prefersReducedMotion() {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    return mediaQuery.matches;
+  }
+
   /**
    * Opens the dropdown.
    * @param {Object} [options=this.openOptions] - The options for the animation.
@@ -127,8 +136,8 @@ export class DropdownToggle {
    * @param {Object} options - The options for the animation, including duration and ease.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  animate(opening, options = {}) {
-    const tween = opening ? this.defaultOpenTween(this.dropdownItem, options) : this.defaultCloseTween(this.dropdownItem, options);
+  animate(opening) {
+    const tween = opening ? this.defaultOpenTween(this.dropdownItem) : this.defaultCloseTween(this.dropdownItem);
 
     return new Promise(resolve => {
       // Handling onStart callback
@@ -161,11 +170,16 @@ export class DropdownToggle {
    * @param {HTMLElement} element - The element to animate.
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
-  defaultOpenTween(element, options = {}) {
-    const duration = options.duration || 0.5;
-    const ease = options.ease || 'power2.inOut';
+  defaultOpenTween(element) {
     this.dropdownItem.style.display = 'block';
-    return gsap.fromTo(element, { height: 0 }, { height: 'auto', duration, ease });
+    return gsap.fromTo(element, {
+      height: 0
+    },
+    {
+      height: 'auto',
+      duration: this.prefersReducedMotion() ? DURATION_REDUCED_MOTION : this.closeOptions.duration,
+      ease: this.openOptions.ease
+    });
   }
 
   /**
@@ -173,12 +187,11 @@ export class DropdownToggle {
    * @param {HTMLElement} element - The element to animate.
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
-  defaultCloseTween(element, options = {}) {
-    const duration = options.duration || 0.5;
-    const ease = options.ease || 'power2.inOut';
+  defaultCloseTween(element) {
     return gsap.to(element, {
       height: 0,
-      duration, ease,
+      duration: this.prefersReducedMotion() ? DURATION_REDUCED_MOTION : this.closeOptions.duration,
+      ease: this.closeOptions.ease,
       onComplete: () => {
         this.dropdownItem.style.display = 'none';
       }
