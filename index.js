@@ -61,7 +61,7 @@ export class DropdownToggle {
   async toggle() {
     if (this.state.isAnimating) return;
 
-    await DropdownToggle.closeAllInGroup(this.group, this);
+    await this.closeAllInGroup(this.group, this);
 
     if (this.isOpen()) {
       await this.close();
@@ -75,7 +75,7 @@ export class DropdownToggle {
    * @param {string} group - The name of the group.
    * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
    */
-  static async closeAllInGroup(group, currentInstance) {
+   async closeAllInGroup(group, currentInstance) {
     const groupInstances = DropdownToggle.groupInstances[group] || [];
     const closePromises = groupInstances.filter(instance => instance !== currentInstance && instance.isOpen()).map(instance => instance.close());
     await Promise.all(closePromises);
