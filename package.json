@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "vitest"
   },
-  "module": "./dist/DropdownToggle.es.js",
+  "main": "./dist/DropdownToggle.js",
   "exports": {
     ".": {
       "import": "./dist/DropdownToggle.es.js",

@@ -1,6 +1,6 @@
 import { Window } from 'happy-dom';
 import { expect, describe, it } from 'vitest'
-import { DropdownToggle } from '../lib/main';
+import { DropdownToggle } from '../lib/DropdownToggle';
 
 
 
