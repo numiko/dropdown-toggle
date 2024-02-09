@@ -1,53 +1,172 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, vi } from 'vitest'
+import { expect, describe, it, vi, beforeEach } from 'vitest'
 import { DropdownToggle } from '../lib/DropdownToggle';
 
-const htmlDocPath = path.join(process.cwd(), 'index.html');
-const htmlDocumentContent = fs.readFileSync(htmlDocPath).toString();
+// Read the HTML document content
+const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
+
+// Initalise Happy DOM
 const window = new Window();
 const document = window.document;
-document.write(htmlDocumentContent);
-vi.stubGlobal('document', document);
+
+// Make window and document global
+global.window = window;
+global.document = document;
+
+// utility to create a small delay
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Make sure the coument is in a clear state before each test
+ */
+beforeEach(() => {
+  document.body.innerHTML = "";
+  document.write(htmlDocumentContent);
+})
 
 
-describe('DropdownToggle', () => {
-  describe('dropdown button', () => {
-    it('should have a button with `aria-expanded` set to `true` when opened', async () => {
-      // Act
-      const dropdownElement = document.querySelector('[data-js-dropdown]');
-      const dropdownToggle = new DropdownToggle(dropdownElement);
-      await dropdownToggle.toggle();
+describe('DropdownToggle opened', () => {
+  it('should correctly set attributes & styles when opening', async () => {
+    // Act
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
 
-      // Assert
-      expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
-    });
+    // Act
+    await dropdownToggle.toggle();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+  });
+});
+
+describe('DropdownToggle closed', () => {
+  it('should correctly set attributes and style when closing', async () => {
+    // Act
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
+
+    // Act
+    await dropdownToggle.toggle();
+    await dropdownToggle.toggle();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
+});
+
+describe('DropdownToggle methods', () => {
+
+  it('"open()" method should open the dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
   });
 
-  describe('dropdown content', () => {
-    it('should have a height of `auto` when the open animation is complete', async () => {
-      // Act
-      const dropdownElement = document.querySelector('[data-js-dropdown]');
-      const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
 
-      const dropdownToggle = new DropdownToggle(dropdownElement);
-      await dropdownToggle.toggle();
+  it('"close()" should close the dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
+    await dropdownToggle.open(); // Ensure it's open before trying to close
 
-      // Assert
-      expect(dropdownContent.style.height).toBe('auto');
-    });
+    // Act
+    await dropdownToggle.close();
 
-    it('should have a display of `block` when the open animation is complete', async () => {
-      // Act
-      const dropdownElement = document.querySelector('[data-js-dropdown]');
-      const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-      const dropdownToggle = new DropdownToggle(dropdownElement);
-      await dropdownToggle.toggle();
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
 
-      // Assert
-      expect(dropdownContent.style.display).toBe('block');
-    });
+
+  it('"destroy()" method should reset DOM to inital state', async () => {
+    // Arrange
+  const dropdownElement = document.querySelector('[data-js-dropdown]');
+  const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+  const dropdownToggle = new DropdownToggle(dropdownElement);
+  await dropdownToggle.open(); // Ensure it's open before trying to close
+  expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
+
+  // Act
+  dropdownToggle.destroy(); // Remove event listeners
+  const event = new window.MouseEvent('click', { target: dropdownElement });
+  document.dispatchEvent(event); // Try to toggle the dropdown after destroying
+
+  // Assert
+  expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
+  expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
+  });
+});
+
+describe('DropdownToggle additional options', () => {
+
+  it('closes the dropdown when the Escape key is pressed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, { closeOnEsc: true });
+    await dropdownToggle.open(); // Open dropdown for testing
+
+    // Act
+    const event = new window.KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // a promise so we can simply wait a little.
+    await delay(500);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
+
+  it('closes the dropdown when clicking outside of it', async () => {
+    // Arrange
+    document.body.innerHTML = htmlDocumentContent; // Reset the HTML content
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, { closeOnOutsideClick: true });
+    await dropdownToggle.open(); // Open dropdown for testing
+
+    // Act
+    const event = new window.MouseEvent('click', { target: document.body });
+    document.dispatchEvent(event);
+
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // a promise so we can simply wait a little.
+    await delay(500);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
   });
 
 
