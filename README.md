@@ -47,8 +47,6 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   closeLabel: 'Close',
   // class applied to button in open state
   openClass: '',
-  // class applied to button in close state
-  closeClass: '',
   // should dropdown be open at load
   openOnLoad: false,
   // close on escape key
@@ -99,8 +97,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `buttonLabelEl` | Element that will hold the button label.  Will also accept a valid querySelector string | `HTMLElement` / `string`| `null` |
 | `openLabel` | Text to set for button label when open | `string` | `'Open'` |
 | `closeLabel` | Text to set for button label when closed | `string` | `'Close'` |
-| `openClass` | Class applied to dropdown button when closed | `string` | `''` |
-| `closeClass` | Class applied to dropdown button when closed | `string` | `''` |
+| `openClass` | Class applied to dropdown button when open. Removed when closed | `string` | `''` |
 | `openOnLoad` | Have the dropdown in its open state on load | `boolean` | `false` |
 | `closeOnEsc` | Close dropdown when clicking the escape button | `boolean` | `false` |
 | `closeOnClickOutside` | Close dropdown when clicking outside of it | `boolean` | `false` |
@@ -134,6 +131,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 - Removed ability to use custom tweens.  DropdownToggle is specifically built to work with a height transition of the dropdownItem element.  The  `openDuration`, `closeDuration`, `openEase`, and `closeEase` should be enough to fit into the motion language of different sites.
 - `isOpen` and `isAnimating` are now methods so need to be invoked with `isOpen()`, `isAnimating()`
 - `DropdownToggle` is now a named export so needs to be imported using `import { DropdownToggle } from '@numiko/dropdown-toggle';`
+- `closeClass` removed.  Instead the `openClass` classes are toggled on/off which works better from a tailwindcss approach.
 
 **Notes**
 

@@ -124,7 +124,7 @@ describe('DropdownToggle methods', () => {
 
 describe('DropdownToggle additional options', () => {
 
-  it('closes the dropdown when the Escape key is pressed', async () => {
+  it('closeOnEsc - closes the dropdown when the Escape key is pressed', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -146,9 +146,8 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('closes the dropdown when clicking outside of it', async () => {
+  it('closeOnClickOutside - closes the dropdown when clicking outside of it', async () => {
     // Arrange
-    document.body.innerHTML = htmlDocumentContent; // Reset the HTML content
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, { closeOnOutsideClick: true });
@@ -167,6 +166,33 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
     expect(dropdownContent.style.height).toBe('0px');
     expect(dropdownContent.style.display).toBe('none');
+  });
+
+  it('openClass - Adds class to button when opened', async () => {
+    // Arrange
+    const openClass = 'dropdown-open';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClass });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.classList.contains(openClass)).toBe(true);
+  });
+
+  it('openClass - Removes class from button when closed', async () => {
+    // Arrange
+    const openClasses = 'class1 class2 class3';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClasses });
+
+    // Act
+    await dropdownToggle.open();
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.classList.contains(openClasses)).toBe(false);
   });
 
 
