@@ -1,18 +1,18 @@
 var O = Object.defineProperty;
-var g = (n, t, e) => t in n ? O(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var l = (n, t, e) => (g(n, typeof t != "symbol" ? t + "" : t, e), e);
+var g = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var l = (o, t, e) => (g(o, typeof t != "symbol" ? t + "" : t, e), e);
 import u from "gsap";
-const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
+const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   constructor(t, e = {}) {
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
       isAnimating: !1
-    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.closeClass = e.closeClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.openOptions = {
-      duration: e.openDuration || c,
-      ease: e.openEase || d
+    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.openOptions = {
+      duration: e.openDuration || d,
+      ease: e.openEase || c
     }, this.closeOptions = {
-      duration: e.closeDuration || c,
-      ease: e.closeEase || d
+      duration: e.closeDuration || d,
+      ease: e.closeEase || c
     }, this.group = e.group || null, this.init();
   }
   /**
@@ -35,8 +35,8 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
    */
   async closeAllInGroup(t, e) {
-    const o = (s.groupInstances[t] || []).filter((i) => i !== e && i.isOpen()).map((i) => i.close());
-    await Promise.all(o);
+    const r = (s.groupInstances[t] || []).filter((i) => i !== e && i.isOpen()).map((i) => i.close());
+    await Promise.all(r);
   }
   /**
    * Checks if the dropdown is open.
@@ -62,7 +62,7 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   open(t = this.openOptions) {
-    return this.state.isOpen ? Promise.resolve() : (this.setAria(!0), this.setButtonLabel(), this.animate(!0, t));
+    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(), this.animate(!0, t));
   }
   /**
    * Closes the dropdown.
@@ -70,7 +70,7 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   close(t = this.closeOptions) {
-    return this.state.isOpen ? (this.setAria(!1), this.setButtonLabel(), this.animate(!1, t)) : Promise.resolve();
+    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(), this.animate(!1, t)) : Promise.resolve();
   }
   /**
    * Animates the opening or closing of the dropdown.
@@ -80,11 +80,11 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
    */
   animate(t) {
     const e = t ? this.defaultOpenTween(this.dropdownItem) : this.defaultCloseTween(this.dropdownItem);
-    return new Promise((r) => {
-      var o, i;
-      t ? (o = this.onOpenStart) == null || o.call(this, this.dropdownItem) : (i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
+    return new Promise((n) => {
+      var r, i;
+      t ? (r = this.onOpenStart) == null || r.call(this, this.dropdownItem) : (i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
         var a, h;
-        this.state.isAnimating = !1, t ? (a = this.onOpenEnd) == null || a.call(this, this.dropdownItem) : (h = this.onCloseEnd) == null || h.call(this, this.dropdownItem), r();
+        this.state.isAnimating = !1, t ? (a = this.onOpenEnd) == null || a.call(this, this.dropdownItem) : (h = this.onCloseEnd) == null || h.call(this, this.dropdownItem), n();
       });
     });
   }
@@ -128,6 +128,24 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
   setAria(t) {
     this.button.setAttribute("aria-expanded", t), this.dropdownItem.setAttribute("aria-hidden", !t);
   }
+  /*
+  * Add a class (or multiple) to an element.
+  */
+  addClasses(t, e) {
+    if (!t || !e)
+      return;
+    const n = e.split(" ");
+    t.classList.add(...n);
+  }
+  /*
+  * Removes the class (or multiple) of an element.
+  */
+  removeClasses(t, e) {
+    if (!t || !e)
+      return;
+    const n = e.split(" ");
+    t.classList.remove(...n);
+  }
   /**
    * Sets the label of the button based on the dropdown's state.
    */
@@ -164,7 +182,7 @@ const c = 0.3, d = "power2.easeInOut", p = 1e-3, s = class s {
   * called as part of the component teardown process to ensure the component is cleanly reset.
   */
   resetState() {
-    this.button.removeAttribute("aria-expanded"), this.openClass && this.button.classList.remove(this.openClass), this.closeClass && this.button.classList.remove(this.closeClass), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
+    this.button.removeAttribute("aria-expanded"), this.openClass && this.button.classList.remove(this.openClass), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
   }
   /**
   * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
