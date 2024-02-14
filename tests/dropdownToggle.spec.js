@@ -183,9 +183,9 @@ describe('DropdownToggle additional options', () => {
     const openClasses = 'class1 class2 class3';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClasses });
+    await dropdownToggle.open();
 
     // Act
-    await dropdownToggle.open();
     await dropdownToggle.close();
 
     // Assert
