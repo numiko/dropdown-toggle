@@ -34,7 +34,7 @@ describe('DropdownToggle opened', () => {
     const dropdownToggle = new DropdownToggle(dropdownElement);
 
     // Act
-    await dropdownToggle.toggle();
+    await dropdownToggle.open();
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
@@ -52,8 +52,8 @@ describe('DropdownToggle closed', () => {
     const dropdownToggle = new DropdownToggle(dropdownElement);
 
     // Act
-    await dropdownToggle.toggle();
-    await dropdownToggle.toggle();
+    await dropdownToggle.open();
+    await dropdownToggle.close();
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
@@ -194,6 +194,7 @@ describe('DropdownToggle additional options', () => {
 });
 
 describe('Dropdown callbacks', () => {
+  // Arrange
   it('should call onOpenStart callback if provided', async () => {
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -201,50 +202,62 @@ describe('Dropdown callbacks', () => {
       onOpenStart: onOpenStartCallback
     });
 
+    // Act
     await dropdown.open();
 
+    // Assert
     expect(onOpenStartCallback).toHaveBeenCalled();
   });
 
   it('should call onOpenEnd callback if provided', async () => {
+    // Arrange
     const onOpenEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
       onOpenEnd: onOpenEndCallback
     });
 
+    // Act
     await dropdown.open();
 
-     expect(onOpenEndCallback).toHaveBeenCalled();
+    // Assert
+    expect(onOpenEndCallback).toHaveBeenCalled();
   });
 
   it('should call onCloseStart callback if provided', async () => {
+    // Arrange
     const onCloseStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
       onCloseStart: onCloseStartCallback
     });
-
     await dropdown.open();
+
+    // Act
     await dropdown.close();
 
+    // Assert
     expect(onCloseStartCallback).toHaveBeenCalled();
   });
 
   it('should call onCloseEnd callback if provided', async () => {
+    // Arrange
     const onCloseEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
       onCloseEnd: onCloseEndCallback
     });
-
     await dropdown.open();
+
+    // Act
     await dropdown.close();
 
+    // Assert
     expect(onCloseEndCallback).toHaveBeenCalled();
   });
 
   it('should pass the dropdown content to onOpenStart callback', async () => {
+    // Arrange
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -252,12 +265,15 @@ describe('Dropdown callbacks', () => {
       onOpenStart: onOpenStartCallback
     });
 
+    // Act
     await dropdown.open();
 
+    // Assert
     expect(onOpenStartCallback).toHaveBeenCalledWith(dropdownContent);
   });
 
   it('should pass the dropdown content to onOpenEnd callback', async () => {
+    // Arrange
     const onOpenEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -265,36 +281,44 @@ describe('Dropdown callbacks', () => {
       onOpenEnd: onOpenEndCallback
     });
 
+    // Act
     await dropdown.open();
 
+    // Assert
     expect(onOpenEndCallback).toHaveBeenCalledWith(dropdownContent);
   });
 
   it('should pass the dropdown content to onCloseStart callback', async () => {
+    // Arrange
     const onCloseStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
       onCloseStart: onCloseStartCallback
     });
-
     await dropdown.open();
+
+    // Act
     await dropdown.close();
 
+    // Assert
     expect(onCloseStartCallback).toHaveBeenCalledWith(dropdownContent);
   });
 
   it('should pass the dropdown content to onCloseEnd callback', async () => {
+    // Arrange
     const onCloseEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
       onCloseEnd: onCloseEndCallback
     });
-
     await dropdown.open();
+
+    // Act
     await dropdown.close();
 
+    // Assert
     expect(onCloseEndCallback).toHaveBeenCalledWith(dropdownContent);
   });
 });
