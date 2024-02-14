@@ -194,8 +194,8 @@ describe('DropdownToggle additional options', () => {
 });
 
 describe('Dropdown callbacks', () => {
-  // Arrange
   it('should call onOpenStart callback if provided', async () => {
+    // Arrange
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
