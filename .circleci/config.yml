@@ -23,3 +23,11 @@ jobs:
             nvm install
             npm clean-install
             npm run build
+      - run:
+          name: Run JavaScript tests
+          command: |
+            npm run test:ci
+      - store_test_results:
+          path: frontend/reports/
+      - store_artifacts:
+          path: frontend/reports/
