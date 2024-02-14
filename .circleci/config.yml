@@ -1,0 +1,25 @@
+version: 2.1
+
+workflows:
+  version: 2
+  run_tests:
+    jobs:
+      - build-and-test
+
+jobs:
+  build-and-test:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: medium
+
+    steps:
+      - checkout
+      - run:
+          name: Build frontend
+          command: |
+            # Source CircleCI's instance of nvm
+            source /opt/circleci/.nvm/nvm.sh
+
+            nvm install
+            npm clean-install
+            npm run build
