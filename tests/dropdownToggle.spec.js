@@ -20,18 +20,15 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Make sure the coument is in a clear state before each test
- */
+// Make sure the document is in a clear state before each test.
 beforeEach(() => {
   document.body.innerHTML = "";
   document.write(htmlDocumentContent);
 })
 
-
 describe('DropdownToggle opened', () => {
   it('should correctly set attributes & styles when opening', async () => {
-    // Act
+    // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement);
@@ -49,7 +46,7 @@ describe('DropdownToggle opened', () => {
 
 describe('DropdownToggle closed', () => {
   it('should correctly set attributes and style when closing', async () => {
-    // Act
+    // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement);
