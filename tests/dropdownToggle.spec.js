@@ -197,3 +197,36 @@ describe('DropdownToggle additional options', () => {
 
 
 });
+
+describe('Custom button label configuration', () => {
+  it('should set the dropdown label to the closeLabel when opened ', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      closeLabel: 'Close dropdown'
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Close dropdown');
+  });
+
+  it('should set the dropdown label to the openLabel when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: 'Open dropdown'
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
+  });
+});
