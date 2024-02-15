@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     coverage: {
-      exclude: ['src/main.js']
+      exclude: ['src/main.js', '.eslintrc.cjs']
     }
   },
   build: {
