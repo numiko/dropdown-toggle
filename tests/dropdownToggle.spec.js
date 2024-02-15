@@ -53,11 +53,10 @@ describe('Dropdown public methods', () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement,
-      {
-        openDuration: 0.001,
-        closeDuration: 0.001,
-      });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Ensure it's open before trying to close
 
     // Act
@@ -75,11 +74,10 @@ describe('Dropdown public methods', () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement,
-      {
-        openDuration: 0.001,
-        closeDuration: 0.001,
-      });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Ensure it's open before trying to close
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
 
@@ -91,6 +89,39 @@ describe('Dropdown public methods', () => {
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
     expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
+  });
+
+  it('should set the isAnimating property to true when opening', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // Act
+    dropdownToggle.open();
+
+    // Assert
+    requestAnimationFrame(() => {
+      expect(dropdownToggle.isAnimating()).toBeTruthy();
+    });
+  });
+
+  it('should set the isAnimating property to false once closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownToggle.isAnimating()).toBeFalsy();
   });
 });
 
