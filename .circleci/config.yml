@@ -21,11 +21,13 @@ jobs:
             source /opt/circleci/.nvm/nvm.sh
 
             nvm install
+            nvm use
             npm clean-install
             npm run build
       - run:
           name: Run JavaScript tests
           command: |
+            nvm use
             npm run test:ci
       - store_test_results:
           path: frontend/reports/
