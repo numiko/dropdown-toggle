@@ -413,3 +413,41 @@ describe('Dropdown callbacks', () => {
     expect(onDestroyCallback).toHaveBeenCalledWith(dropdownContent);
   });
 });
+
+describe('Dropdown group behaviour', () => {
+  it('should close previously-opened dropdowns in the group before opening a new one', async () => {
+    // Arrange
+    const dropdownInstances = [];
+    const dropdownElements = document.querySelectorAll('[data-js-dropdown]');
+
+    dropdownElements.forEach((dropdown) => {
+      const dropdownToggle = new DropdownToggle(dropdown, {
+        openDuration: 0.001,
+        closeDuration: 0.001,
+        group: 'group',
+      });
+      const dropdownContent = document.querySelector(`#${dropdown.getAttribute('aria-controls')}`);
+
+      dropdownInstances.push({
+        instance: dropdownToggle,
+        dropdownContent: dropdownContent,
+      });
+    });
+    await dropdownInstances[0].instance.toggle();
+
+    // Act
+    dropdownInstances[1].instance.toggle();
+
+    // Assert
+    // We want to ensure that the previously-opened dropdown has closed before
+    // we open a new dropdown in the group. As a result, we don't need to wait for the
+    // newly-opened dropdown to finish opening before we check the state of the
+    // previously-opened dropdown. We expect the previously-opened dropdown to be closed
+    // before we open the new one.
+    requestAnimationFrame(() => {
+      expect(dropdownInstances[0].dropdownContent.getAttribute('aria-hidden')).toBeTruthy();
+      expect(dropdownInstances[0].dropdownContent.style.display).toBe('none');
+      expect(dropdownInstances[0].dropdownContent.style.height).toBe('0px');
+    });
+  });
+});
