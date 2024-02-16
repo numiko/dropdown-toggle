@@ -30,6 +30,6 @@ jobs:
             nvm use
             npm run test:ci
       - store_test_results:
-          path: frontend/reports/
+          path: reports/
       - store_artifacts:
-          path: frontend/reports/
+          path: reports/
