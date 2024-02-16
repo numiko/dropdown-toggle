@@ -4,7 +4,6 @@ import path from 'path';
 import { expect, describe, it, beforeEach, vi } from 'vitest';
 import { DropdownToggle } from '../lib/DropdownToggle';
 
-
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
 
@@ -27,9 +26,8 @@ beforeEach(() => {
   document.write(htmlDocumentContent);
 });
 
-describe('Dropdown public methods', () => {
-
-  it('"open()" method should open the dropdown', async () => {
+describe('When public methods are interacted with', () => {
+  it('should open the dropdown when the open method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -49,7 +47,7 @@ describe('Dropdown public methods', () => {
   });
 
 
-  it('"close()" should close the dropdown', async () => {
+  it('should close the dropdown when the close method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -70,7 +68,7 @@ describe('Dropdown public methods', () => {
   });
 
 
-  it('"destroy()" method should reset DOM to inital state', async () => {
+  it('should reset the dropdown to its initial state when the destroy method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -90,7 +88,9 @@ describe('Dropdown public methods', () => {
     expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
     expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
   });
+});
 
+describe('When the dropdown getters are interacted with', () => {
   it('should set the isAnimating property to true when opening', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -125,9 +125,9 @@ describe('Dropdown public methods', () => {
   });
 });
 
-describe('Dropdown configuration', () => {
+describe('When the dropdown is configured', () => {
 
-  it('closeOnEsc - should close the dropdown when the Escape key is pressed', async () => {
+  it('should close when the esc key has been selected', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -153,7 +153,7 @@ describe('Dropdown configuration', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('closeOnClickOutside - should close the dropdown when clicking outside of it', async () => {
+  it('should close when a user clicks outside of the dropdown', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -179,7 +179,7 @@ describe('Dropdown configuration', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('openClass - should add class to button when opened', async () => {
+  it('should add the provided class when opened', async () => {
     // Arrange
     const openClass = 'dropdown-open';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -196,7 +196,7 @@ describe('Dropdown configuration', () => {
     expect(dropdownElement.classList.contains(openClass)).toBe(true);
   });
 
-  it('openClass - should remove class from button when closed', async () => {
+  it('should remove any provided open classes when closed', async () => {
     // Arrange
     const openClasses = 'class1 class2 class3';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -267,7 +267,7 @@ describe('Dropdown configuration', () => {
   });
 });
 
-describe('Dropdown callbacks', () => {
+describe('When the dropdown callbacks are utilised', () => {
   it('should call onOpenStart callback if provided', async () => {
     // Arrange
     // vi.fn() is a utility function to create a spy function that we can track if its been called
@@ -445,7 +445,7 @@ describe('Dropdown callbacks', () => {
   });
 });
 
-describe('Dropdown group behaviour', () => {
+describe('When a dropdown is part of a larger group', () => {
   it('should close previously-opened dropdowns in the group before opening a new one', async () => {
     // Arrange
     const dropdownInstances = [];
