@@ -5,7 +5,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [eslint()],
   test: {
-    environment: 'happy-dom'
+    environment: 'happy-dom',
+    coverage: {
+      exclude: ['src/main.js']
+    }
   },
   build: {
     lib: {
