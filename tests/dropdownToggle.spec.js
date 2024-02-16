@@ -1,7 +1,7 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, vi, beforeEach } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest'
 import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
