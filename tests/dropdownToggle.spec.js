@@ -515,26 +515,25 @@ describe('When the dropdown callbacks are utilised', () => {
 describe('When a dropdown is part of a larger group', () => {
   it('should close previously-opened dropdowns in the group before opening a new one', async () => {
     // Arrange
-    const dropdownInstances = [];
-    const dropdownElements = document.querySelectorAll('[data-js-dropdown]');
-
-    dropdownElements.forEach((dropdown) => {
-      const dropdownToggle = new DropdownToggle(dropdown, {
-        openDuration: 0.001,
-        closeDuration: 0.001,
-        group: 'group',
-      });
-      const dropdownContent = document.querySelector(`#${dropdown.getAttribute('aria-controls')}`);
-
-      dropdownInstances.push({
-        instance: dropdownToggle,
-        dropdownContent: dropdownContent,
-      });
+    const previouslyOpenedDropdown = document.querySelector('[data-js-dropdown]');
+    const previouslyOpenedDropdownContent = document.querySelector(`#${previouslyOpenedDropdown.getAttribute('aria-controls')}`);
+    const previouslyOpenedDropdownInstance = new DropdownToggle(previouslyOpenedDropdown, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group',
     });
-    await dropdownInstances[0].instance.toggle();
+
+    const newlyOpenedDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
+    const newlyOpenedDropdownInstance = new DropdownToggle(newlyOpenedDropdown, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group',
+    });
+
+    await previouslyOpenedDropdownInstance.toggle();
 
     // Act
-    dropdownInstances[1].instance.toggle();
+    newlyOpenedDropdownInstance.toggle();
 
     // Assert
     // We want to ensure that the previously-opened dropdown has closed before
@@ -543,9 +542,9 @@ describe('When a dropdown is part of a larger group', () => {
     // previously-opened dropdown. We expect the previously-opened dropdown to be closed
     // before we open the new one.
     requestAnimationFrame(() => {
-      expect(dropdownInstances[0].dropdownContent.getAttribute('aria-hidden')).toBeTruthy();
-      expect(dropdownInstances[0].dropdownContent.style.display).toBe('none');
-      expect(dropdownInstances[0].dropdownContent.style.height).toBe('0px');
+      expect(previouslyOpenedDropdownContent.getAttribute('aria-hidden')).toBe('true');
+      expect(previouslyOpenedDropdownContent.style.display).toBe('none');
+      expect(previouslyOpenedDropdownContent.style.height).toBe('0px');
     });
   });
 });
