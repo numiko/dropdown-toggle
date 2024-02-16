@@ -260,7 +260,7 @@ describe('When the dropdown is configured', () => {
     await dropdownToggle.open();
 
     // Assert
-    expect(dropdownElement.classList.contains(openClass)).toBe(true);
+    expect(dropdownElement.classList.contains(openClass)).toBeTruthy();
   });
 
   it('should remove any provided open classes when closed', async () => {
@@ -278,7 +278,7 @@ describe('When the dropdown is configured', () => {
     await dropdownToggle.close();
 
     // Assert
-    expect(dropdownElement.classList.contains(openClasses)).toBe(false);
+    expect(dropdownElement.classList.contains(openClasses)).toBeFalsy();
   });
 
   it('should set the dropdown label to the closeLabel when opened ', async () => {
