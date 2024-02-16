@@ -1,4 +1,4 @@
-import { DropdownToggle } from "../lib/DropdownToggle";
+import { DropdownToggle } from '../lib/DropdownToggle';
 
 /**
  * This file is used to run the package locally for development and testing purposes.

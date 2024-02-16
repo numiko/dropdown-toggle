@@ -1,7 +1,7 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, vi, beforeEach } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest';
 import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
@@ -22,9 +22,9 @@ async function delay(ms) {
 
 // Make sure the document is in a clear state before each test.
 beforeEach(() => {
-  document.body.innerHTML = "";
+  document.body.innerHTML = '';
   document.write(htmlDocumentContent);
-})
+});
 
 describe('DropdownToggle opened', () => {
   it('should correctly set attributes & styles when opening', async () => {
@@ -102,20 +102,20 @@ describe('DropdownToggle methods', () => {
 
   it('"destroy()" method should reset DOM to inital state', async () => {
     // Arrange
-  const dropdownElement = document.querySelector('[data-js-dropdown]');
-  const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-  const dropdownToggle = new DropdownToggle(dropdownElement);
-  await dropdownToggle.open(); // Ensure it's open before trying to close
-  expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
+    await dropdownToggle.open(); // Ensure it's open before trying to close
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
 
-  // Act
-  dropdownToggle.destroy(); // Remove event listeners
-  const event = new window.MouseEvent('click', { target: dropdownElement });
-  document.dispatchEvent(event); // Try to toggle the dropdown after destroying
+    // Act
+    dropdownToggle.destroy(); // Remove event listeners
+    const event = new window.MouseEvent('click', { target: dropdownElement });
+    document.dispatchEvent(event); // Try to toggle the dropdown after destroying
 
-  // Assert
-  expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
-  expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
   });
 });
 
