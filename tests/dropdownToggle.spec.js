@@ -177,6 +177,13 @@ describe('When the dropdown getters are interacted with', () => {
 });
 
 describe('When the dropdown is configured', () => {
+  it('should set the button element properly if a string is passed in', () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.button).toBe(dropdownElement);
+  });
+
   it('should open on load', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
