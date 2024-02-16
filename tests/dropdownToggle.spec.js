@@ -1,7 +1,7 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, beforeEach } from 'vitest';
+import { expect, describe, it, beforeEach, vi } from 'vitest';
 import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
@@ -196,6 +196,7 @@ describe('DropdownToggle additional options', () => {
 describe('Dropdown callbacks', () => {
   it('should call onOpenStart callback if provided', async () => {
     // Arrange
+    // vi.fn() is a utility function to create a spy function that we can track if its been called
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
