@@ -1,7 +1,7 @@
 var O = Object.defineProperty;
 var g = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var l = (o, t, e) => (g(o, typeof t != "symbol" ? t + "" : t, e), e);
-import u from "gsap";
+var u = (o, t, e) => (g(o, typeof t != "symbol" ? t + "" : t, e), e);
+import l from "gsap";
 const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   constructor(t, e = {}) {
     this.bindThisToMemberFunctions(), this.state = {
@@ -62,7 +62,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   open(t = this.openOptions) {
-    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(), this.animate(!0, t));
+    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0, t));
   }
   /**
    * Closes the dropdown.
@@ -70,7 +70,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   close(t = this.closeOptions) {
-    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(), this.animate(!1, t)) : Promise.resolve();
+    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1, t)) : Promise.resolve();
   }
   /**
    * Animates the opening or closing of the dropdown.
@@ -94,7 +94,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", u.fromTo(
+    return this.dropdownItem.style.display = "block", l.fromTo(
       t,
       {
         height: 0
@@ -112,7 +112,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultCloseTween(t) {
-    return u.to(t, {
+    return l.to(t, {
       height: 0,
       duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
       ease: this.closeOptions.ease,
@@ -147,10 +147,11 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
     t.classList.remove(...n);
   }
   /**
-   * Sets the label of the button based on the dropdown's state.
+   * Sets the label of the dropdown button.
+   * @param {string} label - The string to use for the button's label
    */
-  setButtonLabel() {
-    this.buttonLabelEl && (this.buttonLabelEl.textContent = this.isOpen() ? this.closeLabel : this.openLabel);
+  setButtonLabel(t) {
+    !t || !this.buttonLabelEl || (this.buttonLabelEl.textContent = t);
   }
   /**
    * Adds event listeners for the dropdown toggle, including click, keydown, and outside click.
@@ -210,7 +211,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
     this.openOnLoad && this.open({}, !0), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
-l(s, "groupInstances", {});
+u(s, "groupInstances", {});
 let m = s;
 export {
   m as DropdownToggle
