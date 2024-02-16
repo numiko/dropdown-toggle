@@ -575,4 +575,47 @@ describe('When a dropdown is part of a larger group', () => {
     expect(dropdownInFirstGroupContent.style.display).toBe('block');
     expect(dropdownInFirstGroupContent.style.height).toBe('auto');
   });
+
+  it('should remove a dropdown from a group when destroyed', async () => {
+    // Arrange
+    const firstDropdownInGroupAEl = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const firstDropdownInGroupAContent = document.querySelector(`#${firstDropdownInGroupAEl.getAttribute('aria-controls')}`);
+    const firstDropdownInGroupA = new DropdownToggle(firstDropdownInGroupAEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
+    });
+
+    const secondDropdownInGroupAEl = document.querySelector('[data-js-group-a] [data-js-dropdown][aria-controls="accordion2"]');
+    const secondDropdownInGroupA = new DropdownToggle(secondDropdownInGroupAEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
+    });
+
+    // Act
+    secondDropdownInGroupA.destroy();
+
+    const reInitialisedSecondDropdownEl = document.querySelector('[data-js-group-a] [data-js-dropdown][aria-controls="accordion2"]');
+    const reInitialisedSecondDropdownContent = document.querySelector(`#${reInitialisedSecondDropdownEl.getAttribute('aria-controls')}`);
+    const reInitialisedSecondDropdown = new DropdownToggle(reInitialisedSecondDropdownEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    await reInitialisedSecondDropdown.toggle();
+
+    await firstDropdownInGroupA.toggle();
+
+    // Assert
+    // We expect both dropdowns to be visible because they are no longer
+    // in a group, and so act independently of one another.
+    expect(firstDropdownInGroupAContent.getAttribute('aria-hidden')).toBe('false');
+    expect(firstDropdownInGroupAContent.style.display).toBe('block');
+    expect(firstDropdownInGroupAContent.style.height).toBe('auto');
+
+    expect(reInitialisedSecondDropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(reInitialisedSecondDropdownContent.style.display).toBe('block');
+    expect(reInitialisedSecondDropdownContent.style.height).toBe('auto');
+  });
 });
