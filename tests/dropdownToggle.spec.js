@@ -88,6 +88,26 @@ describe('When public methods are interacted with', () => {
     expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
     expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
   });
+
+  it('should close the dropdown if open and the toggle method is used', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.toggle();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
 });
 
 describe('When the dropdown getters are interacted with', () => {
