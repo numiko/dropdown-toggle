@@ -1,7 +1,7 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, beforeEach } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest';
 import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
@@ -20,24 +20,21 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Make sure the coument is in a clear state before each test
- */
+// Make sure the document is in a clear state before each test.
 beforeEach(() => {
-  document.body.innerHTML = "";
+  document.body.innerHTML = '';
   document.write(htmlDocumentContent);
-})
-
+});
 
 describe('DropdownToggle opened', () => {
   it('should correctly set attributes & styles when opening', async () => {
-    // Act
+    // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement);
 
     // Act
-    await dropdownToggle.toggle();
+    await dropdownToggle.open();
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
@@ -49,14 +46,14 @@ describe('DropdownToggle opened', () => {
 
 describe('DropdownToggle closed', () => {
   it('should correctly set attributes and style when closing', async () => {
-    // Act
+    // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement);
 
     // Act
-    await dropdownToggle.toggle();
-    await dropdownToggle.toggle();
+    await dropdownToggle.open();
+    await dropdownToggle.close();
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
@@ -105,20 +102,20 @@ describe('DropdownToggle methods', () => {
 
   it('"destroy()" method should reset DOM to inital state', async () => {
     // Arrange
-  const dropdownElement = document.querySelector('[data-js-dropdown]');
-  const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-  const dropdownToggle = new DropdownToggle(dropdownElement);
-  await dropdownToggle.open(); // Ensure it's open before trying to close
-  expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement);
+    await dropdownToggle.open(); // Ensure it's open before trying to close
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
 
-  // Act
-  dropdownToggle.destroy(); // Remove event listeners
-  const event = new window.MouseEvent('click', { target: dropdownElement });
-  document.dispatchEvent(event); // Try to toggle the dropdown after destroying
+    // Act
+    dropdownToggle.destroy(); // Remove event listeners
+    const event = new window.MouseEvent('click', { target: dropdownElement });
+    document.dispatchEvent(event); // Try to toggle the dropdown after destroying
 
-  // Assert
-  expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
-  expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
   });
 });
 
@@ -186,14 +183,175 @@ describe('DropdownToggle additional options', () => {
     const openClasses = 'class1 class2 class3';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClasses });
+    await dropdownToggle.open();
 
     // Act
-    await dropdownToggle.open();
     await dropdownToggle.close();
 
     // Assert
     expect(dropdownElement.classList.contains(openClasses)).toBe(false);
   });
+});
 
+describe('Dropdown callbacks', () => {
+  it('should call onOpenStart callback if provided', async () => {
+    // Arrange
+    const onOpenStartCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onOpenStart: onOpenStartCallback
+    });
 
+    // Act
+    await dropdown.open();
+
+    // Assert
+    expect(onOpenStartCallback).toHaveBeenCalled();
+  });
+
+  it('should call onOpenEnd callback if provided', async () => {
+    // Arrange
+    const onOpenEndCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onOpenEnd: onOpenEndCallback
+    });
+
+    // Act
+    await dropdown.open();
+
+    // Assert
+    expect(onOpenEndCallback).toHaveBeenCalled();
+  });
+
+  it('should call onCloseStart callback if provided', async () => {
+    // Arrange
+    const onCloseStartCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onCloseStart: onCloseStartCallback
+    });
+    await dropdown.open();
+
+    // Act
+    await dropdown.close();
+
+    // Assert
+    expect(onCloseStartCallback).toHaveBeenCalled();
+  });
+
+  it('should call onCloseEnd callback if provided', async () => {
+    // Arrange
+    const onCloseEndCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onCloseEnd: onCloseEndCallback
+    });
+    await dropdown.open();
+
+    // Act
+    await dropdown.close();
+
+    // Assert
+    expect(onCloseEndCallback).toHaveBeenCalled();
+  });
+
+  it('should pass the dropdown content to onOpenStart callback', async () => {
+    // Arrange
+    const onOpenStartCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onOpenStart: onOpenStartCallback
+    });
+
+    // Act
+    await dropdown.open();
+
+    // Assert
+    expect(onOpenStartCallback).toHaveBeenCalledWith(dropdownContent);
+  });
+
+  it('should pass the dropdown content to onOpenEnd callback', async () => {
+    // Arrange
+    const onOpenEndCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onOpenEnd: onOpenEndCallback
+    });
+
+    // Act
+    await dropdown.open();
+
+    // Assert
+    expect(onOpenEndCallback).toHaveBeenCalledWith(dropdownContent);
+  });
+
+  it('should pass the dropdown content to onCloseStart callback', async () => {
+    // Arrange
+    const onCloseStartCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onCloseStart: onCloseStartCallback
+    });
+    await dropdown.open();
+
+    // Act
+    await dropdown.close();
+
+    // Assert
+    expect(onCloseStartCallback).toHaveBeenCalledWith(dropdownContent);
+  });
+
+  it('should pass the dropdown content to onCloseEnd callback', async () => {
+    // Arrange
+    const onCloseEndCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onCloseEnd: onCloseEndCallback
+    });
+    await dropdown.open();
+
+    // Act
+    await dropdown.close();
+
+    // Assert
+    expect(onCloseEndCallback).toHaveBeenCalledWith(dropdownContent);
+  });
+});
+
+describe('Custom button label configuration', () => {
+  it('should set the dropdown label to the closeLabel when opened ', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      closeLabel: 'Close dropdown'
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Close dropdown');
+  });
+
+  it('should set the dropdown label to the openLabel when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: 'Open dropdown'
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
+  });
 });
