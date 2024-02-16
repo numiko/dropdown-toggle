@@ -123,6 +123,37 @@ describe('When the dropdown getters are interacted with', () => {
     // Assert
     expect(dropdownToggle.isAnimating()).toBeFalsy();
   });
+
+  it('should set the isOpen property to true when opening', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownToggle.isOpen()).toBeTruthy();
+  });
+
+  it('should set the isOpen property to true when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownToggle.isOpen()).toBeFalsy();
+  });
 });
 
 describe('When the dropdown is configured', () => {
