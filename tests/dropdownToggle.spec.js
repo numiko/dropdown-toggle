@@ -177,6 +177,22 @@ describe('When the dropdown getters are interacted with', () => {
 });
 
 describe('When the dropdown is configured', () => {
+  it('should open on load', async () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    new DropdownToggle(dropdownElement, {
+      openOnLoad: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    requestAnimationFrame(() => {
+      expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+      expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+      expect(dropdownContent.style.height).toBe('auto');
+      expect(dropdownContent.style.display).toBe('block');
+    });
+  });
 
   it('should close when the esc key has been selected', async () => {
     // Arrange
