@@ -547,4 +547,32 @@ describe('When a dropdown is part of a larger group', () => {
       expect(previouslyOpenedDropdownContent.style.height).toBe('0px');
     });
   });
+
+  it('should only close dropdowns that are part of the same group', async () => {
+    // Arrange
+    const dropdownInFirstGroup = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const dropdownInFirstGroupContent = document.querySelector(`#${dropdownInFirstGroup.getAttribute('aria-controls')}`);
+    const dropdownInFirstGroupInstance = new DropdownToggle(dropdownInFirstGroup, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
+    });
+
+    const dropdownInSecondGroup = document.querySelector('[data-js-group-b] [data-js-dropdown]');
+    const dropdownInSecondGroupInstance = new DropdownToggle(dropdownInSecondGroup, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-b',
+    });
+
+    await dropdownInFirstGroupInstance.open();
+
+    // Act
+    await dropdownInSecondGroupInstance.toggle();
+
+    // Assert
+    expect(dropdownInFirstGroupContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownInFirstGroupContent.style.display).toBe('block');
+    expect(dropdownInFirstGroupContent.style.height).toBe('auto');
+  });
 });
