@@ -111,16 +111,18 @@ describe('When public methods are interacted with', () => {
 });
 
 describe('When the dropdown getters are interacted with', () => {
-  it('should set the isAnimating property to true when opening', async () => {
+  it('should set the isAnimating property to true when opening', () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
+    // The duration is longer here, to give us time to check
+    // the state iof the isAnimating property.
     const dropdownToggle = new DropdownToggle(dropdownElement, {
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openDuration: 0.3,
+      closeDuration: 0.3,
     });
 
     // Act
-    dropdownToggle.open();
+    dropdownElement.click();
 
     // Assert
     requestAnimationFrame(() => {
@@ -144,7 +146,7 @@ describe('When the dropdown getters are interacted with', () => {
     expect(dropdownToggle.isAnimating()).toBeFalsy();
   });
 
-  it('should set the isOpen property to true when opening', async () => {
+  it('should set the isOpen property to true when open', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, {
@@ -159,7 +161,7 @@ describe('When the dropdown getters are interacted with', () => {
     expect(dropdownToggle.isOpen()).toBeTruthy();
   });
 
-  it('should set the isOpen property to true when closed', async () => {
+  it('should set the isOpen property to false when closed', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, {
@@ -540,24 +542,29 @@ describe('When a dropdown is part of a larger group', () => {
     const previouslyOpenedDropdown = document.querySelector('[data-js-dropdown]');
     const previouslyOpenedDropdownContent = document.querySelector(`#${previouslyOpenedDropdown.getAttribute('aria-controls')}`);
     const previouslyOpenedDropdownInstance = new DropdownToggle(previouslyOpenedDropdown, {
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openDuration: 0.1,
+      closeDuration: 0.1,
       group: 'group',
     });
 
     const newlyOpenedDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
-    const newlyOpenedDropdownInstance = new DropdownToggle(newlyOpenedDropdown, {
-      openDuration: 0.001,
-      closeDuration: 0.001,
+    new DropdownToggle(newlyOpenedDropdown, {
+      openDuration: 0.1,
+      closeDuration: 0.1,
       group: 'group',
     });
 
     await previouslyOpenedDropdownInstance.toggle();
 
     // Act
-    newlyOpenedDropdownInstance.toggle();
+    newlyOpenedDropdown.click();
 
     // Assert
+
+    // We add a small delay to give time for the previously opened dropdown
+    // to close before asserting against it.
+    await delay(250);
+
     // We want to ensure that the previously-opened dropdown has closed before
     // we open a new dropdown in the group. As a result, we don't need to wait for the
     // newly-opened dropdown to finish opening before we check the state of the
