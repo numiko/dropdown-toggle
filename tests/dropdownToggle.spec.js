@@ -26,7 +26,7 @@ beforeEach(() => {
   document.write(htmlDocumentContent);
 });
 
-describe('When public methods are interacted with', () => {
+describe('When the dropdown is interacted with', () => {
   it('should open the dropdown when the open method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -45,7 +45,6 @@ describe('When public methods are interacted with', () => {
     expect(dropdownContent.style.height).toBe('auto');
     expect(dropdownContent.style.display).toBe('block');
   });
-
 
   it('should close the dropdown when the close method is called', async () => {
     // Arrange
@@ -66,7 +65,6 @@ describe('When public methods are interacted with', () => {
     expect(dropdownContent.style.height).toBe('0px');
     expect(dropdownContent.style.display).toBe('none');
   });
-
 
   it('should reset the dropdown to its initial state when the destroy method is called', async () => {
     // Arrange
@@ -107,6 +105,36 @@ describe('When public methods are interacted with', () => {
     expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
     expect(dropdownContent.style.height).toBe('0px');
     expect(dropdownContent.style.display).toBe('none');
+  });
+
+  it('should not interrupt the open animation if dropdown is clicked whilst opening', async () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      openDuration: 0.5,
+      closeDuration: 0.5,
+    });
+
+    // Act
+    // We use a click method instead of a public method because
+    // we don't want to wait for the open animation to resolve
+    // before we trigger the second click; the second click
+    // is simulated via the `toggle` method as this is async
+    // and allows us to wait for the animation to complete
+    // before making our assertion.
+    dropdownElement.click();
+
+    // A minor delays allows the side-effects from the click handler
+    // to run before we trigger the second click — via the `toggle` method.
+    await delay(20);
+
+    await dropdown.toggle();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
   });
 });
 
