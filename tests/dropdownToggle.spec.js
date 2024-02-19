@@ -1,9 +1,8 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, vi, beforeEach } from 'vitest';
-import { DropdownToggle, DEFAULT_DURATION } from '../lib/DropdownToggle';
-
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest';
+import { DropdownToggle, DEFAULT_DURATION, DURATION_REDUCED_MOTION } from '../lib/DropdownToggle';
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
 
@@ -24,6 +23,10 @@ async function delay(ms) {
 beforeEach(() => {
   document.body.innerHTML = '';
   document.write(htmlDocumentContent);
+});
+
+afterEach(()=> {
+  vi.restoreAllMocks();
 });
 
 describe('When the dropdown is interacted with', () => {
@@ -206,12 +209,24 @@ describe('When the dropdown getters are interacted with', () => {
   });
 });
 
-describe('When the dropdown is configured', () => {
+describe('When the dropdown is initialized', () => {
+
+  it('should animate almost immediately if a user prefers reduced motion', () => {
+    const matchMediaSpy = vi.spyOn(window, 'matchMedia');
+    matchMediaSpy.mockImplementation(() => {
+      return {
+        matches: true,
+      };
+    });
+
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.openOptions.duration).toBe(DURATION_REDUCED_MOTION);
+  });
 
   it('should use the default open duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    // Should we import the actual val from the module?
     expect(dropdown.openOptions.duration).toBe(DEFAULT_DURATION);
   });
 
