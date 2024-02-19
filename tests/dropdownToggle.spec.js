@@ -1,8 +1,8 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, beforeEach, vi } from 'vitest';
-import { DropdownToggle } from '../lib/DropdownToggle';
+import { expect, describe, it, vi, beforeEach } from 'vitest';
+import { DropdownToggle, DEFAULT_DURATION } from '../lib/DropdownToggle';
 
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
@@ -177,6 +177,21 @@ describe('When the dropdown getters are interacted with', () => {
 });
 
 describe('When the dropdown is configured', () => {
+
+  it('should use the default open duration if no duration is passed in', () => {
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    // Should we import the actual val from the module?
+    expect(dropdown.openOptions.duration).toBe(DEFAULT_DURATION);
+  });
+
+
+  it('should use the default close duration if no duration is passed in', () => {
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.closeOptions.duration).toBe(DEFAULT_DURATION);
+  });
+
   it('should set the button element properly if a string is passed in', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle('[data-js-dropdown]');
