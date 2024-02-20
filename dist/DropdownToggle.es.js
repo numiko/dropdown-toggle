@@ -1,7 +1,7 @@
 var O = Object.defineProperty;
-var g = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var u = (o, t, e) => (g(o, typeof t != "symbol" ? t + "" : t, e), e);
-import l from "gsap";
+var b = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var l = (o, t, e) => (b(o, typeof t != "symbol" ? t + "" : t, e), e);
+import u from "gsap";
 const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   constructor(t, e = {}) {
     this.bindThisToMemberFunctions(), this.state = {
@@ -94,7 +94,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", l.fromTo(
+    return this.dropdownItem.style.display = "block", u.fromTo(
       t,
       {
         height: 0
@@ -112,7 +112,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultCloseTween(t) {
-    return l.to(t, {
+    return u.to(t, {
       height: 0,
       duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
       ease: this.closeOptions.ease,
@@ -183,7 +183,7 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   * called as part of the component teardown process to ensure the component is cleanly reset.
   */
   resetState() {
-    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
+    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
   }
   /**
   * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
@@ -208,10 +208,10 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.openOnLoad && this.open({}, !0), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
+    this.openOnLoad && this.open({}, !0), this.openLabel && this.setButtonLabel(this.openLabel), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
-u(s, "groupInstances", {});
+l(s, "groupInstances", {});
 let m = s;
 export {
   m as DropdownToggle

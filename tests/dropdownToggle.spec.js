@@ -121,7 +121,7 @@ describe('DropdownToggle methods', () => {
 
 describe('DropdownToggle additional options', () => {
 
-  it('closeOnEsc - closes the dropdown when the Escape key is pressed', async () => {
+  it('closeOnEsc - should close the dropdown when the Escape key is pressed', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -143,7 +143,7 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('closeOnClickOutside - closes the dropdown when clicking outside of it', async () => {
+  it('closeOnClickOutside - should close the dropdown when clicking outside of it', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -165,7 +165,7 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('openClass - Adds class to button when opened', async () => {
+  it('openClass - should add class to button when opened', async () => {
     // Arrange
     const openClass = 'dropdown-open';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -178,7 +178,7 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownElement.classList.contains(openClass)).toBe(true);
   });
 
-  it('openClass - Removes class from button when closed', async () => {
+  it('openClass - should remove class from button when closed', async () => {
     // Arrange
     const openClasses = 'class1 class2 class3';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
@@ -190,6 +190,68 @@ describe('DropdownToggle additional options', () => {
 
     // Assert
     expect(dropdownElement.classList.contains(openClasses)).toBe(false);
+  });
+
+  it('openLabel - should set the dropdown label to the openLabel when initialising ', () => {
+    // Arrange
+    const openLabelText = 'Open dropdown';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: openLabelText
+    });
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe(openLabelText);
+  });
+
+  it('openLabel - should set the dropdown label to the openLabel when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: 'Open dropdown'
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
+  });
+
+  it('openLabel - should set the dropdown label to the openLabel when calling destroy()', async () => {
+    // Arrange
+    const openLabelText = 'Open dropdown';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: openLabelText
+    });
+    await dropdownToggle.open();
+
+    // Act
+    dropdownToggle.destroy();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe(openLabelText);
+  });
+
+  it('closeLabel - should set the dropdown label to the closeLabel when opened ', async () => {
+    // Arrange
+    const closeLabelText = 'Close dropdown';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      closeLabel: closeLabelText
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe(closeLabelText);
   });
 });
 
@@ -321,38 +383,5 @@ describe('Dropdown callbacks', () => {
 
     // Assert
     expect(onCloseEndCallback).toHaveBeenCalledWith(dropdownContent);
-  });
-});
-
-describe('Custom button label configuration', () => {
-  it('should set the dropdown label to the closeLabel when opened ', async () => {
-    // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, {
-      buttonLabelEl: '[data-js-dropdown-label]',
-      closeLabel: 'Close dropdown'
-    });
-
-    // Act
-    await dropdownToggle.open();
-
-    // Assert
-    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Close dropdown');
-  });
-
-  it('should set the dropdown label to the openLabel when closed', async () => {
-    // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, {
-      buttonLabelEl: '[data-js-dropdown-label]',
-      openLabel: 'Open dropdown'
-    });
-    await dropdownToggle.open();
-
-    // Act
-    await dropdownToggle.close();
-
-    // Assert
-    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
   });
 });
