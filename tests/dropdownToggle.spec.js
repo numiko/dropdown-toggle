@@ -192,7 +192,7 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownElement.classList.contains(openClasses)).toBe(false);
   });
 
-  it('openLabel - should set the dropdown label to the openLabel when initialising ', async () => {
+  it('openLabel - should set the dropdown label to the openLabel when initialising ', () => {
     // Arrange
     const openLabelText = 'Open dropdown';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
