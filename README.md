@@ -110,6 +110,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `onOpenEnd` | Callback that fires after open animation | `function` | `null` |
 | `onCloseStart` | Callback that fires before close animation | `function` | `null` |
 | `onCloseEnd` | Callback that fires after close animation | `function` | `null` |
+| `onDestroy` | Callback that fires when DropdownToggle is destroyed | `function` | `null` |
 
 ### Methods
 | Method | Description |
@@ -136,4 +137,5 @@ The `dropdownToggle` constructor accepts options as a second argument.
 **Notes**
 
 - Add `group` option. this was specifically added to make the dropdownToggle work better when used with the Sitekit menus.  It will allo you to group a collection of dropdowns so that any open dropdowns in a group will close before another one opens.  Could also be useful for accordions where you don't want to be able to have them all open.
+- Add `onDestroy` callback.
 - Removed `@numiko/animation` dependency.  Instead default tweens are part of this codebase for simplicity.
