@@ -159,6 +159,54 @@ describe('When the dropdown is interacted with', () => {
     expect(dropdownContent.classList.contains(classThatShouldBeRemoved)).toBe(false);
   });
 
+  it('should do nothing if open is called on an already open dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // We cache the HTML of the dropdown so we can assert that
+    // nothing has changed with the markup upon calling `open()`
+    // on a dropdown that's already open.
+    const cachedDropdownElementHtml = dropdownElement.outerHTML;
+    const cachedDropdownContentHtml = dropdownContent.outerHTML;
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.outerHTML).toBe(cachedDropdownElementHtml);
+    expect(dropdownContent.outerHTML).toBe(cachedDropdownContentHtml);
+  });
+
+  it('should do nothing if close is called on an already closed dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+    await dropdownToggle.close();
+
+    // We cache the HTML of the dropdown so we can assert that
+    // nothing has changed upon calling `close()` on a dropdown
+    // that's already closed.
+    const cachedDropdownElementHtml = dropdownElement.outerHTML;
+    const cachedDropdownContentHtml = dropdownContent.outerHTML;
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.outerHTML).toBe(cachedDropdownElementHtml);
+    expect(dropdownContent.outerHTML).toBe(cachedDropdownContentHtml);
+  });
 });
 
 describe('When the dropdown getters are interacted with', () => {
