@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
+    "test:coverage": "vitest --coverage",
     "coverage": "vitest run --coverage"
   },
   "main": "./dist/DropdownToggle.js",
