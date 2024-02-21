@@ -214,7 +214,7 @@ describe('When the dropdown getters are interacted with', () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     // The duration is longer here, to give us time to check
-    // the state iof the isAnimating property.
+    // the state of the isAnimating property.
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       openDuration: 0.3,
       closeDuration: 0.3,
