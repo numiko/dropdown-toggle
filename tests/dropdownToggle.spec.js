@@ -27,6 +27,11 @@ beforeEach(() => {
 
 afterEach(()=> {
   vi.restoreAllMocks();
+
+  // We reset the groupInstates after each test because
+  // this is a static property and we don't want the groups
+  // from one test to leak into another.
+  DropdownToggle.groupInstances = {};
 });
 
 describe('When the dropdown is interacted with', () => {
@@ -757,5 +762,21 @@ describe('When a dropdown is part of a larger group', () => {
     expect(reInitialisedSecondDropdownContent.getAttribute('aria-hidden')).toBe('false');
     expect(reInitialisedSecondDropdownContent.style.display).toBe('block');
     expect(reInitialisedSecondDropdownContent.style.height).toBe('auto');
+  });
+
+  it('should remove the group from `groupInstances` if destroyed', async () => {
+    // Arrange
+    const dropdownEl = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group'
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(DropdownToggle.groupInstances).toEqual({});
   });
 });
