@@ -139,6 +139,26 @@ describe('When the dropdown is interacted with', () => {
     expect(dropdownContent.style.height).toBe('auto');
     expect(dropdownContent.style.display).toBe('block');
   });
+
+  it('should remove any open classes added when destroyed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const classThatShouldBeRemoved = 'open-class';
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      openClass: classThatShouldBeRemoved,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    dropdownToggle.destroy();
+
+    // Assert
+    expect(dropdownContent.classList.contains(classThatShouldBeRemoved)).toBe(false);
+  });
+
 });
 
 describe('When the dropdown getters are interacted with', () => {
