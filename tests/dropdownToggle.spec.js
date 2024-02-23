@@ -319,6 +319,21 @@ describe('Dropdown callbacks', () => {
     expect(onCloseEndCallback).toHaveBeenCalled();
   });
 
+  it('should call onDestroy callback when instance is destroyed', () => {
+    // Arrange
+    const onDestroyCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onDestroy: onDestroyCallback
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(onDestroyCallback).toHaveBeenCalled();
+  });
+
   it('should pass the dropdown content to onOpenStart callback', async () => {
     // Arrange
     const onOpenStartCallback = vi.fn();
@@ -383,5 +398,21 @@ describe('Dropdown callbacks', () => {
 
     // Assert
     expect(onCloseEndCallback).toHaveBeenCalledWith(dropdownContent);
+  });
+
+  it('should pass the dropdown content to onDestroy callback', () => {
+    // Arrange
+    const onDestroyCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onDestroy: onDestroyCallback
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(onDestroyCallback).toHaveBeenCalledWith(dropdownContent);
   });
 });
