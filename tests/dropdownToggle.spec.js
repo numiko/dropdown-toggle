@@ -133,7 +133,7 @@ describe('When the dropdown is interacted with', () => {
     // before making our assertion.
     dropdownElement.click();
 
-    // A minor delays allows the side-effects from the click handler
+    // A minor delay allows the side-effects from the click handler
     // to run before we trigger the second click — via the `toggle` method.
     await delay(20);
 
