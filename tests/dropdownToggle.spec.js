@@ -286,6 +286,9 @@ describe('When the dropdown getters are interacted with', () => {
 describe('When the dropdown is initialized', () => {
 
   it('should animate almost immediately if a user prefers reduced motion', () => {
+    // We mock the matchMedia method so that it always returns true.
+    // This allows us to simulate a user having 'prefers-reduced-motion' enabled
+    // and as a result we can check the dropdown behaves appropriately.
     const matchMediaSpy = vi.spyOn(window, 'matchMedia');
     matchMediaSpy.mockImplementation(() => {
       return {
