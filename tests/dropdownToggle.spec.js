@@ -216,7 +216,7 @@ describe('When the dropdown is interacted with', () => {
 });
 
 describe('When the dropdown getters are interacted with', () => {
-  it('should set the isAnimating property to true when opening', () => {
+  it('should set the isAnimating property to true when opening', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     // The duration is longer here, to give us time to check
@@ -229,10 +229,11 @@ describe('When the dropdown getters are interacted with', () => {
     // Act
     dropdownElement.click();
 
+    // A minor delay allows the module time to set the `isAnimating` property.
+    await delay(50);
+
     // Assert
-    requestAnimationFrame(() => {
-      expect(dropdownToggle.isAnimating()).toBeTruthy();
-    });
+    expect(dropdownToggle.isAnimating()).toBeTruthy();
   });
 
   it('should set the isAnimating property to false once closed', async () => {
@@ -330,12 +331,15 @@ describe('When the dropdown is initialized', () => {
       closeDuration: 0.001,
     });
 
-    requestAnimationFrame(() => {
-      expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
-      expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
-      expect(dropdownContent.style.height).toBe('auto');
-      expect(dropdownContent.style.display).toBe('block');
-    });
+    // A minor delay ensures the dropdown is open before we
+    // assert against it.
+    await delay(100);
+
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+
   });
 
   it('should close when the esc key has been selected', async () => {
@@ -690,11 +694,9 @@ describe('When a dropdown is part of a larger group', () => {
     // newly-opened dropdown to finish opening before we check the state of the
     // previously-opened dropdown. We expect the previously-opened dropdown to be closed
     // before we open the new one.
-    requestAnimationFrame(() => {
-      expect(previouslyOpenedDropdownContent.getAttribute('aria-hidden')).toBe('true');
-      expect(previouslyOpenedDropdownContent.style.display).toBe('none');
-      expect(previouslyOpenedDropdownContent.style.height).toBe('0px');
-    });
+    expect(previouslyOpenedDropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(previouslyOpenedDropdownContent.style.display).toBe('none');
+    expect(previouslyOpenedDropdownContent.style.height).toBe('0px');
   });
 
   it('should only close dropdowns that are part of the same group', async () => {
