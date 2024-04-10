@@ -299,20 +299,20 @@ describe('When the dropdown is initialized', () => {
 
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DURATION_REDUCED_MOTION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
   });
 
   it('should use the default open duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
 
   it('should use the default close duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.closeOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.closeOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
   it('should set the button element properly if a string is passed in', () => {
