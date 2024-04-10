@@ -286,6 +286,18 @@ describe('When the dropdown getters are interacted with', () => {
 
 describe('When the dropdown is initialized', () => {
 
+  it('should use the custom default duration if provided', () => {
+    DropdownToggle.DEFAULT_DURATION = 0.2;
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.duration).toBe(0.2);
+  });
+
+  it('should use the custom default ease if provided', () => {
+    DropdownToggle.DEFAULT_EASE = 'power1.easeInOut';
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.ease).toBe('power1.easeInOut');
+  });
+
   it('should animate almost immediately if a user prefers reduced motion', () => {
     // We mock the matchMedia method so that it always returns true.
     // This allows us to simulate a user having 'prefers-reduced-motion' enabled
