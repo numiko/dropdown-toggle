@@ -119,25 +119,25 @@ describe('When the dropdown is interacted with', () => {
   it('should not interrupt the open animation if dropdown is clicked whilst opening', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdown = new DropdownToggle(dropdownElement, {
-      openDuration: 0.5,
-      closeDuration: 0.5,
+    new DropdownToggle(dropdownElement, {
+      openDuration: 0.25,
+      closeDuration: 0.25,
     });
 
     // Act
     // We use a click method instead of a public method because
     // we don't want to wait for the open animation to resolve
-    // before we trigger the second click; the second click
-    // is simulated via the `toggle` method as this is async
-    // and allows us to wait for the animation to complete
-    // before making our assertion.
+    // before we trigger the second click.
     dropdownElement.click();
 
-    // A minor delay allows the side-effects from the click handler
-    // to run before we trigger the second click — via the `toggle` method.
-    await delay(20);
+    // `rAF` gives the dropdown time to start opening before we trigger
+    // the second click.
+    requestAnimationFrame(() => {
+      dropdownElement.click();
+    });
 
-    await dropdown.toggle();
+    // Wait for the dropdown to finish opening.
+    await delay(300);
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
