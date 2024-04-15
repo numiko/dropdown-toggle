@@ -286,6 +286,18 @@ describe('When the dropdown getters are interacted with', () => {
 
 describe('When the dropdown is initialized', () => {
 
+  it('should use the custom default duration if provided', () => {
+    DropdownToggle.DEFAULT_DURATION = 0.2;
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.duration).toBe(0.2);
+  });
+
+  it('should use the custom default ease if provided', () => {
+    DropdownToggle.DEFAULT_EASE = 'power1.easeInOut';
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.ease).toBe('power1.easeInOut');
+  });
+
   it('should animate almost immediately if a user prefers reduced motion', () => {
     // We mock the matchMedia method so that it always returns true.
     // This allows us to simulate a user having 'prefers-reduced-motion' enabled
@@ -299,20 +311,20 @@ describe('When the dropdown is initialized', () => {
 
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DURATION_REDUCED_MOTION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
   });
 
   it('should use the default open duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
 
   it('should use the default close duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.closeOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.closeOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
   it('should set the button element properly if a string is passed in', () => {
