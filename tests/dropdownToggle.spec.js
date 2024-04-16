@@ -801,10 +801,7 @@ describe('When a dropdown is part of a larger group', () => {
   it('should have correct attributes when created', async () => {
     // Arrange
     const dropdownEl = document.querySelector('[data-js-dropdown]');
-    const dropdown = new DropdownToggle(dropdownEl, {
-      openDuration: 0.001,
-      closeDuration: 0.001,
-    });
+    new DropdownToggle(dropdownEl);
     const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
     // No action
 
