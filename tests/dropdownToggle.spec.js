@@ -797,4 +797,16 @@ describe('When a dropdown is part of a larger group', () => {
     // Assert
     expect(DropdownToggle.groupInstances).toEqual({});
   });
+
+  it('should have correct attributes when created', async () => {
+    // Arrange
+    const dropdownEl = document.querySelector('[data-js-dropdown]');
+    new DropdownToggle(dropdownEl);
+    const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
+    // No action
+
+    // Assert
+    expect(dropdownEl.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+  });
 });
