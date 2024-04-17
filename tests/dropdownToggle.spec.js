@@ -2,7 +2,7 @@ import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
 import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest';
-import { DropdownToggle, DEFAULT_DURATION, DURATION_REDUCED_MOTION } from '../lib/DropdownToggle';
+import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
