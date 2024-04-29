@@ -10,7 +10,12 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage"
   },
-  "main": "./dist/DropdownToggle.js",
+  "main": "./dist/DropdownToggle.umd.js",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "import": "./dist/DropdownToggle.es.js",
