@@ -10,7 +10,7 @@ jobs:
   build-and-test:
     machine:
       image: ubuntu-2204:2024.01.1
-    resource_class: medium
+    resource_class: small
 
     steps:
       - checkout
