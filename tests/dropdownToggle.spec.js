@@ -7,7 +7,7 @@ import { DropdownToggle } from '../lib/DropdownToggle';
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
 
-// Initalise Happy DOM
+// Initialise Happy DOM
 const window = new Window();
 const document = window.document;
 
