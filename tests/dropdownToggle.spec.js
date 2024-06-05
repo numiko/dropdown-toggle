@@ -15,7 +15,7 @@ const document = window.document;
 global.window = window;
 global.document = document;
 
-// utility to create a small delay
+// Utility to create a small delay
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
