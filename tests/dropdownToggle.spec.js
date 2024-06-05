@@ -1,7 +1,7 @@
 import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
-import { expect, describe, it, beforeEach, vi } from 'vitest';
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest';
 import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
@@ -26,50 +26,24 @@ beforeEach(() => {
   document.write(htmlDocumentContent);
 });
 
-describe('DropdownToggle opened', () => {
-  it('should correctly set attributes & styles when opening', async () => {
-    // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement);
+afterEach(()=> {
+  vi.restoreAllMocks();
 
-    // Act
-    await dropdownToggle.open();
-
-    // Assert
-    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
-    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
-    expect(dropdownContent.style.height).toBe('auto');
-    expect(dropdownContent.style.display).toBe('block');
-  });
+  // We reset the groupInstances after each test because
+  // this is a static property and we don't want the groups
+  // from one test to leak into another.
+  DropdownToggle.groupInstances = {};
 });
 
-describe('DropdownToggle closed', () => {
-  it('should correctly set attributes and style when closing', async () => {
+describe('When the dropdown is interacted with', () => {
+  it('should open the dropdown when the open method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement);
-
-    // Act
-    await dropdownToggle.open();
-    await dropdownToggle.close();
-
-    // Assert
-    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
-    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
-    expect(dropdownContent.style.height).toBe('0px');
-    expect(dropdownContent.style.display).toBe('none');
-  });
-});
-
-describe('DropdownToggle methods', () => {
-
-  it('"open()" method should open the dropdown', async () => {
-    // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
 
     // Act
     await dropdownToggle.open();
@@ -81,12 +55,14 @@ describe('DropdownToggle methods', () => {
     expect(dropdownContent.style.display).toBe('block');
   });
 
-
-  it('"close()" should close the dropdown', async () => {
+  it('should close the dropdown when the close method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Ensure it's open before trying to close
 
     // Act
@@ -99,12 +75,14 @@ describe('DropdownToggle methods', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-
-  it('"destroy()" method should reset DOM to inital state', async () => {
+  it('should reset the dropdown to its initial state when the destroy method is called', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Ensure it's open before trying to close
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
 
@@ -117,15 +95,274 @@ describe('DropdownToggle methods', () => {
     expect(dropdownElement.getAttribute('aria-expanded')).toBe(null);
     expect(dropdownContent.getAttribute('aria-hidden')).toBe(null);
   });
-});
 
-describe('DropdownToggle additional options', () => {
-
-  it('closeOnEsc - closes the dropdown when the Escape key is pressed', async () => {
+  it('should close the dropdown if open and the toggle method is used', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement, { closeOnEsc: true });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.toggle();
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
+
+  it('should not interrupt the open animation if dropdown is clicked whilst opening', async () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    new DropdownToggle(dropdownElement, {
+      openDuration: 0.25,
+      closeDuration: 0.25,
+    });
+
+    // Act
+    // We use a click method instead of a public method because
+    // we don't want to wait for the open animation to resolve
+    // before we trigger the second click.
+    dropdownElement.click();
+
+    // `rAF` gives the dropdown time to start opening before we trigger
+    // the second click.
+    requestAnimationFrame(() => {
+      dropdownElement.click();
+    });
+
+    // Wait for the dropdown to finish opening.
+    await delay(300);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+  });
+
+  it('should remove any open classes added when destroyed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const classThatShouldBeRemoved = 'open-class';
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      openClass: classThatShouldBeRemoved,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    dropdownToggle.destroy();
+
+    // Assert
+    expect(dropdownContent.classList.contains(classThatShouldBeRemoved)).toBe(false);
+  });
+
+  it('should do nothing if open is called on an already open dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // We cache the HTML of the dropdown so we can assert that
+    // nothing has changed with the markup upon calling `open()`
+    // on a dropdown that's already open.
+    const cachedDropdownElementHtml = dropdownElement.outerHTML;
+    const cachedDropdownContentHtml = dropdownContent.outerHTML;
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.outerHTML).toBe(cachedDropdownElementHtml);
+    expect(dropdownContent.outerHTML).toBe(cachedDropdownContentHtml);
+  });
+
+  it('should do nothing if close is called on an already closed dropdown', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+    await dropdownToggle.close();
+
+    // We cache the HTML of the dropdown so we can assert that
+    // nothing has changed upon calling `close()` on a dropdown
+    // that's already closed.
+    const cachedDropdownElementHtml = dropdownElement.outerHTML;
+    const cachedDropdownContentHtml = dropdownContent.outerHTML;
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.outerHTML).toBe(cachedDropdownElementHtml);
+    expect(dropdownContent.outerHTML).toBe(cachedDropdownContentHtml);
+  });
+});
+
+describe('When the dropdown getters are interacted with', () => {
+  it('should set the isAnimating property to true when opening', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    // The duration is longer here, to give us time to check
+    // the state of the isAnimating property.
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.3,
+      closeDuration: 0.3,
+    });
+
+    // Act
+    dropdownElement.click();
+
+    // A minor delay allows the module time to set the `isAnimating` property.
+    await delay(50);
+
+    // Assert
+    expect(dropdownToggle.isAnimating()).toBeTruthy();
+  });
+
+  it('should set the isAnimating property to false once closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownToggle.isAnimating()).toBeFalsy();
+  });
+
+  it('should set the isOpen property to true when open', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownToggle.isOpen()).toBeTruthy();
+  });
+
+  it('should set the isOpen property to false when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownToggle.isOpen()).toBeFalsy();
+  });
+});
+
+describe('When the dropdown is initialized', () => {
+
+  it('should use the custom default duration if provided', () => {
+    DropdownToggle.DEFAULT_DURATION = 0.2;
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.duration).toBe(0.2);
+  });
+
+  it('should use the custom default ease if provided', () => {
+    DropdownToggle.DEFAULT_EASE = 'power1.easeInOut';
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.ease).toBe('power1.easeInOut');
+  });
+
+  it('should animate almost immediately if a user prefers reduced motion', () => {
+    // We mock the matchMedia method so that it always returns true.
+    // This allows us to simulate a user having 'prefers-reduced-motion' enabled
+    // and as a result we can check the dropdown behaves appropriately.
+    const matchMediaSpy = vi.spyOn(window, 'matchMedia');
+    matchMediaSpy.mockImplementation(() => {
+      return {
+        matches: true,
+      };
+    });
+
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
+  });
+
+  it('should use the default open duration if no duration is passed in', () => {
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
+  });
+
+
+  it('should use the default close duration if no duration is passed in', () => {
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.closeOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
+  });
+
+  it('should set the button element properly if a string is passed in', () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+
+    expect(dropdown.button).toBe(dropdownElement);
+  });
+
+  it('should open on load', async () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    new DropdownToggle(dropdownElement, {
+      openOnLoad: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // A minor delay ensures the dropdown is open before we
+    // assert against it.
+    await delay(100);
+
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+
+  });
+
+  it('should close when the esc key has been selected', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      closeOnEsc: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -134,7 +371,7 @@ describe('DropdownToggle additional options', () => {
 
     // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
     // a promise so we can simply wait a little.
-    await delay(500);
+    await delay(250);
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
@@ -143,11 +380,15 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('closeOnClickOutside - closes the dropdown when clicking outside of it', async () => {
+  it('should close when a user clicks outside of the dropdown', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdownToggle = new DropdownToggle(dropdownElement, { closeOnOutsideClick: true });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      closeOnOutsideClick: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -156,7 +397,7 @@ describe('DropdownToggle additional options', () => {
 
     // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
     // a promise so we can simply wait a little.
-    await delay(500);
+    await delay(250);
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
@@ -165,42 +406,104 @@ describe('DropdownToggle additional options', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('openClass - Adds class to button when opened', async () => {
+  it('should add the provided class when opened', async () => {
     // Arrange
     const openClass = 'dropdown-open';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClass });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openClass: openClass,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
 
     // Act
     await dropdownToggle.open();
 
     // Assert
-    expect(dropdownElement.classList.contains(openClass)).toBe(true);
+    expect(dropdownElement.classList.contains(openClass)).toBeTruthy();
   });
 
-  it('openClass - Removes class from button when closed', async () => {
+  it('should remove any provided open classes when closed', async () => {
     // Arrange
     const openClasses = 'class1 class2 class3';
     const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, { openClass: openClasses });
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      openClass: openClasses,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
     await dropdownToggle.open();
 
     // Act
     await dropdownToggle.close();
 
     // Assert
-    expect(dropdownElement.classList.contains(openClasses)).toBe(false);
+    expect(dropdownElement.classList.contains(openClasses)).toBeFalsy();
+  });
+
+  it('should set the dropdown label to the closeLabel when opened ', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      closeLabel: 'Close dropdown',
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // Act
+    await dropdownToggle.open();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Close dropdown');
+  });
+
+  it('should set the dropdown label to the openLabel when closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: 'Open dropdown',
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open();
+
+    // Act
+    await dropdownToggle.close();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
+  });
+
+  it('should set the dropdown label to the openLabel when calling destroy()', async () => {
+    // Arrange
+    const openLabelText = 'Open dropdown';
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      buttonLabelEl: '[data-js-dropdown-label]',
+      openLabel: openLabelText
+    });
+    await dropdownToggle.open();
+
+    // Act
+    dropdownToggle.destroy();
+
+    // Assert
+    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe(openLabelText);
   });
 });
 
-describe('Dropdown callbacks', () => {
+describe('When the dropdown callbacks are utilised', () => {
   it('should call onOpenStart callback if provided', async () => {
     // Arrange
     // vi.fn() is a utility function to create a spy function that we can track if its been called
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
-      onOpenStart: onOpenStartCallback
+      onOpenStart: onOpenStartCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
 
     // Act
@@ -215,7 +518,9 @@ describe('Dropdown callbacks', () => {
     const onOpenEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
-      onOpenEnd: onOpenEndCallback
+      onOpenEnd: onOpenEndCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
 
     // Act
@@ -230,7 +535,9 @@ describe('Dropdown callbacks', () => {
     const onCloseStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
-      onCloseStart: onCloseStartCallback
+      onCloseStart: onCloseStartCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
     await dropdown.open();
 
@@ -246,7 +553,9 @@ describe('Dropdown callbacks', () => {
     const onCloseEndCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdown = new DropdownToggle(dropdownElement, {
-      onCloseEnd: onCloseEndCallback
+      onCloseEnd: onCloseEndCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
     await dropdown.open();
 
@@ -257,13 +566,30 @@ describe('Dropdown callbacks', () => {
     expect(onCloseEndCallback).toHaveBeenCalled();
   });
 
+  it('should call onDestroy callback when instance is destroyed', () => {
+    // Arrange
+    const onDestroyCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onDestroy: onDestroyCallback
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(onDestroyCallback).toHaveBeenCalled();
+  });
+
   it('should pass the dropdown content to onOpenStart callback', async () => {
     // Arrange
     const onOpenStartCallback = vi.fn();
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
-      onOpenStart: onOpenStartCallback
+      onOpenStart: onOpenStartCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
 
     // Act
@@ -279,7 +605,9 @@ describe('Dropdown callbacks', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
-      onOpenEnd: onOpenEndCallback
+      onOpenEnd: onOpenEndCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
 
     // Act
@@ -295,7 +623,9 @@ describe('Dropdown callbacks', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
-      onCloseStart: onCloseStartCallback
+      onCloseStart: onCloseStartCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
     await dropdown.open();
 
@@ -312,7 +642,9 @@ describe('Dropdown callbacks', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdown = new DropdownToggle(dropdownElement, {
-      onCloseEnd: onCloseEndCallback
+      onCloseEnd: onCloseEndCallback,
+      openDuration: 0.001,
+      closeDuration: 0.001,
     });
     await dropdown.open();
 
@@ -322,37 +654,159 @@ describe('Dropdown callbacks', () => {
     // Assert
     expect(onCloseEndCallback).toHaveBeenCalledWith(dropdownContent);
   });
+
+  it('should pass the dropdown content to onDestroy callback', () => {
+    // Arrange
+    const onDestroyCallback = vi.fn();
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdown = new DropdownToggle(dropdownElement, {
+      onDestroy: onDestroyCallback
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(onDestroyCallback).toHaveBeenCalledWith(dropdownContent);
+  });
 });
 
-describe('Custom button label configuration', () => {
-  it('should set the dropdown label to the closeLabel when opened ', async () => {
+describe('When a dropdown is part of a larger group', () => {
+  it('should close previously-opened dropdowns in the group before opening a new one', async () => {
     // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, {
-      buttonLabelEl: '[data-js-dropdown-label]',
-      closeLabel: 'Close dropdown'
+    const previouslyOpenedDropdown = document.querySelector('[data-js-dropdown]');
+    const previouslyOpenedDropdownContent = document.querySelector(`#${previouslyOpenedDropdown.getAttribute('aria-controls')}`);
+    const previouslyOpenedDropdownInstance = new DropdownToggle(previouslyOpenedDropdown, {
+      openDuration: 0.1,
+      closeDuration: 0.1,
+      group: 'group',
     });
 
+    const newlyOpenedDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
+    new DropdownToggle(newlyOpenedDropdown, {
+      openDuration: 0.1,
+      closeDuration: 0.1,
+      group: 'group',
+    });
+
+    await previouslyOpenedDropdownInstance.toggle();
+
     // Act
-    await dropdownToggle.open();
+    newlyOpenedDropdown.click();
 
     // Assert
-    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Close dropdown');
+
+    // We add a small delay to give time for the previously opened dropdown
+    // to close before asserting against it.
+    await delay(250);
+
+    // We want to ensure that the previously-opened dropdown has closed before
+    // we open a new dropdown in the group. As a result, we don't need to wait for the
+    // newly-opened dropdown to finish opening before we check the state of the
+    // previously-opened dropdown. We expect the previously-opened dropdown to be closed
+    // before we open the new one.
+    expect(previouslyOpenedDropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(previouslyOpenedDropdownContent.style.display).toBe('none');
+    expect(previouslyOpenedDropdownContent.style.height).toBe('0px');
   });
 
-  it('should set the dropdown label to the openLabel when closed', async () => {
+  it('should only close dropdowns that are part of the same group', async () => {
     // Arrange
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
-    const dropdownToggle = new DropdownToggle(dropdownElement, {
-      buttonLabelEl: '[data-js-dropdown-label]',
-      openLabel: 'Open dropdown'
+    const dropdownInFirstGroup = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const dropdownInFirstGroupContent = document.querySelector(`#${dropdownInFirstGroup.getAttribute('aria-controls')}`);
+    const dropdownInFirstGroupInstance = new DropdownToggle(dropdownInFirstGroup, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
     });
-    await dropdownToggle.open();
+
+    const dropdownInSecondGroup = document.querySelector('[data-js-group-b] [data-js-dropdown]');
+    const dropdownInSecondGroupInstance = new DropdownToggle(dropdownInSecondGroup, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-b',
+    });
+
+    await dropdownInFirstGroupInstance.open();
 
     // Act
-    await dropdownToggle.close();
+    await dropdownInSecondGroupInstance.toggle();
 
     // Assert
-    expect(dropdownElement.querySelector('[data-js-dropdown-label]').innerText).toBe('Open dropdown');
+    expect(dropdownInFirstGroupContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownInFirstGroupContent.style.display).toBe('block');
+    expect(dropdownInFirstGroupContent.style.height).toBe('auto');
+  });
+
+  it('should remove a dropdown from a group when destroyed', async () => {
+    // Arrange
+    const firstDropdownInGroupAEl = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const firstDropdownInGroupAContent = document.querySelector(`#${firstDropdownInGroupAEl.getAttribute('aria-controls')}`);
+    const firstDropdownInGroupA = new DropdownToggle(firstDropdownInGroupAEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
+    });
+
+    const secondDropdownInGroupAEl = document.querySelector('[data-js-group-a] [data-js-dropdown][aria-controls="accordion2"]');
+    const secondDropdownInGroupA = new DropdownToggle(secondDropdownInGroupAEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group-a',
+    });
+
+    // Act
+    secondDropdownInGroupA.destroy();
+
+    const reInitialisedSecondDropdownEl = document.querySelector('[data-js-group-a] [data-js-dropdown][aria-controls="accordion2"]');
+    const reInitialisedSecondDropdownContent = document.querySelector(`#${reInitialisedSecondDropdownEl.getAttribute('aria-controls')}`);
+    const reInitialisedSecondDropdown = new DropdownToggle(reInitialisedSecondDropdownEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    await reInitialisedSecondDropdown.toggle();
+
+    await firstDropdownInGroupA.toggle();
+
+    // Assert
+    // We expect both dropdowns to be visible because they are no longer
+    // in a group, and so act independently of one another.
+    expect(firstDropdownInGroupAContent.getAttribute('aria-hidden')).toBe('false');
+    expect(firstDropdownInGroupAContent.style.display).toBe('block');
+    expect(firstDropdownInGroupAContent.style.height).toBe('auto');
+
+    expect(reInitialisedSecondDropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(reInitialisedSecondDropdownContent.style.display).toBe('block');
+    expect(reInitialisedSecondDropdownContent.style.height).toBe('auto');
+  });
+
+  it('should remove the group from `groupInstances` if destroyed', async () => {
+    // Arrange
+    const dropdownEl = document.querySelector('[data-js-group-a] [data-js-dropdown]');
+    const dropdown = new DropdownToggle(dropdownEl, {
+      openDuration: 0.001,
+      closeDuration: 0.001,
+      group: 'group'
+    });
+
+    // Act
+    dropdown.destroy();
+
+    // Assert
+    expect(DropdownToggle.groupInstances).toEqual({});
+  });
+
+  it('should have correct attributes when created', async () => {
+    // Arrange
+    const dropdownEl = document.querySelector('[data-js-dropdown]');
+    new DropdownToggle(dropdownEl);
+    const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
+    // No action
+
+    // Assert
+    expect(dropdownEl.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -18,5 +18,6 @@ module.exports = {
     quotes: ['error', 'single'],
     indent: ['error', 2],
     'keyword-spacing': 'warn',
+    'no-unused-vars': 'warn',
   },
 };

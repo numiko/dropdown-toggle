@@ -1,18 +1,19 @@
-var O = Object.defineProperty;
-var g = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var l = (o, t, e) => (g(o, typeof t != "symbol" ? t + "" : t, e), e);
-import u from "gsap";
-const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
+var c = Object.defineProperty;
+var p = (r, t, e) => t in r ? c(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => (p(r, typeof t != "symbol" ? t + "" : t, e), e);
+import l from "gsap";
+const s = class s {
   constructor(t, e = {}) {
+    o(this, "animationDuration", this.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION);
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
       isAnimating: !1
-    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.openOptions = {
-      duration: e.openDuration || d,
-      ease: e.openEase || c
+    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.onDestroy = e.onDestroy, this.openOptions = {
+      duration: e.openDuration || this.animationDuration,
+      ease: e.openEase || s.DEFAULT_EASE
     }, this.closeOptions = {
-      duration: e.closeDuration || d,
-      ease: e.closeEase || c
+      duration: e.closeDuration || this.animationDuration,
+      ease: e.closeEase || s.DEFAULT_EASE
     }, this.group = e.group || null, this.init();
   }
   /**
@@ -27,7 +28,9 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * Toggles the open/close state of the dropdown.
    */
   async toggle() {
-    this.state.isAnimating || (await this.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open());
+    if (this.state.isAnimating)
+      return Promise.resolve();
+    await this.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
   }
   /**
    * Closes all dropdowns in the specified group except for the current instance.
@@ -35,8 +38,8 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
    */
   async closeAllInGroup(t, e) {
-    const r = (s.groupInstances[t] || []).filter((i) => i !== e && i.isOpen()).map((i) => i.close());
-    await Promise.all(r);
+    const a = (s.groupInstances[t] || []).filter((i) => i !== e && i.isOpen()).map((i) => i.close());
+    await Promise.all(a);
   }
   /**
    * Checks if the dropdown is open.
@@ -58,50 +61,46 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   }
   /**
    * Opens the dropdown.
-   * @param {Object} [options=this.openOptions] - The options for the animation.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  open(t = this.openOptions) {
-    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(), this.animate(!0, t));
+  open() {
+    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0));
   }
   /**
    * Closes the dropdown.
-   * @param {Object} [options=this.closeOptions] - The options for the animation.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  close(t = this.closeOptions) {
-    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(), this.animate(!1, t)) : Promise.resolve();
+  close() {
+    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1)) : Promise.resolve();
   }
   /**
    * Animates the opening or closing of the dropdown.
-   * @param {boolean} opening - Indicates if the dropdown is being opened or closed.
-   * @param {Object} options - The options for the animation, including duration and ease.
+   * @param {boolean} isOpen - Indicates if the dropdown is being opened or closed.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   animate(t) {
     const e = t ? this.defaultOpenTween(this.dropdownItem) : this.defaultCloseTween(this.dropdownItem);
     return new Promise((n) => {
-      var r, i;
-      t ? (r = this.onOpenStart) == null || r.call(this, this.dropdownItem) : (i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
-        var a, h;
-        this.state.isAnimating = !1, t ? (a = this.onOpenEnd) == null || a.call(this, this.dropdownItem) : (h = this.onCloseEnd) == null || h.call(this, this.dropdownItem), n();
+      var a, i;
+      t ? (a = this.onOpenStart) == null || a.call(this, this.dropdownItem) : (i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
+        var h, u;
+        this.state.isAnimating = !1, t ? (h = this.onOpenEnd) == null || h.call(this, this.dropdownItem) : (u = this.onCloseEnd) == null || u.call(this, this.dropdownItem), n();
       });
     });
   }
   /**
    * The default opening tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", u.fromTo(
+    return this.dropdownItem.style.display = "block", l.fromTo(
       t,
       {
         height: 0
       },
       {
         height: "auto",
-        duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
+        duration: this.openOptions.duration,
         ease: this.openOptions.ease
       }
     );
@@ -109,12 +108,11 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   /**
    * The default closing tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultCloseTween(t) {
-    return u.to(t, {
+    return l.to(t, {
       height: 0,
-      duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
+      duration: this.closeOptions.duration,
       ease: this.closeOptions.ease,
       onComplete: () => {
         this.dropdownItem.style.display = "none";
@@ -147,10 +145,11 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
     t.classList.remove(...n);
   }
   /**
-   * Sets the label of the button based on the dropdown's state.
+   * Sets the label of the dropdown button.
+   * @param {string} label - The string to use for the button's label
    */
-  setButtonLabel() {
-    this.buttonLabelEl && (this.buttonLabelEl.textContent = this.isOpen() ? this.closeLabel : this.openLabel);
+  setButtonLabel(t) {
+    !t || !this.buttonLabelEl || (this.buttonLabelEl.textContent = t);
   }
   /**
    * Adds event listeners for the dropdown toggle, including click, keydown, and outside click.
@@ -175,14 +174,15 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
     this.dropdownItem.contains(t.target) || this.button.contains(t.target) || this.close();
   }
   destroy() {
-    this.resetState(), this.removeEventListeners(), this.removeFromGroup();
+    var t;
+    this.resetState(), this.removeEventListeners(), this.removeFromGroup(), (t = this.onDestroy) == null || t.call(this, this.dropdownItem);
   }
   /**
   * Resets the visual and ARIA state of the dropdown to its initial state. This method is typically
   * called as part of the component teardown process to ensure the component is cleanly reset.
   */
   resetState() {
-    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
+    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
   }
   /**
   * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
@@ -207,11 +207,11 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.openOnLoad && this.open({}, !0), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
+    this.setAria(!1), this.openOnLoad && this.open(!0), this.openLabel && this.setButtonLabel(this.openLabel), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
-l(s, "groupInstances", {});
-let m = s;
+o(s, "DEFAULT_DURATION", 0.3), o(s, "DEFAULT_EASE", "power2.easeInOut"), o(s, "DURATION_REDUCED_MOTION", 1e-3), o(s, "groupInstances", {});
+let d = s;
 export {
-  m as DropdownToggle
+  d as DropdownToggle
 };
