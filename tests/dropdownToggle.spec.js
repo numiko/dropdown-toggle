@@ -7,7 +7,7 @@ import { DropdownToggle } from '../lib/DropdownToggle';
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
 
-// Initalise Happy DOM
+// Initialise Happy DOM
 const window = new Window();
 const document = window.document;
 
@@ -15,7 +15,7 @@ const document = window.document;
 global.window = window;
 global.document = document;
 
-// utility to create a small delay
+// Utility to create a small delay
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
