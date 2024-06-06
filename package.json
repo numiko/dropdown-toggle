@@ -1,22 +1,40 @@
 {
   "name": "@numiko/dropdown-toggle",
-  "version": "0.2.1",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
   "private": true,
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/numiko/dropdown-toggle.git"
+  "main": "./dist/DropdownToggle.umd.js",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/DropdownToggle.es.js",
+      "require": "./dist/DropdownToggle.umd.js"
+    }
   },
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/numiko/dropdown-toggle#readme",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.2.2",
+    "eslint": "^8.56.0",
+    "happy-dom": "^13.3.8",
+    "vite": "^5.0.8",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^1.2.2"
+  },
   "dependencies": {
-    "@numiko/animation": "bitbucket:numiko/@numiko/animation#0.2.0",
-    "gsap": "^3.11.4"
+    "gsap": "^3.12.5"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.18.0"
   }
 }
