@@ -827,7 +827,7 @@ describe('When onFocusLeave is set to true', () => {
     const event = new window.KeyboardEvent('keyup', { key: 'Tab' });
     document.dispatchEvent(event);
 
-    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // Because onFocusLeave uses close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
     // a promise so we can simply wait a little.
     await delay(250);
 
@@ -838,7 +838,7 @@ describe('When onFocusLeave is set to true', () => {
     expect(dropdownContent.style.display).toBe('none');
   });
 
-  it('should not close dropdown unless Tab is pressed', async () => {
+  it('should not close the dropdown if the key pressed is not `Tab`', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -853,7 +853,7 @@ describe('When onFocusLeave is set to true', () => {
     const event = new window.KeyboardEvent('keyup', { key: 'Esc' });
     document.dispatchEvent(event);
 
-    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // As part of `onFocusLeave`, close() could be called if the test fails, which is asynchronous we need to wait for it to complete but the event itself doesnt return
     // a promise so we can simply wait a little.
     await delay(250);
 
@@ -864,7 +864,7 @@ describe('When onFocusLeave is set to true', () => {
     expect(dropdownContent.style.display).toBe('block');
   });
 
-  it('should close the dropdown if the user tabs outside of it', async () => {
+  it('should not close the dropdown if the focus stays within the dropdown element', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
@@ -880,7 +880,7 @@ describe('When onFocusLeave is set to true', () => {
     const event = new window.KeyboardEvent('keyup', { key: 'Tab', bubbles: true });
     dropdownLink.dispatchEvent(event);
 
-    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // As part of `onFocusLeave`, close() could be called if the test fails, which is asynchronous we need to wait for it to complete but the event itself doesnt return
     // a promise so we can simply wait a little.
     await delay(250);
 
