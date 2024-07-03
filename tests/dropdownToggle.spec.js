@@ -2,12 +2,12 @@ import { Window } from 'happy-dom';
 import fs from 'fs';
 import path from 'path';
 import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest';
-import { DropdownToggle, DEFAULT_DURATION, DURATION_REDUCED_MOTION } from '../lib/DropdownToggle';
+import { DropdownToggle } from '../lib/DropdownToggle';
 
 // Read the HTML document content
 const htmlDocumentContent = fs.readFileSync(path.join(process.cwd(), 'index.html')).toString();
 
-// Initalise Happy DOM
+// Initialise Happy DOM
 const window = new Window();
 const document = window.document;
 
@@ -15,7 +15,7 @@ const document = window.document;
 global.window = window;
 global.document = document;
 
-// utility to create a small delay
+// Utility to create a small delay
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -119,25 +119,25 @@ describe('When the dropdown is interacted with', () => {
   it('should not interrupt the open animation if dropdown is clicked whilst opening', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    const dropdown = new DropdownToggle(dropdownElement, {
-      openDuration: 0.5,
-      closeDuration: 0.5,
+    new DropdownToggle(dropdownElement, {
+      openDuration: 0.25,
+      closeDuration: 0.25,
     });
 
     // Act
     // We use a click method instead of a public method because
     // we don't want to wait for the open animation to resolve
-    // before we trigger the second click; the second click
-    // is simulated via the `toggle` method as this is async
-    // and allows us to wait for the animation to complete
-    // before making our assertion.
+    // before we trigger the second click.
     dropdownElement.click();
 
-    // A minor delay allows the side-effects from the click handler
-    // to run before we trigger the second click — via the `toggle` method.
-    await delay(20);
+    // `rAF` gives the dropdown time to start opening before we trigger
+    // the second click.
+    requestAnimationFrame(() => {
+      dropdownElement.click();
+    });
 
-    await dropdown.toggle();
+    // Wait for the dropdown to finish opening.
+    await delay(300);
 
     // Assert
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
@@ -286,6 +286,18 @@ describe('When the dropdown getters are interacted with', () => {
 
 describe('When the dropdown is initialized', () => {
 
+  it('should use the custom default duration if provided', () => {
+    DropdownToggle.DEFAULT_DURATION = 0.2;
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.duration).toBe(0.2);
+  });
+
+  it('should use the custom default ease if provided', () => {
+    DropdownToggle.DEFAULT_EASE = 'power1.easeInOut';
+    const dropdown = new DropdownToggle('[data-js-dropdown]');
+    expect(dropdown.openOptions.ease).toBe('power1.easeInOut');
+  });
+
   it('should animate almost immediately if a user prefers reduced motion', () => {
     // We mock the matchMedia method so that it always returns true.
     // This allows us to simulate a user having 'prefers-reduced-motion' enabled
@@ -299,20 +311,20 @@ describe('When the dropdown is initialized', () => {
 
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DURATION_REDUCED_MOTION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
   });
 
   it('should use the default open duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
 
   it('should use the default close duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.closeOptions.duration).toBe(DEFAULT_DURATION);
+    expect(dropdown.closeOptions.duration).toBe(DropdownToggle.DEFAULT_DURATION);
   });
 
   it('should set the button element properly if a string is passed in', () => {
@@ -784,6 +796,18 @@ describe('When a dropdown is part of a larger group', () => {
 
     // Assert
     expect(DropdownToggle.groupInstances).toEqual({});
+  });
+
+  it('should have correct attributes when created', async () => {
+    // Arrange
+    const dropdownEl = document.querySelector('[data-js-dropdown]');
+    new DropdownToggle(dropdownEl);
+    const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
+    // No action
+
+    // Assert
+    expect(dropdownEl.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
   });
 });
 
