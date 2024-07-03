@@ -1,18 +1,19 @@
-var O = Object.defineProperty;
-var b = (o, t, e) => t in o ? O(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var l = (o, t, e) => (b(o, typeof t != "symbol" ? t + "" : t, e), e);
-import u from "gsap";
-const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
+var p = Object.defineProperty;
+var m = (o, t, e) => t in o ? p(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var a = (o, t, e) => (m(o, typeof t != "symbol" ? t + "" : t, e), e);
+import l from "gsap";
+const O = 0.3, d = "power2.easeInOut", b = 1e-3, s = class s {
   constructor(t, e = {}) {
+    a(this, "animationDuration", this.prefersReducedMotion() ? b : O);
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
       isAnimating: !1
-    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.onDestroy = e.onDestroy, this.openOptions = {
-      duration: e.openDuration || d,
-      ease: e.openEase || c
+    }, this.button = typeof t == "string" ? document.querySelector(t) : t, this.buttonLabelEl = typeof e.buttonLabelEl == "string" ? this.button.querySelector(e.buttonLabelEl) : e.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = e.openLabel || "Open", this.closeLabel = e.closeLabel || "Close", this.openClass = e.openClass, this.openOnLoad = !!e.openOnLoad, this.closeOnEsc = !!e.closeOnEsc, this.closeOnOutsideClick = !!e.closeOnOutsideClick, this.onOpenStart = e.onOpenStart, this.onOpenEnd = e.onOpenEnd, this.onCloseStart = e.onCloseStart, this.onCloseEnd = e.onCloseEnd, this.onDestroy = e.onDestroy, this.onFocusLeave = e.onFocusLeave, this.openOptions = {
+      duration: e.openDuration || this.animationDuration,
+      ease: e.openEase || d
     }, this.closeOptions = {
-      duration: e.closeDuration || d,
-      ease: e.closeEase || c
+      duration: e.closeDuration || this.animationDuration,
+      ease: e.closeEase || d
     }, this.group = e.group || null, this.init();
   }
   /**
@@ -75,33 +76,31 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   /**
    * Animates the opening or closing of the dropdown.
    * @param {boolean} opening - Indicates if the dropdown is being opened or closed.
-   * @param {Object} options - The options for the animation, including duration and ease.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   animate(t) {
     const e = t ? this.defaultOpenTween(this.dropdownItem) : this.defaultCloseTween(this.dropdownItem);
     return new Promise((n) => {
       var r, i;
-      t ? (r = this.onOpenStart) == null || r.call(this, this.dropdownItem) : (i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
-        var a, h;
-        this.state.isAnimating = !1, t ? (a = this.onOpenEnd) == null || a.call(this, this.dropdownItem) : (h = this.onCloseEnd) == null || h.call(this, this.dropdownItem), n();
+      t ? ((r = this.onOpenStart) == null || r.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
+        var h, u;
+        this.state.isAnimating = !1, t ? (h = this.onOpenEnd) == null || h.call(this, this.dropdownItem) : (u = this.onCloseEnd) == null || u.call(this, this.dropdownItem), n();
       });
     });
   }
   /**
    * The default opening tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", u.fromTo(
+    return this.dropdownItem.style.display = "block", l.fromTo(
       t,
       {
         height: 0
       },
       {
         height: "auto",
-        duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
+        duration: this.openOptions.duration,
         ease: this.openOptions.ease
       }
     );
@@ -109,12 +108,11 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
   /**
    * The default closing tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {Object} options - Animation options including duration, ease, and onComplete callback.
    */
   defaultCloseTween(t) {
-    return u.to(t, {
+    return l.to(t, {
       height: 0,
-      duration: this.prefersReducedMotion() ? p : this.closeOptions.duration,
+      duration: this.closeOptions.duration,
       ease: this.closeOptions.ease,
       onComplete: () => {
         this.dropdownItem.style.display = "none";
@@ -175,6 +173,15 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
       return;
     this.dropdownItem.contains(t.target) || this.button.contains(t.target) || this.close();
   }
+  /**
+   * Handles the focus leaving the dropdown to close it.
+   * @param {KeyboardEvent} e - The keyboard event.
+   */
+  onFocusLeaveHandler(t) {
+    if (t.key !== "Tab")
+      return;
+    this.dropdownItem.contains(t.target) || this.close();
+  }
   destroy() {
     var t;
     this.resetState(), this.removeEventListeners(), this.removeFromGroup(), (t = this.onDestroy) == null || t.call(this, this.dropdownItem);
@@ -212,8 +219,10 @@ const d = 0.3, c = "power2.easeInOut", p = 1e-3, s = class s {
     this.openOnLoad && this.open({}, !0), this.openLabel && this.setButtonLabel(this.openLabel), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
-l(s, "groupInstances", {});
-let m = s;
+a(s, "groupInstances", {});
+let c = s;
 export {
-  m as DropdownToggle
+  O as DEFAULT_DURATION,
+  b as DURATION_REDUCED_MOTION,
+  c as DropdownToggle
 };
