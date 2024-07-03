@@ -786,3 +786,84 @@ describe('When a dropdown is part of a larger group', () => {
     expect(DropdownToggle.groupInstances).toEqual({});
   });
 });
+
+describe('When onFocusLeave is set to true', () => {
+  it('should close the dropdown if the user tabs outside of it', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      onFocusLeave: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open(); // Open dropdown for testing
+
+    // Act
+    const event = new window.KeyboardEvent('keyup', { key: 'Tab' });
+    document.dispatchEvent(event);
+
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // a promise so we can simply wait a little.
+    await delay(250);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
+    expect(dropdownContent.style.height).toBe('0px');
+    expect(dropdownContent.style.display).toBe('none');
+  });
+
+  it('should not close dropdown unless Tab is pressed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      onFocusLeave: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open(); // Open dropdown for testing
+
+    // Act
+    const event = new window.KeyboardEvent('keyup', { key: 'Esc' });
+    document.dispatchEvent(event);
+
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // a promise so we can simply wait a little.
+    await delay(250);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+  });
+
+  it('should close the dropdown if the user tabs outside of it', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownLink = document.querySelector('[data-js-dropdown-link]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      onFocusLeave: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+    await dropdownToggle.open(); // Open dropdown for testing
+
+    // Act
+    const event = new window.KeyboardEvent('keyup', { key: 'Tab', bubbles: true });
+    dropdownLink.dispatchEvent(event);
+
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // a promise so we can simply wait a little.
+    await delay(250);
+
+    // Assert
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+  });
+});
