@@ -1,7 +1,7 @@
 {
   "name": "@numiko/dropdown-toggle",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -42,8 +42,12 @@
   "release-it": {
     "$schema": "https://unpkg.com/release-it/schema/release-it.json",
     "hooks": {
-      "before:init": ["npm run test"],
-      "after:bump": ["npm run build"]
+      "before:init": [
+        "npm run test"
+      ],
+      "after:bump": [
+        "npm run build"
+      ]
     }
   }
 }
