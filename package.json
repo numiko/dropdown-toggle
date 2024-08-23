@@ -1,7 +1,7 @@
 {
   "name": "@numiko/dropdown-toggle",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/"
+    "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/",
+    "release": "release-it"
   },
   "main": "./dist/DropdownToggle.umd.js",
   "files": [
@@ -27,6 +28,7 @@
     "@vitest/coverage-v8": "^1.2.2",
     "eslint": "^8.56.0",
     "happy-dom": "^13.3.8",
+    "release-it": "^17.6.0",
     "vite": "^5.0.8",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^1.2.2"
@@ -36,5 +38,16 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.18.0"
+  },
+  "release-it": {
+    "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "hooks": {
+      "before:init": [
+        "npm run test -- --watch=false"
+      ],
+      "after:bump": [
+        "npm run build"
+      ]
+    }
   }
 }
