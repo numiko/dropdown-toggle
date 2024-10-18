@@ -1,6 +1,6 @@
 var d = Object.defineProperty;
 var p = (r, t, e) => t in r ? d(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => (p(r, typeof t != "symbol" ? t + "" : t, e), e);
+var o = (r, t, e) => p(r, typeof t != "symbol" ? t + "" : t, e);
 import l from "gsap";
 const s = class s {
   constructor(t, e = {}) {
@@ -28,8 +28,7 @@ const s = class s {
    * Toggles the open/close state of the dropdown.
    */
   async toggle() {
-    if (this.state.isAnimating)
-      return Promise.resolve();
+    if (this.state.isAnimating) return Promise.resolve();
     await this.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
   }
   /**
@@ -130,8 +129,7 @@ const s = class s {
   * Add a class (or multiple) to an element.
   */
   addClasses(t, e) {
-    if (!t || !e)
-      return;
+    if (!t || !e) return;
     const n = e.split(" ");
     t.classList.add(...n);
   }
@@ -139,8 +137,7 @@ const s = class s {
   * Removes the class (or multiple) of an element.
   */
   removeClasses(t, e) {
-    if (!t || !e)
-      return;
+    if (!t || !e) return;
     const n = e.split(" ");
     t.classList.remove(...n);
   }
@@ -169,8 +166,7 @@ const s = class s {
    * @param {MouseEvent} e - The mouse event.
    */
   onClickOutside(t) {
-    if (!this.isOpen())
-      return;
+    if (!this.isOpen()) return;
     this.dropdownItem.contains(t.target) || this.button.contains(t.target) || this.close();
   }
   /**
@@ -178,8 +174,7 @@ const s = class s {
    * @param {KeyboardEvent} e - The keyboard event.
    */
   onFocusLeaveHandler(t) {
-    if (t.key !== "Tab")
-      return;
+    if (t.key !== "Tab") return;
     this.dropdownItem.contains(t.target) || this.close();
   }
   destroy() {
