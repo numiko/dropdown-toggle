@@ -7,6 +7,15 @@ import { DropdownToggle } from '../lib/DropdownToggle';
 const htmlDocumentContent = `
 <div data-js-group-a class="mb-4">
   <div class="border">
+    <button data-js-dropdown aria-controls="accordion1" type="button" aria=expanded=true>
+      <span data-js-dropdown-label>An accordion with user added aria-expanded=true</span>
+    </button>
+    <div id="accordion1" class="hidden overflow-hidden">
+      <a href="/" data-js-dropdown-link>This is a link</a>
+      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+    </div>
+  </div>
+  <div class="border">
     <button data-js-dropdown aria-controls="accordion1" type="button">
       <span data-js-dropdown-label>An accordion</span>
     </button>
@@ -374,18 +383,30 @@ describe('When the dropdown is initialized', () => {
     expect(dropdown.button).toBe(dropdownElement);
   });
 
-  it('should open on load', async () => {
+  it('should open on load immediately', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     new DropdownToggle(dropdownElement, {
       openOnLoad: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
     });
 
     // A minor delay ensures the dropdown is open before we
     // assert against it.
     await delay(100);
+
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownContent.style.height).toBe('auto');
+    expect(dropdownContent.style.display).toBe('block');
+
+  });
+
+  it('should open on load if html markup states aria-expanded=true', async () => {
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    new DropdownToggle(dropdownElement, {
+      openOnLoad: true,
+    });
 
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
     expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
