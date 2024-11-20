@@ -1,7 +1,7 @@
-var d = Object.defineProperty;
-var p = (r, t, e) => t in r ? d(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var c = Object.defineProperty;
+var p = (r, t, e) => t in r ? c(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
 var o = (r, t, e) => p(r, typeof t != "symbol" ? t + "" : t, e);
-import l from "gsap";
+import d from "gsap";
 const s = class s {
   constructor(t, e = {}) {
     o(this, "animationDuration", this.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION);
@@ -92,7 +92,7 @@ const s = class s {
    * @param {HTMLElement} element - The element to animate.
    */
   defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", l.fromTo(
+    return this.dropdownItem.style.display = "block", d.fromTo(
       t,
       {
         height: 0
@@ -109,7 +109,7 @@ const s = class s {
    * @param {HTMLElement} element - The element to animate.
    */
   defaultCloseTween(t) {
-    return l.to(t, {
+    return d.to(t, {
       height: 0,
       duration: this.closeOptions.duration,
       ease: this.closeOptions.ease,
@@ -207,15 +207,18 @@ const s = class s {
       t > -1 && s.groupInstances[this.group].splice(t, 1), s.groupInstances[this.group].length === 0 && delete s.groupInstances[this.group];
     }
   }
+  dropdownShouldBeOpen() {
+    return this.button.getAttribute("aria-expanded") === "true" || this.openOnLoad;
+  }
   /**
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.setAria(!1), this.openOnLoad && this.open(!0), this.openLabel && this.setButtonLabel(this.openLabel), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
+    this.dropdownShouldBeOpen() ? (this.state.isOpen = !0, this.setAria(!0), this.addClasses(this.button, this.openClass), this.closeLabel && this.setButtonLabel(this.closeLabel), this.dropdownItem.style.display = "block", this.dropdownItem.style.height = "auto") : (this.setAria(!1), this.openLabel && this.setButtonLabel(this.openLabel)), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
 o(s, "DEFAULT_DURATION", 0.3), o(s, "DEFAULT_EASE", "power2.easeInOut"), o(s, "DURATION_REDUCED_MOTION", 1e-3), o(s, "groupInstances", {});
-let c = s;
+let l = s;
 export {
-  c as DropdownToggle
+  l as DropdownToggle
 };
