@@ -63,14 +63,14 @@ const s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   open() {
-    return this.state.isOpen ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0));
+    return this.isOpen() ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0));
   }
   /**
    * Closes the dropdown.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   close() {
-    return this.state.isOpen ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1)) : Promise.resolve();
+    return this.isOpen() ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1)) : Promise.resolve();
   }
   /**
    * Animates the opening or closing of the dropdown.
