@@ -1,7 +1,7 @@
-var c = Object.defineProperty;
-var p = (r, t, e) => t in r ? c(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => p(r, typeof t != "symbol" ? t + "" : t, e);
-import d from "gsap";
+var O = Object.defineProperty;
+var E = (r, t, e) => t in r ? O(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => E(r, typeof t != "symbol" ? t + "" : t, e);
+import h from "gsap";
 const s = class s {
   constructor(t, e = {}) {
     o(this, "animationDuration", this.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION);
@@ -62,54 +62,53 @@ const s = class s {
    * Opens the dropdown.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  open() {
-    return this.isOpen() ? Promise.resolve() : (this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0));
+  open(t = !1) {
+    return this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0, t);
   }
   /**
    * Closes the dropdown.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  close() {
-    return this.isOpen() ? (this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1)) : Promise.resolve();
+  close(t = !1) {
+    return this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1, t);
   }
   /**
    * Animates the opening or closing of the dropdown.
-   * @param {boolean} isOpen - Indicates if the dropdown is being opened or closed.
+   * @param {boolean} open - Indicates if the dropdown is being opened or closed.
+   * @param {boolean} instant - Indicates if the animation should be instant.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  animate(t) {
-    const e = t ? this.defaultOpenTween(this.dropdownItem) : this.defaultCloseTween(this.dropdownItem);
-    return new Promise((n) => {
-      var a, i;
-      t ? ((a = this.onOpenStart) == null || a.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((i = this.onCloseStart) == null || i.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, this.state.isOpen = t, e.then(() => {
-        var h, u;
-        this.state.isAnimating = !1, t ? (h = this.onOpenEnd) == null || h.call(this, this.dropdownItem) : (u = this.onCloseEnd) == null || u.call(this, this.dropdownItem), n();
+  animate(t, e = !1) {
+    const n = t ? this.defaultOpenTween(this.dropdownItem, e) : this.defaultCloseTween(this.dropdownItem, e);
+    return new Promise((a) => {
+      var i, d, u, l;
+      t ? ((i = this.onOpenStart) == null || i.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((d = this.onCloseStart) == null || d.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, this.state.isOpen = t, e ? (this.state.isAnimating = !1, t ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (l = this.onCloseEnd) == null || l.call(this, this.dropdownItem), a()) : n.then(() => {
+        var c, p;
+        this.state.isAnimating = !1, t ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (p = this.onCloseEnd) == null || p.call(this, this.dropdownItem), a();
       });
     });
   }
   /**
    * The default opening tween animation.
    * @param {HTMLElement} element - The element to animate.
+   * @param {boolean} instant - Indicates if the animation should be instant.
    */
-  defaultOpenTween(t) {
-    return this.dropdownItem.style.display = "block", d.fromTo(
+  defaultOpenTween(t, e = !1) {
+    return this.dropdownItem.style.display = "block", e ? h.set(t, { height: "auto" }) : h.fromTo(
       t,
-      {
-        height: 0
-      },
-      {
-        height: "auto",
-        duration: this.openOptions.duration,
-        ease: this.openOptions.ease
-      }
+      { height: 0 },
+      { height: "auto", duration: this.openOptions.duration, ease: this.openOptions.ease }
     );
   }
   /**
    * The default closing tween animation.
    * @param {HTMLElement} element - The element to animate.
+   * @param {boolean} instant - Indicates if the animation should be instant.
    */
-  defaultCloseTween(t) {
-    return d.to(t, {
+  defaultCloseTween(t, e = !1) {
+    return e ? h.set(t, { height: 0, onComplete: () => {
+      this.dropdownItem.style.display = "none";
+    } }) : h.to(t, {
       height: 0,
       duration: this.closeOptions.duration,
       ease: this.closeOptions.ease,
@@ -207,6 +206,10 @@ const s = class s {
       t > -1 && s.groupInstances[this.group].splice(t, 1), s.groupInstances[this.group].length === 0 && delete s.groupInstances[this.group];
     }
   }
+  /**
+   * Checks if the dropdown should be open based on the markup and the openOnLoad option.
+   * @returns {boolean} True if the dropdown should be open, false otherwise.
+   */
   dropdownShouldBeOpen() {
     return this.button.getAttribute("aria-expanded") === "true" || this.openOnLoad;
   }
@@ -214,11 +217,11 @@ const s = class s {
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.dropdownShouldBeOpen() ? (this.state.isOpen = !0, this.setAria(!0), this.addClasses(this.button, this.openClass), this.closeLabel && this.setButtonLabel(this.closeLabel), this.dropdownItem.style.display = "block", this.dropdownItem.style.height = "auto") : (this.setAria(!1), this.openLabel && this.setButtonLabel(this.openLabel)), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
+    this.dropdownShouldBeOpen() ? this.open(!0) : this.close(!0), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
 o(s, "DEFAULT_DURATION", 0.3), o(s, "DEFAULT_EASE", "power2.easeInOut"), o(s, "DURATION_REDUCED_MOTION", 1e-3), o(s, "groupInstances", {});
-let l = s;
+let m = s;
 export {
-  l as DropdownToggle
+  m as DropdownToggle
 };

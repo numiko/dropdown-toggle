@@ -7,7 +7,5 @@ const dropdowns = document.querySelectorAll('[data-js-dropdown]');
 
 dropdowns.forEach(dropdown => {
   new DropdownToggle(dropdown, {
-    openOnLoad: true,
-
   });
 });
