@@ -1,6 +1,6 @@
-var O = Object.defineProperty;
-var E = (r, t, e) => t in r ? O(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => E(r, typeof t != "symbol" ? t + "" : t, e);
+var m = Object.defineProperty;
+var O = (r, t, e) => t in r ? m(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => O(r, typeof t != "symbol" ? t + "" : t, e);
 import h from "gsap";
 const s = class s {
   constructor(t, e = {}) {
@@ -37,7 +37,7 @@ const s = class s {
    * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
    */
   async closeAllInGroup(t, e) {
-    const a = (s.groupInstances[t] || []).filter((i) => i !== e && i.isOpen()).map((i) => i.close());
+    const a = (s.groupInstances[t] || []).filter((n) => n !== e && n.isOpen()).map((n) => n.close());
     await Promise.all(a);
   }
   /**
@@ -63,14 +63,14 @@ const s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   open(t = !1) {
-    return this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(!0, t);
+    return this.state.isOpen = !0, this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.animate(t);
   }
   /**
    * Closes the dropdown.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   close(t = !1) {
-    return this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(!1, t);
+    return this.state.isOpen = !1, this.removeClasses(this.button, this.openClass), this.setAria(!1), this.setButtonLabel(this.openLabel), this.animate(t);
   }
   /**
    * Animates the opening or closing of the dropdown.
@@ -78,13 +78,13 @@ const s = class s {
    * @param {boolean} instant - Indicates if the animation should be instant.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
-  animate(t, e = !1) {
-    const n = t ? this.defaultOpenTween(this.dropdownItem, e) : this.defaultCloseTween(this.dropdownItem, e);
-    return new Promise((a) => {
-      var i, d, u, l;
-      t ? ((i = this.onOpenStart) == null || i.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((d = this.onCloseStart) == null || d.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, this.state.isOpen = t, e ? (this.state.isAnimating = !1, t ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (l = this.onCloseEnd) == null || l.call(this, this.dropdownItem), a()) : n.then(() => {
-        var c, p;
-        this.state.isAnimating = !1, t ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (p = this.onCloseEnd) == null || p.call(this, this.dropdownItem), a();
+  animate(t = !1) {
+    const e = this.isOpen() ? this.defaultOpenTween(this.dropdownItem, t) : this.defaultCloseTween(this.dropdownItem, t);
+    return new Promise((i) => {
+      var a, n, d, u;
+      this.isOpen() ? ((a = this.onOpenStart) == null || a.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((n = this.onCloseStart) == null || n.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, t ? (this.state.isAnimating = !1, this.isOpen() ? (d = this.onOpenEnd) == null || d.call(this, this.dropdownItem) : (u = this.onCloseEnd) == null || u.call(this, this.dropdownItem), i()) : e.then(() => {
+        var l, c;
+        this.state.isAnimating = !1, this.isOpen() ? (l = this.onOpenEnd) == null || l.call(this, this.dropdownItem) : (c = this.onCloseEnd) == null || c.call(this, this.dropdownItem), i();
       });
     });
   }
@@ -129,16 +129,16 @@ const s = class s {
   */
   addClasses(t, e) {
     if (!t || !e) return;
-    const n = e.split(" ");
-    t.classList.add(...n);
+    const i = e.split(" ");
+    t.classList.add(...i);
   }
   /*
   * Removes the class (or multiple) of an element.
   */
   removeClasses(t, e) {
     if (!t || !e) return;
-    const n = e.split(" ");
-    t.classList.remove(...n);
+    const i = e.split(" ");
+    t.classList.remove(...i);
   }
   /**
    * Sets the label of the dropdown button.
@@ -221,7 +221,7 @@ const s = class s {
   }
 };
 o(s, "DEFAULT_DURATION", 0.3), o(s, "DEFAULT_EASE", "power2.easeInOut"), o(s, "DURATION_REDUCED_MOTION", 1e-3), o(s, "groupInstances", {});
-let m = s;
+let p = s;
 export {
-  m as DropdownToggle
+  p as DropdownToggle
 };
