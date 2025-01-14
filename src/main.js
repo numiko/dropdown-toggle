@@ -3,46 +3,63 @@ import { DropdownToggle } from '../lib/DropdownToggle';
 /**
  * This file is used to run the package locally for development and testing purposes.
  */
-const dropdownsGroupA = document.querySelectorAll('[data-js-group-a] [data-js-dropdown]');
-const dropdownsGroupB = document.querySelectorAll('[data-js-group-b] [data-js-dropdown]');
+const dropdownsGroupDefault = document.querySelectorAll('[data-js-group-default] [data-js-dropdown]');
+const dropdownsGroupAccordion = document.querySelectorAll('[data-js-group-accordion] [data-js-dropdown]');
+const dropdownsGroupAccordionAwait = document.querySelectorAll('[data-js-group-accordion-await] [data-js-dropdown]');
 
-dropdownsGroupA.forEach(dropdown => {
+dropdownsGroupDefault.forEach(dropdown => {
   new DropdownToggle(dropdown, {
-    group: 'group-a',
-    groupExclusive: true
+    group: 'group-default',
   });
 });
 
-dropdownsGroupB.forEach(dropdown => {
+dropdownsGroupAccordion.forEach(dropdown => {
   new DropdownToggle(dropdown, {
-    group: 'group-b'
+    group: 'group-accordion',
+    groupMode: 'accordion'
+  });
+});
+
+dropdownsGroupAccordionAwait.forEach(dropdown => {
+  new DropdownToggle(dropdown, {
+    group: 'group-accordion-await',
+    groupMode: 'accordion-await'
   });
 });
 
 /**
- * Toggle all dropdowns in group A
+ * Toggle all dropdowns
  */
-document.querySelector('[data-js-dropdown-toggle-a]').addEventListener('click', (e) => {
+document.querySelector('[data-js-dropdown-toggle-default]').addEventListener('click', (e) => {
 
   let isPressed = e.currentTarget.getAttribute('aria-pressed') === 'true';
 
   if (!isPressed) {
-    DropdownToggle.openAllInGroup('group-a');
+    DropdownToggle.openAllInGroup('group-default');
   } else {
-    DropdownToggle.closeAllInGroup('group-a');
+    DropdownToggle.closeAllInGroup('group-default');
   }
   updateToggleButton(e.currentTarget, !isPressed);
 });
 
-/**
- * Toggle all dropdowns in group B
- */
-document.querySelector('[data-js-dropdown-toggle-b]').addEventListener('click', (e) => {
+
+document.querySelector('[data-js-dropdown-toggle-accordion]').addEventListener('click', (e) => {
   let isPressed = e.currentTarget.getAttribute('aria-pressed') === 'true';
   if (!isPressed) {
-    DropdownToggle.openAllInGroup('group-b');
+    DropdownToggle.openAllInGroup('group-accordion');
   } else {
-    DropdownToggle.closeAllInGroup('group-b');
+    DropdownToggle.closeAllInGroup('group-accordion');
+  }
+
+  updateToggleButton(e.currentTarget, !isPressed);
+});
+
+document.querySelector('[data-js-dropdown-toggle-accordion-await]').addEventListener('click', (e) => {
+  let isPressed = e.currentTarget.getAttribute('aria-pressed') === 'true';
+  if (!isPressed) {
+    DropdownToggle.openAllInGroup('group-accordion-await');
+  } else {
+    DropdownToggle.closeAllInGroup('group-accordion-await');
   }
 
   updateToggleButton(e.currentTarget, !isPressed);
