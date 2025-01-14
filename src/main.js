@@ -19,18 +19,36 @@ dropdownsGroupB.forEach(dropdown => {
   });
 });
 
-document.querySelector('[data-js-dropdown-open-a]').addEventListener('click', () => {
-  DropdownToggle.openAllInGroup('group-a');
+/**
+ * Toggle all dropdowns in group A
+ */
+document.querySelector('[data-js-dropdown-toggle-a]').addEventListener('click', (e) => {
+
+  let isPressed = e.currentTarget.getAttribute('aria-pressed') === 'true';
+
+  if (!isPressed) {
+    DropdownToggle.openAllInGroup('group-a');
+  } else {
+    DropdownToggle.closeAllInGroup('group-a');
+  }
+  updateToggleButton(e.currentTarget, !isPressed);
 });
 
-document.querySelector('[data-js-dropdown-open-b]').addEventListener('click', () => {
-  DropdownToggle.openAllInGroup('group-b');
+/**
+ * Toggle all dropdowns in group B
+ */
+document.querySelector('[data-js-dropdown-toggle-b]').addEventListener('click', (e) => {
+  let isPressed = e.currentTarget.getAttribute('aria-pressed') === 'true';
+  if (!isPressed) {
+    DropdownToggle.openAllInGroup('group-b');
+  } else {
+    DropdownToggle.closeAllInGroup('group-b');
+  }
+
+  updateToggleButton(e.currentTarget, !isPressed);
 });
 
-document.querySelector('[data-js-dropdown-close-a]').addEventListener('click', () => {
-  DropdownToggle.closeAllInGroup('group-a');
-});
-
-document.querySelector('[data-js-dropdown-close-b]').addEventListener('click', () => {
-  DropdownToggle.closeAllInGroup('group-b');
-});
+const updateToggleButton = (button, isPressed) => {
+  button.setAttribute('aria-pressed', isPressed);
+  button.innerHTML = `${isPressed ? 'Hide' : 'Show'} All`;
+};
