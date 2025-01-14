@@ -19,10 +19,18 @@ dropdownsGroupB.forEach(dropdown => {
   });
 });
 
-document.querySelector('[data-js-dropdown-toggle-a]').addEventListener('click', () => {
-  DropdownToggle.toggleAllInGroup('group-a');
+document.querySelector('[data-js-dropdown-open-a]').addEventListener('click', () => {
+  DropdownToggle.openAllInGroup('group-a');
 });
 
-document.querySelector('[data-js-dropdown-toggle-b]').addEventListener('click', () => {
-  DropdownToggle.toggleAllInGroup('group-b');
+document.querySelector('[data-js-dropdown-open-b]').addEventListener('click', () => {
+  DropdownToggle.openAllInGroup('group-b');
+});
+
+document.querySelector('[data-js-dropdown-close-a]').addEventListener('click', () => {
+  DropdownToggle.closeAllInGroup('group-a');
+});
+
+document.querySelector('[data-js-dropdown-close-b]').addEventListener('click', () => {
+  DropdownToggle.closeAllInGroup('group-b');
 });

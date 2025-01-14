@@ -1,10 +1,10 @@
 var m = Object.defineProperty;
-var O = (r, t, e) => t in r ? m(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => O(r, typeof t != "symbol" ? t + "" : t, e);
+var O = (a, t, e) => t in a ? m(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
+var r = (a, t, e) => O(a, typeof t != "symbol" ? t + "" : t, e);
 import h from "gsap";
 const s = class s {
   constructor(t, e = {}) {
-    o(this, "animationDuration", this.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION);
+    r(this, "animationDuration", this.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION);
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
       isAnimating: !1
@@ -14,7 +14,7 @@ const s = class s {
     }, this.closeOptions = {
       duration: e.closeDuration || this.animationDuration,
       ease: e.closeEase || s.DEFAULT_EASE
-    }, this.group = e.group || null, this.init();
+    }, this.group = e.group || null, this.groupExclusive = e.groupExclusive || !1, this.init();
   }
   /**
    * Binds instance to member functions to preserve the `this` context.
@@ -29,16 +29,24 @@ const s = class s {
    */
   async toggle() {
     if (this.state.isAnimating) return Promise.resolve();
-    await this.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
+    this.group && this.groupExclusive && await s.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
   }
   /**
    * Closes all dropdowns in the specified group except for the current instance.
    * @param {string} group - The name of the group.
    * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
    */
-  async closeAllInGroup(t, e) {
-    const a = (s.groupInstances[t] || []).filter((n) => n !== e && n.isOpen()).map((n) => n.close());
-    await Promise.all(a);
+  static async closeAllInGroup(t, e) {
+    const n = (s.groupInstances[t] || []).filter((o) => o !== e && o.isOpen()).map((o) => o.close());
+    await Promise.all(n);
+  }
+  /**
+   * Opens all dropdowns in the specified group.
+   * @param {string} group - The name of the group.
+   */
+  static async openAllInGroup(t) {
+    const i = (s.groupInstances[t] || []).filter((n) => !n.isOpen()).map((n) => n.open());
+    await Promise.all(i);
   }
   /**
    * Checks if the dropdown is open.
@@ -81,8 +89,8 @@ const s = class s {
   animate(t = !1) {
     const e = this.isOpen() ? this.defaultOpenTween(this.dropdownItem, t) : this.defaultCloseTween(this.dropdownItem, t);
     return new Promise((i) => {
-      var a, n, d, u;
-      this.isOpen() ? ((a = this.onOpenStart) == null || a.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((n = this.onCloseStart) == null || n.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, t ? (this.state.isAnimating = !1, this.isOpen() ? (d = this.onOpenEnd) == null || d.call(this, this.dropdownItem) : (u = this.onCloseEnd) == null || u.call(this, this.dropdownItem), i()) : e.then(() => {
+      var n, o, u, d;
+      this.isOpen() ? ((n = this.onOpenStart) == null || n.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((o = this.onCloseStart) == null || o.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, t ? (this.state.isAnimating = !1, this.isOpen() ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (d = this.onCloseEnd) == null || d.call(this, this.dropdownItem), i()) : e.then(() => {
         var l, c;
         this.state.isAnimating = !1, this.isOpen() ? (l = this.onOpenEnd) == null || l.call(this, this.dropdownItem) : (c = this.onCloseEnd) == null || c.call(this, this.dropdownItem), i();
       });
@@ -220,7 +228,7 @@ const s = class s {
     this.dropdownShouldBeOpen() ? this.open(!0) : this.close(!0), this.group && (s.groupInstances[this.group] = s.groupInstances[this.group] || [], s.groupInstances[this.group].includes(this) || s.groupInstances[this.group].push(this)), this.addEventListeners();
   }
 };
-o(s, "DEFAULT_DURATION", 0.3), o(s, "DEFAULT_EASE", "power2.easeInOut"), o(s, "DURATION_REDUCED_MOTION", 1e-3), o(s, "groupInstances", {});
+r(s, "DEFAULT_DURATION", 0.3), r(s, "DEFAULT_EASE", "power2.easeInOut"), r(s, "DURATION_REDUCED_MOTION", 1e-3), r(s, "groupInstances", {});
 let p = s;
 export {
   p as DropdownToggle

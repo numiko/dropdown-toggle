@@ -11,9 +11,13 @@
   <body class="p-10">
 
     <div class="flex gap-4 mb-10">
-      <button data-js-dropdown-toggle-a class="bg-blue-100 p-4">Toggle Group A</button>
-      <button data-js-dropdown-toggle-b class="bg-blue-100 p-4">Toggle Group B</button>
+      <button data-js-dropdown-open-a class="bg-green-100 p-4">Open Group A</button>
+      <button data-js-dropdown-close-a class="bg-red-100 p-4">Close Group A</button>
+      <button data-js-dropdown-open-b class="bg-green-100 p-4">Open Group B</button>
+      <button data-js-dropdown-close-b class="bg-red-100 p-4">Close Group B</button>
     </div>
+
+
 
     <div data-js-group-a class="mb-4">
 
@@ -39,14 +43,25 @@
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
           </div>
         </div>
+
+        <button data-js-dropdown aria-controls="accordion3" type="button"  class="p-4 bg-gray-100 w-full text-left">
+          <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 3</span>
+        </button>
+        <div id="accordion3" class="hidden overflow-hidden">
+          <div class="p-4 bg-gray-100 prose max-w-none">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+          </div>
+        </div>
     </div>
 
     <div data-js-group-b class="mb-4">
 
-      <button data-js-dropdown aria-controls="accordion3" type="button" class="p-4 bg-gray-100 w-full text-left">
+      <button data-js-dropdown aria-controls="accordion4" type="button" class="p-4 bg-gray-100 w-full text-left">
         <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 3</span>
       </button>
-      <div id="accordion3" class="hidden overflow-hidden">
+      <div id="accordion4" class="hidden overflow-hidden">
         <div class="p-4 bg-gray-100 prose max-w-none">
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
@@ -55,10 +70,10 @@
       </div>
 
 
-      <button data-js-dropdown aria-controls="accordion4" type="button"  class="p-4 bg-gray-100 w-full text-left">
+      <button data-js-dropdown aria-controls="accordion5" type="button"  class="p-4 bg-gray-100 w-full text-left">
         <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 4</span>
       </button>
-      <div id="accordion4" class="hidden overflow-hidden">
+      <div id="accordion5" class="hidden overflow-hidden">
         <div class="p-4 bg-gray-100 prose max-w-none">
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
