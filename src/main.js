@@ -8,7 +8,8 @@ const dropdownsGroupB = document.querySelectorAll('[data-js-group-b] [data-js-dr
 
 dropdownsGroupA.forEach(dropdown => {
   new DropdownToggle(dropdown, {
-    group: 'group-a'
+    group: 'group-a',
+    groupExclusive: true
   });
 });
 
@@ -16,4 +17,12 @@ dropdownsGroupB.forEach(dropdown => {
   new DropdownToggle(dropdown, {
     group: 'group-b'
   });
+});
+
+document.querySelector('[data-js-dropdown-toggle-a]').addEventListener('click', () => {
+  DropdownToggle.toggleAllInGroup('group-a');
+});
+
+document.querySelector('[data-js-dropdown-toggle-b]').addEventListener('click', () => {
+  DropdownToggle.toggleAllInGroup('group-b');
 });
