@@ -742,6 +742,7 @@ describe('When a dropdown is part of a larger group', () => {
       openDuration: 0.1,
       closeDuration: 0.1,
       group: 'group',
+      groupMode: 'accordion'
     });
 
     const newlyOpenedDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
@@ -749,6 +750,7 @@ describe('When a dropdown is part of a larger group', () => {
       openDuration: 0.1,
       closeDuration: 0.1,
       group: 'group',
+      groupMode: 'accordion'
     });
 
     await previouslyOpenedDropdownInstance.toggle();
