@@ -17,13 +17,40 @@ const s = class s {
   static getAnimationDuration() {
     return s.prefersReducedMotion() ? s.DURATION_REDUCED_MOTION : s.DEFAULT_DURATION;
   }
+  /**
+   * Checks if all dropdowns in the specified group are open.
+   * @param {string} group - The name of the group.
+   * @returns {boolean} True if all dropdowns in the group are open, false otherwise.
+   */
   static isGroupAllOpen(t) {
     const e = s.groupInstances[t] || [];
     return e.length > 0 && e.every((i) => i.isOpen());
   }
+  /**
+   * Checks if all dropdowns in the specified group are closed.
+   * @param {string} group - The name of the group.
+   * @returns {boolean} True if all dropdowns in the group are closed, false otherwise.
+   */
   static isGroupAllClosed(t) {
     const e = s.groupInstances[t] || [];
     return e.length > 0 && e.every((i) => !i.isOpen());
+  }
+  /**
+   * Closes all dropdowns in the specified group except for the current instance.
+   * @param {string} group - The name of the group.
+   * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
+   */
+  static async closeAllInGroup(t, e) {
+    const n = (s.groupInstances[t] || []).filter((o) => o !== e && o.isOpen()).map((o) => o.close());
+    await Promise.all(n);
+  }
+  /**
+     * Opens all dropdowns in the specified group.
+     * @param {string} group - The name of the group.
+     */
+  static async openAllInGroup(t) {
+    const i = (s.groupInstances[t] || []).filter((n) => !n.isOpen()).map((n) => n.open());
+    await Promise.all(i);
   }
   constructor(t, e = {}) {
     this.bindThisToMemberFunctions(), this.state = {
@@ -51,23 +78,6 @@ const s = class s {
   async toggle() {
     if (this.state.isAnimating) return Promise.resolve();
     this.group && this.groupMode === "accordion" ? s.closeAllInGroup(this.group, this) : this.group && this.groupMode === "accordion-await" && await s.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
-  }
-  /**
-   * Closes all dropdowns in the specified group except for the current instance.
-   * @param {string} group - The name of the group.
-   * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
-   */
-  static async closeAllInGroup(t, e) {
-    const n = (s.groupInstances[t] || []).filter((o) => o !== e && o.isOpen()).map((o) => o.close());
-    await Promise.all(n);
-  }
-  /**
-   * Opens all dropdowns in the specified group.
-   * @param {string} group - The name of the group.
-   */
-  static async openAllInGroup(t) {
-    const i = (s.groupInstances[t] || []).filter((n) => !n.isOpen()).map((n) => n.open());
-    await Promise.all(i);
   }
   /**
    * Checks if the dropdown is open.
