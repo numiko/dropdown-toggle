@@ -4,34 +4,38 @@ A package for creating interactive dropdown menus. Utilizing the GreenSock Anima
 
 ## Table of Contents
 
-- [Features](#markdown-header-features)
 - [Dependencies](#markdown-header-dependencies)
 - [Installation](#markdown-header-installation)
 - [Usage](#markdown-header-usage)
 - [API](#markdown-header-api)
 - [Release Notes](#markdown-header-release-notes)
 
-## Features
-- **Dynamic State Management**: Maintains the open or closed state of the dropdown, ensuring interactions are responsive and state-aware.
-- **Accessibility Support**: Sets ARIA attributes dynamically, improving accessibility by indicating the expanded or collapsed state of the dropdown to assistive technologies.
-- **Customizable Animations**: Leverages GSAP for animating dropdown open and close actions, with customizable duration and easing options for tailored visual effects.
-- **Group Behavior**: Supports grouping of dropdowns, allowing for the management of multiple dropdowns in a cohesive manner. Only one dropdown within a group can be open at a time, enhancing the user experience by preventing overlapping dropdowns.
-- **Extended Options**: Offers a range of configurable options such as open and close labels, CSS classes for open and closed states, and callbacks for open and close events, providing flexibility for various use cases.
-- **Event Handling**: Includes built-in event listeners for toggle actions, keyboard interactions (e.g., closing dropdowns with the Escape key), and clicks outside of the dropdown to automatically close it, ensuring a seamless user interaction.
-- **Lifecycle Management**: Features methods for initializing and destroying dropdown instances, enabling proper setup and teardown of components to prevent memory leaks and ensure clean transitions between states.
 
 ## Dependencies
 
-- GSAP
+- GSAP (looking to remove this dependency in future - and allow your own custom tweens)
 
 ## Installation
 
 **Please install a specific tagged version.**
 
-`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<TAG_NAME>`
+`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>`
+
+`npm install ssh://git@bitbucket.org:numiko/jump-links.git##semver:<VERSION>`
 
 
 ## Usage
+
+### Example HTML
+---
+```HTML
+<!-- Important! Link your button to your content via the aria-controls attribute -->
+<button type="button" data-js-my-dropdown-button aria-controls="mydropdown-container">
+  <span data-js-my-dropdown-button-label>Open</span>
+</button>
+
+<div id="mydropdown-container" class="hidden overflow-hidden">This is the dropdown content</div>
+```
 
 ### Example JS
 
@@ -61,8 +65,10 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   closeDuration: 0.3,
   // ease for default close tween
   closeEase: 'power2.easeInOut',
-  // assign the dropdown to a group - only one dropdown in a group will be open at one time
+  // assign the dropdown to a group - see group option for more details
   group: '',
+  // group mode - see group option for more details - 'default', 'accordion', 'accordion-await'
+  groupMode: 'default',
   // callback when open animation starts
   onOpenStart: () => {},
   // callback when open animation ends
@@ -76,16 +82,7 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
 
 myDropdown.init(); // initialise
 ```
-### Example HTML
----
-```HTML
-<!-- Link your button to your content via the aria-controls attribute -->
-<button type="button" data-js-my-dropdown-button aria-controls="mydropdown-container">
-  <span data-js-my-dropdown-button-label>Open</span>
-</button>
 
-<div id="mydropdown-container" class="hidden overflow-hidden">This is the dropdown content</div>
-```
 
 ## API
 
@@ -105,7 +102,9 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
 | `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'` |
-| `group` | Assign a group name to a dropdown. Dropdowns in the same group will close others before opening.  Useful for menus or accordions where you want only one open at a time.  |  `string` | `''` |
+| `group` | Assign a group name to a dropdown. Needed if you want to alter a group mode behavior.
+ |  `string` | `` |
+| `groupMode` | Determines how dropdowns in a group behave. 'default': multiple dropdowns can be open simultaneously. 'accordion': only one dropdown can be open at a time. 'accordion-await': only one dropdown can be open at a time and waits for others to finish closing | `'default'` \| `'accordion'` \| `'accordion-await'` | `'default'` |
 | `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
 | `onOpenEnd` | Callback that fires after open animation | `function` | `null` |
 | `onCloseStart` | Callback that fires before close animation | `function` | `null` |
@@ -133,6 +132,44 @@ DropdownToggle.DEFAULT_DURATION = 0.4;
 DropdownToggle.DEFAULT_EASE = 'elastic.out(1,0.3)';
 DropdownToggle.DURATION_REDUCED_MOTION = 0.001;
 
+```
+
+## Group Modes
+
+- `default`: multiple dropdowns per group can be open simultaneously.
+- `accordion`: only one dropdown per group can be open at a time.
+- `accordion-await`: only one dropdown per group can be open at a time and waits for others to finish closing (used in Sitekit mega menus).
+
+## 'Toggle All' behaviour
+
+Each dropdownToggle instance will dispatch a custom event `dropdown-toggle-group-change` when the a dropdown is opened or closed.  This can be used to update a 'Toggle All' button.
+
+- `DropdownToggle.isGroupAllOpen('<group>')`: returns `true/false` if all dropdowns in a group are open.
+- `DropdownToggle.openAllInGroup('<group>')`: opens all dropdowns in a group.
+- `DropdownToggle.closeAllInGroup('<group>')`: closes all dropdowns in a group.
+
+```javascript
+// Add a listener to the 'Toggle All' button to open or close all dropdowns in a group.
+const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${group}]`);
+if (toggleButton) {
+  toggleButton.addEventListener('click', () => {
+    const isAllOpen = DropdownToggle.isGroupAllOpen(group);
+    if (!isAllOpen) {
+      DropdownToggle.openAllInGroup(group);
+    } else {
+      DropdownToggle.closeAllInGroup(group);
+    }
+  });
+}
+
+// Add a listener to the window to update the 'Toggle All' button when a dropdown is opened or closed.
+window.addEventListener('dropdown-toggle-group-change', (e) => {
+  const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${e.detail.group}]`);
+  if (toggleButton) {
+    toggleButton.setAttribute('aria-pressed', e.detail.isAllOpen);
+    toggleButton.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
+  }
+});
 ```
 
 ## Release notes
