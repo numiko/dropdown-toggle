@@ -148,22 +148,29 @@ Each dropdownToggle instance will dispatch a custom event `dropdown-toggle-group
 - `DropdownToggle.openAllInGroup('<group>')`: opens all dropdowns in a group.
 - `DropdownToggle.closeAllInGroup('<group>')`: closes all dropdowns in a group.
 
+```HTML
+<!-- Add a 'Toggle All' button to the page -->
+<button data-js-dropdown-toggle-default>Show All</button>
+```
+
 ```javascript
 // Add a listener to the 'Toggle All' button to open or close all dropdowns in a group.
-const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${group}]`);
+const toggleButton = document.querySelector(`[data-js-dropdown-toggle-default]`);
 if (toggleButton) {
   toggleButton.addEventListener('click', () => {
-    const isAllOpen = DropdownToggle.isGroupAllOpen(group);
+    // Here we are toggling the 'default' group
+    const isAllOpen = DropdownToggle.isGroupAllOpen('default');
     if (!isAllOpen) {
-      DropdownToggle.openAllInGroup(group);
+      DropdownToggle.openAllInGroup('default');
     } else {
-      DropdownToggle.closeAllInGroup(group);
+      DropdownToggle.closeAllInGroup('default');
     }
   });
 }
 
 // Add a listener to the window to update the 'Toggle All' button when a dropdown is opened or closed.
 window.addEventListener('dropdown-toggle-group-change', (e) => {
+  // Use the group name provided in the event to find the 'Toggle All' button
   const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${e.detail.group}]`);
   if (toggleButton) {
     toggleButton.setAttribute('aria-pressed', e.detail.isAllOpen);
