@@ -102,9 +102,8 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
 | `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'` |
-| `group` | Assign a group name to a dropdown. Needed if you want to alter a group mode behavior.
- |  `string` | `` |
-| `groupMode` | Determines how dropdowns in a group behave. 'default': multiple dropdowns can be open simultaneously. 'accordion': only one dropdown can be open at a time. 'accordion-await': only one dropdown can be open at a time and waits for others to finish closing | `'default'` \| `'accordion'` \| `'accordion-await'` | `'default'` |
+| `group` | Assign a group name to a dropdown. Needed if you want to alter a group mode behavior. | `string` | `` |
+| `groupMode` | Determines how dropdowns in a group behave. 'multiple': multiple dropdowns can be open simultaneously. 'single': only one dropdown can be open at a time. 'single-await': only one dropdown can be open at a time and waits for others to finish closing | `'multiple'` \| `'single'` \| `'single-await'` | `'multiple'` |
 | `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
 | `onOpenEnd` | Callback that fires after open animation | `function` | `null` |
 | `onCloseStart` | Callback that fires before close animation | `function` | `null` |
@@ -136,9 +135,9 @@ DropdownToggle.DURATION_REDUCED_MOTION = 0.001;
 
 ## Group Modes
 
-- `default`: multiple dropdowns per group can be open simultaneously.
-- `accordion`: only one dropdown per group can be open at a time.
-- `accordion-await`: only one dropdown per group can be open at a time and waits for others to finish closing (used in Sitekit mega menus).
+- `multiple`: multiple dropdowns per group can be open simultaneously (default).
+- `single`: only one dropdown per group can be open at a time.
+- `single-await`: only one dropdown per group can be open at a time and waits for others to finish closing.
 
 ## 'Toggle All' behaviour
 
@@ -180,6 +179,13 @@ window.addEventListener('dropdown-toggle-group-change', (e) => {
 ```
 
 ## Release notes
+
+### v2.0.0
+
+**Breaking changes**
+
+- Added `groupMode` option.  This allows you to set the group mode to `single`, `single-await`, or `multiple`.  To get the same behavior as prior release you need to set a `group` and`groupMode` to `single`.
+
 ### v1.0.0
 
 **Breaking changes**

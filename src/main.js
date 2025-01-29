@@ -24,7 +24,7 @@ import { DropdownToggle } from '../lib/DropdownToggle';
  * - Smooth animations between states
  */
 
-const groups = ['default', 'accordion', 'accordion-await'];
+const groups = ['multiple', 'single', 'single-await'];
 
 groups.forEach(group => {
   // Initialize dropdowns for this group

@@ -6,7 +6,7 @@ setupTest();
 
 describe('Group Mode Behaviors', () => {
 
-  describe('default mode', () => {
+  describe('multiple mode (default)', () => {
     it('should allow multiple dropdowns in a group to be open simultaneously', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
@@ -40,7 +40,7 @@ describe('Group Mode Behaviors', () => {
     });
   });
 
-  describe('"accordion" mode', () => {
+  describe('"single" mode', () => {
     it('Previous dropdown should be closed when new dropdown is opened', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
@@ -49,7 +49,7 @@ describe('Group Mode Behaviors', () => {
         openDuration: 0.2,
         closeDuration: 0.2,
         group: 'test-group',
-        groupMode: 'accordion'
+        groupMode: 'single'
       });
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
@@ -58,7 +58,7 @@ describe('Group Mode Behaviors', () => {
         openDuration: 0.2,
         closeDuration: 0.2,
         group: 'test-group',
-        groupMode: 'accordion'
+        groupMode: 'single'
       });
 
       // Act - Open two dropdowns - first should end up closed
@@ -77,7 +77,7 @@ describe('Group Mode Behaviors', () => {
     });
   });
 
-  describe('"accordion-await" mode', () => {
+  describe('"single-await" mode', () => {
     it('should wait for previous dropdown to fully close before opening new dropdown', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
@@ -86,7 +86,7 @@ describe('Group Mode Behaviors', () => {
         openDuration: 0.2,
         closeDuration: 0.2,
         group: 'test-group',
-        groupMode: 'accordion-await'
+        groupMode: 'single-await'
       });
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
@@ -95,7 +95,7 @@ describe('Group Mode Behaviors', () => {
         openDuration: 0.2,
         closeDuration: 0.2,
         group: 'test-group',
-        groupMode: 'accordion-await'
+        groupMode: 'single-await'
       });
 
       // Open first dropdown

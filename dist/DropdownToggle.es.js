@@ -62,7 +62,7 @@ const s = class s {
     }, this.closeOptions = {
       duration: e.closeDuration || s.getAnimationDuration(),
       ease: e.closeEase || s.DEFAULT_EASE
-    }, this.group = e.group || null, this.groupMode = e.groupMode || "default", this.init();
+    }, this.group = e.group || null, this.groupMode = e.groupMode || "multiple", this.init();
   }
   /**
    * Binds instance to member functions to preserve the `this` context.
@@ -77,7 +77,7 @@ const s = class s {
    */
   async toggle() {
     if (this.state.isAnimating) return Promise.resolve();
-    this.group && this.groupMode === "accordion" ? s.closeAllInGroup(this.group, this) : this.group && this.groupMode === "accordion-await" && await s.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
+    this.group && this.groupMode === "single" ? s.closeAllInGroup(this.group, this) : this.group && this.groupMode === "single-await" && await s.closeAllInGroup(this.group, this), this.isOpen() ? await this.close() : await this.open();
   }
   /**
    * Checks if the dropdown is open.
@@ -126,10 +126,10 @@ const s = class s {
   animate(t = !1) {
     const e = this.isOpen() ? this.defaultOpenTween(this.dropdownItem, t) : this.defaultCloseTween(this.dropdownItem, t);
     return new Promise((i) => {
-      var n, o, u, d;
-      this.isOpen() ? ((n = this.onOpenStart) == null || n.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((o = this.onCloseStart) == null || o.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, t ? (this.state.isAnimating = !1, this.isOpen() ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (d = this.onCloseEnd) == null || d.call(this, this.dropdownItem), i()) : e.then(() => {
-        var l, p;
-        this.state.isAnimating = !1, this.isOpen() ? (l = this.onOpenEnd) == null || l.call(this, this.dropdownItem) : (p = this.onCloseEnd) == null || p.call(this, this.dropdownItem), i();
+      var n, o, u, l;
+      this.isOpen() ? ((n = this.onOpenStart) == null || n.call(this, this.dropdownItem), this.onFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler)) : ((o = this.onCloseStart) == null || o.call(this, this.dropdownItem), this.onFocusLeave && document.removeEventListener("keyup", this.onFocusLeaveHandler)), this.state.isAnimating = !0, t ? (this.state.isAnimating = !1, this.isOpen() ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (l = this.onCloseEnd) == null || l.call(this, this.dropdownItem), i()) : e.then(() => {
+        var p, d;
+        this.state.isAnimating = !1, this.isOpen() ? (p = this.onOpenEnd) == null || p.call(this, this.dropdownItem) : (d = this.onCloseEnd) == null || d.call(this, this.dropdownItem), i();
       });
     });
   }
