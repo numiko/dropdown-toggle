@@ -21,7 +21,7 @@ A package for creating interactive dropdown menus. Utilizing the GreenSock Anima
 
 `npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>`
 
-`npm install ssh://git@bitbucket.org:numiko/jump-links.git#semver:<VERSION>`
+`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:<VERSION>`
 
 
 ## Usage
@@ -97,7 +97,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `openClass` | Class applied to dropdown button when open. Removed when closed | `string` | `''` |
 | `openOnLoad` | Have the dropdown in its open state on load | `boolean` | `false` |
 | `closeOnEsc` | Close dropdown when clicking the escape button | `boolean` | `false` |
-| `closeOnClickOutside` | Close dropdown when clicking outside of it | `boolean` | `false` |
+| `closeOnOutsideClick` | Close dropdown when clicking outside of it | `boolean` | `false` |
 | `openDuration` | Tween duration for open animation | `number` | 0.3 |
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
@@ -111,6 +111,8 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `onDestroy` | Callback that fires when DropdownToggle is destroyed | `function` | `null` |
 
 ### Methods
+
+#### Instance Methods
 | Method | Description |
 | --- | --- |
 | `init()` | Initalise the dropdown |
@@ -121,7 +123,16 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `isOpen()` | Return `true/false` is the dropdown is currently open |
 | `isAnimating()` | Return `true/false` is the dropdown is currently animating |
 
+#### Static Methods
+| Method | Description |
+| --- | --- |
+| `DropdownToggle.isGroupAllOpen("<group>")` | Return `true/false` if all dropdowns in a group are open |
+| `DropdownToggle.openAllInGroup("<group>")` | Open all dropdowns in a group |
+| `DropdownToggle.closeAllInGroup("<group>")` | Close all dropdowns in a group |
+
+
 ## Customizing global defaults
+If you want to customize the global defaults for the dropdownToggle class so you don't have to pass in the options each time you create a new instance, you can do so by setting the following static properties.
 
 ```JS
 import { DropdownToggle } from '@numiko/dropdown-toggle';
@@ -134,15 +145,14 @@ DropdownToggle.EASE_DEFAULT = 'elastic.out(1,0.3)';
 ```
 
 ## Group Modes
-
+When using the `group` option, you can set the `groupMode` to one of the following:
 
 - `multiple`: multiple dropdowns per group can be open simultaneously (default).
 - `single`: only one dropdown per group can be open at a time.
 - `single-await`: only one dropdown per group can be open at a time and waits for others to finish closing.
 
 ## 'Toggle All' behaviour
-
-Each dropdownToggle instance will dispatch a custom event `dropdown-toggle-group-change` when the a dropdown is opened or closed.  This can be used to update a 'Toggle All' button.
+Each DropdownToggle instance will dispatch a custom event `DropdownToggle:group-change` when a dropdown is part of a group and is opened or closed.  This can be used to update a 'Toggle All' button for example.
 
 - `DropdownToggle.isGroupAllOpen('<group>')`: returns `true/false` if all dropdowns in a group are open.
 - `DropdownToggle.openAllInGroup('<group>')`: opens all dropdowns in a group.
@@ -169,7 +179,7 @@ if (toggleButton) {
 }
 
 // Add a listener to the window to update the 'Toggle All' button when a dropdown is opened or closed.
-window.addEventListener('dropdown-toggle-group-change', (e) => {
+window.addEventListener('DropdownToggle:group-change', (e) => {
   // Use the group name provided in the event to find the 'Toggle All' button
   const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${e.detail.group}]`);
   if (toggleButton) {
@@ -186,6 +196,7 @@ window.addEventListener('dropdown-toggle-group-change', (e) => {
 **Breaking changes**
 
 - Added `groupMode` option.  This allows you to set the group mode to `single`, `single-await`, or `multiple`.  To get the same behavior as prior release you need to set a `group` and`groupMode` to `single`.
+- Changed global defaults for duration and easing.  These can now be set by setting the static properties `DropdownToggle.DURATION_DEFAULT` and `DropdownToggle.EASE_DEFAULT`.
 
 ### v1.0.0
 
