@@ -21,7 +21,7 @@ A package for creating interactive dropdown menus. Utilizing the GreenSock Anima
 
 `npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>`
 
-`npm install ssh://git@bitbucket.org:numiko/jump-links.git##semver:<VERSION>`
+`npm install ssh://git@bitbucket.org:numiko/jump-links.git#semver:<VERSION>`
 
 
 ## Usage
