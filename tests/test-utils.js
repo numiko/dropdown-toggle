@@ -10,7 +10,7 @@ global.document = document;
 const htmlDocumentContent = `
 <div data-js-group-a class="mb-4">
 
-  <button data-js-dropdown aria-controls="accordion1" type="button" aria=expanded=true>
+  <button data-js-dropdown aria-controls="accordion1" type="button" aria-expanded="true">
     <span data-js-dropdown-label>An accordion with user added aria-expanded=true</span>
   </button>
   <div id="accordion1" class="hidden overflow-hidden">

@@ -86,7 +86,8 @@ describe('When the dropdown is clicked', () => {
   });
 
   it('should not interrupt the open animation if dropdown is clicked whilst opening', async () => {
-    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    // Choose a dropdown that is closed by default
+    const dropdownElement = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     new DropdownToggle(dropdownElement, {
       openDuration: 0.25,

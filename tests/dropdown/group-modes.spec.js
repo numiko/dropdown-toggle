@@ -26,8 +26,8 @@ describe('Group Mode Behaviors', () => {
       });
 
       // Act - Open both dropdowns
-      await firstInstance.toggle();
-      await secondInstance.toggle();
+      await firstInstance.open();
+      await secondInstance.open();
 
       // Assert - Both dropdowns should be open
       expect(firstContent.style.height).toBe('auto');
@@ -61,8 +61,7 @@ describe('Group Mode Behaviors', () => {
         groupMode: 'single'
       });
 
-      // Act - Open two dropdowns - first should end up closed
-      await firstInstance.toggle();
+      // Act - Open 2nd dropdown - first dropdown should end up closed as its open by default
       secondInstance.toggle();
 
       // Assert - Check state during animations
@@ -98,8 +97,6 @@ describe('Group Mode Behaviors', () => {
         groupMode: 'single-await'
       });
 
-      // Open first dropdown
-      await firstInstance.toggle();
 
       // Act - Click second dropdown
       secondInstance.toggle();

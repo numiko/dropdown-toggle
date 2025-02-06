@@ -44,7 +44,7 @@ describe('Initialisations', () => {
 
   it('should have correct attributes when created', async () => {
     // Arrange
-    const dropdownEl = document.querySelector('[data-js-dropdown]');
+    const dropdownEl = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
     new DropdownToggle(dropdownEl);
     const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
     // No action
