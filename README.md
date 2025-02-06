@@ -127,13 +127,14 @@ The `dropdownToggle` constructor accepts options as a second argument.
 import { DropdownToggle } from '@numiko/dropdown-toggle';
 
 // Provide new custom defaults
-DropdownToggle.DEFAULT_DURATION = 0.4;
-DropdownToggle.DEFAULT_EASE = 'elastic.out(1,0.3)';
+DropdownToggle.DURATION_DEFAULT = 0.4;
 DropdownToggle.DURATION_REDUCED_MOTION = 0.001;
+DropdownToggle.EASE_DEFAULT = 'elastic.out(1,0.3)';
 
 ```
 
 ## Group Modes
+
 
 - `multiple`: multiple dropdowns per group can be open simultaneously (default).
 - `single`: only one dropdown per group can be open at a time.
