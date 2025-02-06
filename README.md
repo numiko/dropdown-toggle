@@ -91,7 +91,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 
 | Option | Description | Type | Default
 | --- | --- | --- | --- |
-| `buttonLabelEl` | Element that will hold the button label.  Will also accept a valid querySelector string | `HTMLElement` / `string`| `null` |
+| `buttonLabelEl` | Element that will hold the button label.  Will also accept a valid querySelector string | `HTMLElement` \| `string`| `null` |
 | `openLabel` | Text to set for button label when open | `string` | `'Open'` |
 | `closeLabel` | Text to set for button label when closed | `string` | `'Close'` |
 | `openClass` | Class applied to dropdown button when open. Removed when closed | `string` | `''` |
