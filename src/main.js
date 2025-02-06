@@ -50,7 +50,7 @@ groups.forEach(group => {
 });
 
 // Single event listener for all group changes
-window.addEventListener('dropdown-toggle-group-change', (e) => {
+window.addEventListener('DropdownToggle:group-change', (e) => {
   const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${e.detail.group}]`);
   if (toggleButton) {
     toggleButton.setAttribute('aria-pressed', e.detail.isAllOpen);
