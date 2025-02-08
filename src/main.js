@@ -25,35 +25,45 @@ import { DropdownToggle } from '../lib/DropdownToggle';
  */
 
 const groups = ['multiple', 'single', 'single-await'];
+const instances = [];
 
 groups.forEach(group => {
   // Initialize dropdowns for this group
   document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
-    new DropdownToggle(dropdown, {
+    const instance = new DropdownToggle(dropdown, {
       group,
       groupMode: group
     });
+    instances.push(instance);
   });
-
-  // Initialize toggle button for this group
-  const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${group}]`);
-  if (toggleButton) {
-    toggleButton.addEventListener('click', () => {
-      const isAllOpen = DropdownToggle.isGroupAllOpen(group);
-      if (!isAllOpen) {
-        DropdownToggle.openAllInGroup(group);
-      } else {
-        DropdownToggle.closeAllInGroup(group);
-      }
-    });
-  }
 });
 
-// Single event listener for all group changes
-window.addEventListener('DropdownToggle:group-change', (e) => {
-  const toggleButton = document.querySelector(`[data-js-dropdown-toggle-${e.detail.group}]`);
-  if (toggleButton) {
-    toggleButton.setAttribute('aria-pressed', e.detail.isAllOpen);
-    toggleButton.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
-  }
+// instances.forEach((instance, index) => {
+//   setTimeout(() => {
+//     instance.open();
+//   }, 1000 * (index + 1));
+// });
+
+const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
+toggleButtons.forEach(button => {
+  // Store the group value
+  const group = button.getAttribute('data-js-dropdown-toggle');
+
+  // Add click handler
+  button.addEventListener('click', () => {
+    const isAllOpen = DropdownToggle.isGroupAllOpen(group);
+    if (!isAllOpen) {
+      DropdownToggle.openAllInGroup(group);
+    } else {
+      DropdownToggle.closeAllInGroup(group);
+    }
+  });
+
+  // Add group change handler for this specific button
+  window.addEventListener('DropdownToggle:group-change', (e) => {
+    if (e.detail.group === group) {
+      button.setAttribute('aria-pressed', e.detail.isAllOpen);
+      button.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
+    }
+  });
 });
