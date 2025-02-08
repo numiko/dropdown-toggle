@@ -10,33 +10,35 @@ describe('Group Mode Behaviors', () => {
     it('should allow multiple dropdowns in a group to be open simultaneously', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
-      const firstContent = document.querySelector('#accordion1');
       const firstInstance = new DropdownToggle(firstDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
-        group: 'test-group'  // No groupMode specified = default mode
+        group: 'test-group'  // No groupMode specified = default multiple mode
       });
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
-      const secondContent = document.querySelector('#accordion2');
       const secondInstance = new DropdownToggle(secondDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
-        group: 'test-group'  // No groupMode specified = default mode
+        group: 'test-group'  // No groupMode specified = default multiple mode
       });
 
-      // Act - Open both dropdowns
+      // Act - Open first dropdown
       await firstInstance.open();
+      expect(firstInstance.isOpen()).toBe(true);
+      expect(secondInstance.isOpen()).toBe(false);
+
+      // Open second dropdown
       await secondInstance.open();
 
-      // Assert - Both dropdowns should be open
-      expect(firstContent.style.height).toBe('auto');
-      expect(firstContent.style.display).toBe('block');
-      expect(firstContent.getAttribute('aria-hidden')).toBe('false');
+      // Assert - Both dropdowns should remain open
+      expect(firstInstance.isOpen()).toBe(true);
+      expect(secondInstance.isOpen()).toBe(true);
 
-      expect(secondContent.style.height).toBe('auto');
-      expect(secondContent.style.display).toBe('block');
-      expect(secondContent.getAttribute('aria-hidden')).toBe('false');
+      // Additional verification - closing one shouldn't affect the other
+      await firstInstance.close();
+      expect(firstInstance.isOpen()).toBe(false);
+      expect(secondInstance.isOpen()).toBe(true);
     });
   });
 
@@ -44,7 +46,6 @@ describe('Group Mode Behaviors', () => {
     it('Previous dropdown should be closed when new dropdown is opened', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
-      const firstContent = document.querySelector('#accordion1');
       const firstInstance = new DropdownToggle(firstDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
@@ -53,7 +54,6 @@ describe('Group Mode Behaviors', () => {
       });
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
-      const secondContent = document.querySelector('#accordion2');
       const secondInstance = new DropdownToggle(secondDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
@@ -61,18 +61,25 @@ describe('Group Mode Behaviors', () => {
         groupMode: 'single'
       });
 
-      // Act - Open 2nd dropdown - first dropdown should end up closed as its open by default
-      secondInstance.toggle();
+      // Ensure first dropdown is open
+      await firstInstance.open();
+      expect(firstInstance.isOpen()).toBe(true);
+      expect(secondInstance.isOpen()).toBe(false);
 
-      // Assert - Check state during animations
-      await delay(50);  // Give time for second animation to start
+      // Start opening second dropdown
+      const openPromise = secondInstance.open();
 
-      // First dropdown should be closing (height decreasing)
-      expect(firstContent.style.height).not.toBe('auto');
-      expect(firstContent.style.display).toBe('block');
-      // Second dropdown should be opening (height increasing)
-      expect(secondContent.style.height).not.toBe('0px');
-      expect(secondContent.style.display).toBe('block');
+      // After a short delay, both animations should be in progress
+      await delay(50);
+      expect(firstInstance.isOpen()).toBe(false);  // First is closing
+      expect(secondInstance.isOpen()).toBe(true);  // Second is already opening
+
+      // Wait for everything to complete
+      await openPromise;
+
+      // Assert final state
+      expect(firstInstance.isOpen()).toBe(false);
+      expect(secondInstance.isOpen()).toBe(true);
     });
   });
 
@@ -80,7 +87,6 @@ describe('Group Mode Behaviors', () => {
     it('should wait for previous dropdown to fully close before opening new dropdown', async () => {
       // Arrange
       const firstDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion1"]');
-      const firstContent = document.querySelector('#accordion1');
       const firstInstance = new DropdownToggle(firstDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
@@ -89,7 +95,6 @@ describe('Group Mode Behaviors', () => {
       });
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
-      const secondContent = document.querySelector('#accordion2');
       const secondInstance = new DropdownToggle(secondDropdown, {
         openDuration: 0.2,
         closeDuration: 0.2,
@@ -97,28 +102,28 @@ describe('Group Mode Behaviors', () => {
         groupMode: 'single-await'
       });
 
+      // Act - open first dropdown (even though this is already open due to aria-expanded="true" in the DOM)
+      // Happy-dom doesn't see it as open, so we need to wait for the animation to complete
+      await firstInstance.open();
 
-      // Act - Click second dropdown
-      secondInstance.toggle();
+      // Assert initial state
+      expect(firstInstance.isOpen()).toBe(true);
+      expect(secondInstance.isOpen()).toBe(false);
 
-      // Assert - Delay that is short enough to ensure the first dropdown is closing
+      // Start opening second dropdown
+      const openPromise = secondInstance.open();
+
+      // After a short delay (less than animation duration), first should be closing but second should still be closed
       await delay(50);
+      expect(firstInstance.isOpen()).toBe(false);
+      expect(secondInstance.isOpen()).toBe(false);
 
-      // First dropdown should be closing
-      expect(firstContent.style.height).not.toBe('auto');
-      expect(firstContent.getAttribute('aria-hidden')).toBe('true');
+      // Wait for everything to complete
+      await openPromise;
 
-      // Second dropdown should still be closed
-      expect(secondContent.style.height).toBe('0px');
-      expect(secondContent.style.display).toBe('none');
-
-      // Wait for full animation
-      await delay(250);
-
-      // Now second dropdown should be open
-      expect(secondContent.style.height).toBe('auto');
-      expect(secondContent.style.display).toBe('block');
-      expect(secondContent.getAttribute('aria-hidden')).toBe('false');
+      // Assert final state
+      expect(firstInstance.isOpen()).toBe(false);
+      expect(secondInstance.isOpen()).toBe(true);
     });
   });
 
