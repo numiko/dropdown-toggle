@@ -57,6 +57,8 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   closeOnEsc: true,
   // close when clicking outside the dropdown
   closeOnOutsideClick: false,
+  // close when focus moves outside the dropdown
+  closeOnFocusLeave: false,
   // duration for default open tween
   openDuration: 0.3,
   // ease for default open tween
@@ -98,6 +100,7 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `openOnLoad` | Have the dropdown in its open state on load | `boolean` | `false` |
 | `closeOnEsc` | Close dropdown when clicking the escape button | `boolean` | `false` |
 | `closeOnOutsideClick` | Close dropdown when clicking outside of it | `boolean` | `false` |
+| `closeOnFocusLeave` | Close dropdown when focus moves outside of it | `boolean` | `false` |
 | `openDuration` | Tween duration for open animation | `number` | 0.3 |
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
@@ -197,6 +200,7 @@ window.addEventListener('DropdownToggle:group-change', (e) => {
 
 - Added `groupMode` option.  This allows you to set the group mode to `single`, `single-await`, or `multiple`.  To get the same behavior as prior release you need to set a `group` and`groupMode` to `single`.
 - Changed global defaults for duration and easing.  These can now be set by setting the static properties `DropdownToggle.DURATION_DEFAULT` and `DropdownToggle.EASE_DEFAULT`.
+- Added `closeOnFocusLeave` option.  This will close the dropdown when the user tabs outside of it.  This renames the `onFocusLeave` option.
 
 ### v1.0.0
 

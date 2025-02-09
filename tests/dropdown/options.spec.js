@@ -218,13 +218,13 @@ describe('Open class: openClass', () => {
   });
 });
 
-describe('On Focus Leave: onFocusLeave', () => {
+describe('Close on focus leave: closeOnFocusLeave', () => {
   it('should close the dropdown if the user tabs outside of it', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, {
-      onFocusLeave: true,
+      closeOnFocusLeave: true,
       openDuration: 0.001,
       closeDuration: 0.001,
     });
