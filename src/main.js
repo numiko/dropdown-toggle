@@ -1,5 +1,5 @@
 import { DropdownToggle } from '../lib/DropdownToggle';
-
+import gsap from 'gsap';
 /**
  * This file demonstrates three different group behaviors for DropdownToggle:
  *
@@ -32,17 +32,21 @@ groups.forEach(group => {
   document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
     const instance = new DropdownToggle(dropdown, {
       group,
-      groupMode: group
+      groupMode: group,
+      openTween: (element, instant) => {
+
+        element.style.display = 'block';
+        return instant
+          ? gsap.set(element, { height: 'auto' })
+          : gsap.fromTo(element,
+            { height: 0, opacity: 0, y: -50 },
+            { height: 'auto', opacity: 1, y: 0, duration: 0.5, ease: 'power2.easeInOut' }
+          );
+      },
     });
     instances.push(instance);
   });
 });
-
-// instances.forEach((instance, index) => {
-//   setTimeout(() => {
-//     instance.open();
-//   }, 1000 * (index + 1));
-// });
 
 const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
 toggleButtons.forEach(button => {
