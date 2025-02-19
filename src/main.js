@@ -27,27 +27,9 @@ import gsap from 'gsap';
 const groups = ['multiple', 'single', 'single-await'];
 const instances = [];
 
-groups.forEach(group => {
-  // Initialize dropdowns for this group
-  document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
-    const instance = new DropdownToggle(dropdown, {
-      group,
-      groupMode: group,
-      openTween: (element, instant) => {
-
-        element.style.display = 'block';
-        return instant
-          ? gsap.set(element, { height: 'auto' })
-          : gsap.fromTo(element,
-            { height: 0, opacity: 0, y: -50 },
-            { height: 'auto', opacity: 1, y: 0, duration: 0.5, ease: 'power2.easeInOut' }
-          );
-      },
-    });
-    instances.push(instance);
-  });
-});
-
+/*
+* Group Change Event
+*/
 const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
 toggleButtons.forEach(button => {
   // Store the group value
@@ -69,5 +51,28 @@ toggleButtons.forEach(button => {
       button.setAttribute('aria-pressed', e.detail.isAllOpen);
       button.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
     }
+  });
+});
+
+/*
+* Initialize Dropdown Toggles
+*/
+groups.forEach(group => {
+  document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
+    const instance = new DropdownToggle(dropdown, {
+      group,
+      groupMode: group,
+      openTween: (element, instant) => {
+
+        element.style.display = 'block';
+        return instant
+          ? gsap.set(element, { height: 'auto' })
+          : gsap.fromTo(element,
+            { height: 0, opacity: 0, y: -100, },
+            { height: 'auto', opacity: 1, y: 0, duration: 0.5, ease: 'elastic.out(1,0.3)' }
+          );
+      },
+    });
+    instances.push(instance);
   });
 });
