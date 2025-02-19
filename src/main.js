@@ -62,14 +62,6 @@ groups.forEach(group => {
     const instance = new DropdownToggle(dropdown, {
       group,
       groupMode: group,
-      closeOnEsc: true,
-      // openTween: (element) => {
-      //   element.style.display = 'block';
-      //   return gsap.fromTo(element,
-      //     { height: 0, opacity: 0, y: -100, },
-      //     { height: 'auto', opacity: 1, y: 0, duration: 0.5, ease: 'elastic.out(1,0.3)'}
-      //   );
-      // },
     });
     instances.push(instance);
   });
