@@ -62,6 +62,19 @@ groups.forEach(group => {
     const instance = new DropdownToggle(dropdown, {
       group,
       groupMode: group,
+      openTween: (element) => {
+        return gsap.timeline()
+          .set(element, {
+            display: 'block',
+            height: 0,
+            opacity:0
+          })
+          .to(element, {
+            height: 'auto',
+            opacity: 1,
+            duration: 1,
+          });
+      }
     });
     instances.push(instance);
   });
