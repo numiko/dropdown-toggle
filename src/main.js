@@ -38,12 +38,6 @@ groups.forEach(group => {
   });
 });
 
-// instances.forEach((instance, index) => {
-//   setTimeout(() => {
-//     instance.open();
-//   }, 1000 * (index + 1));
-// });
-
 const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
 toggleButtons.forEach(button => {
   // Store the group value
