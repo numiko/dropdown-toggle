@@ -10,57 +10,104 @@
   </head>
   <body class="p-10">
 
-    <div data-js-group-a class="mb-4">
-
-        <button data-js-dropdown aria-controls="accordion1" type="button" aria-expanded="true" class="p-4 bg-gray-100 w-full text-left">
-          <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 1 (aria-expanded=true in markup)</span>
-        </button>
-        <div id="accordion1" class="overflow-hidden ">
-          <div class="p-4 bg-gray-100 prose max-w-none">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-          </div>
-        </div>
-
-
-        <button data-js-dropdown aria-controls="accordion2" type="button"  class="p-4 bg-gray-100 w-full text-left">
-          <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 2</span>
-        </button>
-        <div id="accordion2" class="hidden overflow-hidden">
-          <div class="p-4 bg-gray-100 prose max-w-none">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-          </div>
-        </div>
-    </div>
-
-    <div data-js-group-b class="mb-4">
-
-      <button data-js-dropdown aria-controls="accordion3" type="button" class="p-4 bg-gray-100 w-full text-left">
-        <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 3</span>
+    <h2 class="text-2xl font-bold my-8">Dropdowns - "Multiple"</h2>
+    <button data-js-dropdown-toggle="multiple" class="bg-green-100 p-4 mb-4" aria-pressed="false">Show All</button>
+    <div data-js-group-multiple class="mb-4">
+      <button data-js-dropdown aria-controls="accordion1" type="button" class="p-4 bg-green-100 w-full text-left">
+        <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 1</span>
       </button>
-      <div id="accordion3" class="hidden overflow-hidden">
-        <div class="p-4 bg-gray-100 prose max-w-none">
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+      <div id="accordion1" class="overflow-hidden ">
+        <div class="p-4 bg-green-100 prose max-w-none">
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
         </div>
       </div>
 
 
-      <button data-js-dropdown aria-controls="accordion4" type="button"  class="p-4 bg-gray-100 w-full text-left">
+      <button data-js-dropdown aria-controls="accordion2" type="button"   class="p-4 bg-green-100 w-full text-left">
+        <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 2</span>
+      </button>
+      <div id="accordion2" class="hidden overflow-hidden">
+        <div class="p-4 bg-green-100 prose max-w-none">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+        </div>
+      </div>
+
+      <button data-js-dropdown aria-controls="accordion3" type="button"  class="p-4 bg-green-100 w-full text-left">
+        <span data-js-dropdown-label class="text-lg font-bold">Group A: Accordion 3</span>
+      </button>
+      <div id="accordion3" class="hidden overflow-hidden">
+        <div class="p-4 bg-green-100 prose max-w-none">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold my-8">Dropdowns - "Single"</h2>
+    <button data-js-dropdown-toggle="single" class="bg-purple-100 p-4 mb-4" aria-pressed="false">Show All</button>
+    <div data-js-group-single class="mb-4">
+      <button data-js-dropdown aria-controls="accordion4" type="button" class="p-4 bg-purple-100 w-full text-left">
         <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 4</span>
       </button>
       <div id="accordion4" class="hidden overflow-hidden">
-        <div class="p-4 bg-gray-100 prose max-w-none">
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+        <div class="p-4 bg-purple-100 prose max-w-none">
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
         </div>
       </div>
-  </div>
+
+      <button data-js-dropdown aria-controls="accordion5" type="button"  class="p-4 bg-purple-100 w-full text-left">
+        <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 5</span>
+      </button>
+      <div id="accordion5" class="hidden overflow-hidden">
+        <div class="p-4 bg-purple-100 prose max-w-none">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+        </div>
+      </div>
+      <button data-js-dropdown aria-controls="accordion6" type="button"  class="p-4 bg-purple-100 w-full text-left">
+        <span data-js-dropdown-label class="text-lg font-bold">Group B: Accordion 6</span>
+      </button>
+      <div id="accordion6" class="hidden overflow-hidden">
+        <div class="p-4 bg-purple-100 prose max-w-none">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="text-2xl font-bold my-8">Dropdowns - "Single Await"</h2>
+    <button data-js-dropdown-toggle="single-await" class="bg-blue-100 p-4 mb-4" aria-pressed="false">Show All</button>
+
+    <div data-js-group-single-await class="mb-4">
+    <button data-js-dropdown aria-controls="accordion7" type="button" class="p-4 bg-blue-100 w-full text-left">
+      <span data-js-dropdown-label class="text-lg font-bold">Group C: Accordion 7</span>
+    </button>
+    <div id="accordion7" class="hidden overflow-hidden">
+      <div class="p-4 bg-blue-100 prose max-w-none">
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+      </div>
+    </div>
+
+
+    <button data-js-dropdown aria-controls="accordion8" type="button"  class="p-4 bg-blue-100 w-full text-left">
+      <span data-js-dropdown-label class="text-lg font-bold">Group C: Accordion 8</span>
+    </button>
+    <div id="accordion8" class="hidden overflow-hidden">
+      <div class="p-4 bg-blue-100 prose max-w-none">
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+      </div>
+    </div>
+
+    <button data-js-dropdown aria-controls="accordion9" type="button"  class="p-4 bg-blue-100 w-full text-left">
+      <span data-js-dropdown-label class="text-lg font-bold">Group C: Accordion 9</span>
+    </button>
+    <div id="accordion9" class="hidden overflow-hidden">
+      <div class="p-4 bg-blue-100 prose max-w-none">
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, voluptatibus, commodi dolorum suscipit corrupti esse quae temporibus eum sint quam, doloribus distinctio sit. Repellat quo sequi rem veniam alias minus?</p>
+      </div>
+    </div>
+
+    </div>
+
+
 
 
 
