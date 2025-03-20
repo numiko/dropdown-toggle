@@ -53,6 +53,10 @@ const s = class s {
     const i = (s.groupInstances[e] || []).filter((n) => !n.isOpen()).map((n) => n.open(!1, !0));
     await Promise.all(i);
   }
+  // Add a new static method to check if any dropdowns in a group are animating
+  static isGroupAnimating(e) {
+    return (s.groupInstances[e] || []).some((i) => i.isAnimating());
+  }
   constructor(e, t = {}) {
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
@@ -101,7 +105,13 @@ const s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete
    */
   async open(e = !1, t = !1) {
-    return this.state.isAnimating ? Promise.resolve() : (this.group && !t && (this.groupMode === "single" ? s.closeAllInGroup(this.group, this) : this.groupMode === "single-await" && await s.closeAllInGroup(this.group, this)), this.state.isOpen = !0, this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.group && window.dispatchEvent(this.groupChangeEvent(this.group)), this.animate(e));
+    if (this.state.isAnimating) return Promise.resolve();
+    if (this.group && !t) {
+      if (s.isGroupAnimating(this.group))
+        return Promise.resolve();
+      this.groupMode === "single" ? s.closeAllInGroup(this.group, this) : this.groupMode === "single-await" && await s.closeAllInGroup(this.group, this);
+    }
+    return this.state.isOpen = !0, this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.group && window.dispatchEvent(this.groupChangeEvent(this.group)), this.animate(e);
   }
   /**
    * Closes the dropdown directly.
@@ -125,17 +135,17 @@ const s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   animate(e = !1) {
-    var i, n, o, l;
-    const t = this.isOpen() ? ((n = (i = this.openOptions).tween) == null ? void 0 : n.call(i, this.dropdownItem)) || this.defaultOpenTween(this.dropdownItem) : ((l = (o = this.closeOptions).tween) == null ? void 0 : l.call(o, this.dropdownItem)) || this.defaultCloseTween(this.dropdownItem);
-    return new Promise((u) => {
-      var d, p, c, m;
-      if (this.isOpen() ? (d = this.onOpenStart) == null || d.call(this, this.dropdownItem) : (p = this.onCloseStart) == null || p.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
-        t.progress(1), this.state.isAnimating = !1, this.isOpen() ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (m = this.onCloseEnd) == null || m.call(this, this.dropdownItem), u();
+    var i, n, o, u;
+    const t = this.isOpen() ? ((n = (i = this.openOptions).tween) == null ? void 0 : n.call(i, this.dropdownItem)) || this.defaultOpenTween(this.dropdownItem) : ((u = (o = this.closeOptions).tween) == null ? void 0 : u.call(o, this.dropdownItem)) || this.defaultCloseTween(this.dropdownItem);
+    return new Promise((l) => {
+      var p, d, c, m;
+      if (this.isOpen() ? (p = this.onOpenStart) == null || p.call(this, this.dropdownItem) : (d = this.onCloseStart) == null || d.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
+        t.progress(1), this.state.isAnimating = !1, this.isOpen() ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (m = this.onCloseEnd) == null || m.call(this, this.dropdownItem), l();
       else {
-        const O = t.vars.onComplete;
+        const g = t.vars.onComplete;
         t.eventCallback("onComplete", () => {
-          var g, f;
-          O && O(), this.state.isAnimating = !1, this.isOpen() ? (g = this.onOpenEnd) == null || g.call(this, this.dropdownItem) : (f = this.onCloseEnd) == null || f.call(this, this.dropdownItem), u();
+          var O, f;
+          g && g(), this.state.isAnimating = !1, this.isOpen() ? (O = this.onOpenEnd) == null || O.call(this, this.dropdownItem) : (f = this.onCloseEnd) == null || f.call(this, this.dropdownItem), l();
         });
       }
     });
@@ -270,7 +280,7 @@ const s = class s {
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.shouldOpenOnLoad() ? this.open(!0) : this.close(!0), this.group && this.addInstanceToGroup(), this.addEventListeners();
+    this.shouldOpenOnLoad() && this.open(!0), this.group && this.addInstanceToGroup(), this.addEventListeners();
   }
 };
 a(s, "DURATION_DEFAULT", 0.3), a(s, "DURATION_REDUCED_MOTION", 1e-3), a(s, "EASE_DEFAULT", "power2.easeInOut"), a(s, "groupInstances", {});
