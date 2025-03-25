@@ -136,10 +136,10 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `closeOnFocusLeave` | Close dropdown when focus moves outside of it | `boolean` | `false` |
 | `openDuration` | Tween duration for open animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
-| `openTween` | Custom GSAP tween function for opening animation | `function` | `null` |
+| `openTween` | Function that returns a custom Tween or Timeline to use for the opening animation. See "Using Custom Tweens" section | `function` | `null` |
 | `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'` |
-| `closeTween` | Custom GSAP tween function for closing animation | `function` | `null` |
+| `closeTween` | Function that returns a custom Tween or Timeline to use for the closing animation. See "Using Custom Tweens" section | `function` | `null` |
 | `group` | Assign a group name to a dropdown. Needed if you want to alter a group mode behavior. | `string` | `` |
 | `groupMode` | Determines how dropdowns in a group behave. 'multiple': multiple dropdowns can be open simultaneously. 'single': only one dropdown can be open at a time. 'single-await': only one dropdown can be open at a time and waits for others to finish closing | `'multiple'` \| `'single'` \| `'single-await'` | `'multiple'` |
 | `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
