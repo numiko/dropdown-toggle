@@ -1,4 +1,4 @@
-import { expect, describe, it, vi } from 'vitest';
+import { expect, describe, it } from 'vitest';
 import { DropdownToggle } from '../../lib/DropdownToggle';
 import { setupTest, delay } from '../test-utils';
 

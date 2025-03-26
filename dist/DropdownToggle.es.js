@@ -1,6 +1,6 @@
-var m = Object.defineProperty;
-var O = (r, e, t) => e in r ? m(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
-var a = (r, e, t) => O(r, typeof e != "symbol" ? e + "" : e, t);
+var b = Object.defineProperty;
+var I = (r, e, t) => e in r ? b(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
+var a = (r, e, t) => I(r, typeof e != "symbol" ? e + "" : e, t);
 import h from "gsap";
 const s = class s {
   /**
@@ -33,8 +33,7 @@ const s = class s {
    */
   static isGroupAllClosed(e) {
     const t = s.groupInstances[e] || [];
-    if (t.length !== 0)
-      return t.every((i) => !i.isOpen());
+    return t.length > 0 && t.every((i) => !i.isOpen());
   }
   /**
    * Closes all dropdowns in the specified group except for the current instance.
@@ -53,16 +52,22 @@ const s = class s {
     const i = (s.groupInstances[e] || []).filter((n) => !n.isOpen()).map((n) => n.open(!1, !0));
     await Promise.all(i);
   }
+  // Add a new static method to check if any dropdowns in a group are animating
+  static isGroupAnimating(e) {
+    return (s.groupInstances[e] || []).some((i) => i.isAnimating());
+  }
   constructor(e, t = {}) {
     this.bindThisToMemberFunctions(), this.state = {
       isOpen: !1,
       isAnimating: !1
     }, this.button = typeof e == "string" ? document.querySelector(e) : e, this.buttonLabelEl = typeof t.buttonLabelEl == "string" ? this.button.querySelector(t.buttonLabelEl) : t.buttonLabelEl, this.dropdownId = this.button.getAttribute("aria-controls"), this.dropdownItem = document.getElementById(this.dropdownId), this.openLabel = t.openLabel || "Open", this.closeLabel = t.closeLabel || "Close", this.openClass = t.openClass, this.openOnLoad = !!t.openOnLoad, this.closeOnEsc = !!t.closeOnEsc, this.closeOnOutsideClick = !!t.closeOnOutsideClick, this.closeOnFocusLeave = t.closeOnFocusLeave, this.onOpenStart = t.onOpenStart, this.onOpenEnd = t.onOpenEnd, this.onCloseStart = t.onCloseStart, this.onCloseEnd = t.onCloseEnd, this.onDestroy = t.onDestroy, this.openOptions = {
       duration: t.openDuration || s.getAnimationDuration(),
-      ease: t.openEase || s.EASE_DEFAULT
+      ease: t.openEase || s.EASE_DEFAULT,
+      tween: t.openTween
     }, this.closeOptions = {
       duration: t.closeDuration || s.getAnimationDuration(),
-      ease: t.closeEase || s.EASE_DEFAULT
+      ease: t.closeEase || s.EASE_DEFAULT,
+      tween: t.closeTween
     }, this.group = t.group || null, this.groupMode = t.groupMode || "multiple", this.groupChangeEvent = (i) => new CustomEvent("DropdownToggle:group-change", {
       detail: {
         group: i,
@@ -99,7 +104,13 @@ const s = class s {
    * @returns {Promise} A promise that resolves when the animation is complete
    */
   async open(e = !1, t = !1) {
-    return this.state.isAnimating ? Promise.resolve() : (this.group && !t && (this.groupMode === "single" ? s.closeAllInGroup(this.group, this) : this.groupMode === "single-await" && await s.closeAllInGroup(this.group, this)), this.state.isOpen = !0, this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.group && window.dispatchEvent(this.groupChangeEvent(this.group)), this.animate(e));
+    if (this.state.isAnimating) return Promise.resolve();
+    if (this.group && !t) {
+      if (s.isGroupAnimating(this.group))
+        return Promise.resolve();
+      this.groupMode === "single" ? s.closeAllInGroup(this.group, this) : this.groupMode === "single-await" && await s.closeAllInGroup(this.group, this);
+    }
+    return this.state.isOpen = !0, this.addClasses(this.button, this.openClass), this.setAria(!0), this.setButtonLabel(this.closeLabel), this.group && window.dispatchEvent(this.groupChangeEvent(this.group)), this.animate(e);
   }
   /**
    * Closes the dropdown directly.
@@ -119,46 +130,47 @@ const s = class s {
   }
   /**
    * Animates the opening or closing of the dropdown.
-   * @param {boolean} open - Indicates if the dropdown is being opened or closed.
    * @param {boolean} instant - Indicates if the animation should be instant.
    * @returns {Promise} A promise that resolves when the animation is complete.
    */
   animate(e = !1) {
-    const t = this.isOpen() ? this.defaultOpenTween(this.dropdownItem, e) : this.defaultCloseTween(this.dropdownItem, e);
-    return new Promise((i) => {
-      var n, o, u, l;
-      this.isOpen() ? (n = this.onOpenStart) == null || n.call(this, this.dropdownItem) : (o = this.onCloseStart) == null || o.call(this, this.dropdownItem), this.state.isAnimating = !0, e ? (this.state.isAnimating = !1, this.isOpen() ? (u = this.onOpenEnd) == null || u.call(this, this.dropdownItem) : (l = this.onCloseEnd) == null || l.call(this, this.dropdownItem), i()) : t.then(() => {
-        var d, p;
-        this.state.isAnimating = !1, this.isOpen() ? (d = this.onOpenEnd) == null || d.call(this, this.dropdownItem) : (p = this.onCloseEnd) == null || p.call(this, this.dropdownItem), i();
-      });
+    var i, n, o, u;
+    const t = this.isOpen() ? ((n = (i = this.openOptions).tween) == null ? void 0 : n.call(i, this.dropdownItem)) || this.defaultOpenTween(this.dropdownItem) : ((u = (o = this.closeOptions).tween) == null ? void 0 : u.call(o, this.dropdownItem)) || this.defaultCloseTween(this.dropdownItem);
+    return new Promise((l) => {
+      var d, p, c, m;
+      if (this.isOpen() ? (d = this.onOpenStart) == null || d.call(this, this.dropdownItem) : (p = this.onCloseStart) == null || p.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
+        t.progress(1), this.state.isAnimating = !1, this.isOpen() ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (m = this.onCloseEnd) == null || m.call(this, this.dropdownItem), l();
+      else {
+        const g = t.vars.onComplete;
+        t.eventCallback("onComplete", () => {
+          var O, f;
+          g && g(), this.state.isAnimating = !1, this.isOpen() ? (O = this.onOpenEnd) == null || O.call(this, this.dropdownItem) : (f = this.onCloseEnd) == null || f.call(this, this.dropdownItem), l();
+        });
+      }
     });
   }
   /**
    * The default opening tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {boolean} instant - Indicates if the animation should be instant.
    */
-  defaultOpenTween(e, t = !1) {
-    return this.dropdownItem.style.display = "block", t ? h.set(e, { height: "auto" }) : h.fromTo(
-      e,
-      { height: 0 },
-      { height: "auto", duration: this.openOptions.duration, ease: this.openOptions.ease }
-    );
+  defaultOpenTween(e) {
+    return h.timeline().set(e, { display: "block", height: 0 }).to(e, {
+      height: "auto",
+      duration: this.openOptions.duration,
+      ease: this.openOptions.ease
+    });
   }
   /**
    * The default closing tween animation.
    * @param {HTMLElement} element - The element to animate.
-   * @param {boolean} instant - Indicates if the animation should be instant.
    */
-  defaultCloseTween(e, t = !1) {
-    return t ? h.set(e, { height: 0, onComplete: () => {
-      this.dropdownItem.style.display = "none";
-    } }) : h.to(e, {
+  defaultCloseTween(e) {
+    return h.to(e, {
       height: 0,
       duration: this.closeOptions.duration,
       ease: this.closeOptions.ease,
       onComplete: () => {
-        this.dropdownItem.style.display = "none";
+        h.set(e, { display: "none" });
       }
     });
   }
@@ -230,7 +242,7 @@ const s = class s {
   * called as part of the component teardown process to ensure the component is cleanly reset.
   */
   resetState() {
-    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
+    h.killTweensOf(this.dropdownItem), this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
   }
   /**
   * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
@@ -267,11 +279,11 @@ const s = class s {
    * Initializes the dropdown toggle, setting its state and adding event listeners.
    */
   init() {
-    this.shouldOpenOnLoad() ? this.open(!0) : this.close(!0), this.group && this.addInstanceToGroup(), this.addEventListeners();
+    this.shouldOpenOnLoad() && this.open(!0), this.group && this.addInstanceToGroup(), this.addEventListeners();
   }
 };
 a(s, "DURATION_DEFAULT", 0.3), a(s, "DURATION_REDUCED_MOTION", 1e-3), a(s, "EASE_DEFAULT", "power2.easeInOut"), a(s, "groupInstances", {});
-let c = s;
+let E = s;
 export {
-  c as DropdownToggle
+  E as DropdownToggle
 };

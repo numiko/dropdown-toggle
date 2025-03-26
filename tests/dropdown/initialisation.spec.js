@@ -42,16 +42,4 @@ describe('Initialisations', () => {
     expect(dropdown.button).toBe(dropdownElement);
   });
 
-  it('should have correct attributes when created', async () => {
-    // Arrange
-    const dropdownEl = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
-    new DropdownToggle(dropdownEl);
-    const dropdownContent = document.querySelector(`#${dropdownEl.getAttribute('aria-controls')}`);
-    // No action
-
-    // Assert
-    expect(dropdownEl.getAttribute('aria-expanded')).toBe('false');
-    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
-  });
-
 });

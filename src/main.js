@@ -1,5 +1,4 @@
 import { DropdownToggle } from '../lib/DropdownToggle';
-
 /**
  * This file demonstrates three different group behaviors for DropdownToggle:
  *
@@ -27,17 +26,9 @@ import { DropdownToggle } from '../lib/DropdownToggle';
 const groups = ['multiple', 'single', 'single-await'];
 const instances = [];
 
-groups.forEach(group => {
-  // Initialize dropdowns for this group
-  document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
-    const instance = new DropdownToggle(dropdown, {
-      group,
-      groupMode: group
-    });
-    instances.push(instance);
-  });
-});
-
+/*
+* Group Change Event
+*/
 const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
 toggleButtons.forEach(button => {
   // Store the group value
@@ -59,5 +50,18 @@ toggleButtons.forEach(button => {
       button.setAttribute('aria-pressed', e.detail.isAllOpen);
       button.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
     }
+  });
+});
+
+/*
+* Initialize Dropdown Toggles
+*/
+groups.forEach(group => {
+  document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
+    const instance = new DropdownToggle(dropdown, {
+      group,
+      groupMode: group,
+    });
+    instances.push(instance);
   });
 });

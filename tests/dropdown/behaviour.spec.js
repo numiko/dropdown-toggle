@@ -116,6 +116,47 @@ describe('When the dropdown is clicked', () => {
     expect(dropdownContent.style.display).toBe('block');
   });
 
+  it('should not be able to open a dropdown if another dropdown in the same group is animating', async () => {
+    // Choose a dropdown that is closed by default
+    const dropdownElementTwo = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
+    const dropdownContentTwo = document.querySelector(`#${dropdownElementTwo.getAttribute('aria-controls')}`);
+    new DropdownToggle(dropdownElementTwo, {
+      openDuration: 0.1,
+      closeDuration: 0.1,
+      group: 'test-group',
+    });
+
+    const dropdownElementThree = document.querySelector('[data-js-dropdown][aria-controls="accordion3"]');
+    const dropdownContentThree = document.querySelector(`#${dropdownElementThree.getAttribute('aria-controls')}`);
+
+    new DropdownToggle(dropdownElementThree, {
+      openDuration: 0.1,
+      closeDuration: 0.1,
+      group: 'test-group',
+    });
+    // Act
+    // We use a click method instead of a public method because
+    // we don't want to wait for the open animation to resolve
+    // before we trigger the second click.
+    dropdownElementTwo.click();
+
+    // `rAF` gives the dropdown time to start opening before we trigger
+    // the second click.
+    requestAnimationFrame(() => {
+      dropdownElementThree.click();
+    });
+
+    // Wait for the dropdown to finish opening.
+    await delay(300);
+
+    // Assert
+    expect(dropdownElementTwo.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownContentTwo.getAttribute('aria-hidden')).toBe('false');
+    expect(dropdownElementThree.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContentThree.getAttribute('aria-hidden')).toBe('true');
+
+  });
+
   it('should remove any open classes added when destroyed', async () => {
     // Arrange
     const dropdownElement = document.querySelector('[data-js-dropdown]');

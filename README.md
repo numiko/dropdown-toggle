@@ -79,11 +79,44 @@ const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
   onCloseStart: () => {},
   // callback when close animation ends
   onCloseEnd: () => {},
+  // callback when DropdownToggle is destroyed
+  onDestroy: () => {},
 });
 
 
 myDropdown.init(); // initialise
 ```
+
+### Using Custom Tweens
+
+You can provide custom GSAP tweens for both opening and closing animations using the `openTween` and `closeTween` options. These functions should return a GSAP timeline or tween.
+
+> **Note:** When using custom tweens, the `openDuration`, `openEase`, `closeDuration`, and `closeEase` options are ignored. You should specify your duration and easing within your custom tween.
+
+```javascript
+const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]', {
+  openTween: (element) => {
+    return gsap.timeline()
+      .set(element, {
+        display: 'block',
+        height: 0,
+        opacity: 0
+      })
+      .to(element, {
+        height: 'auto',
+        opacity: 1,
+        duration: 1,
+      });
+  }
+});
+```
+
+In this example, we're creating a custom opening animation that:
+1. Initially sets the element to be visible but with zero height and opacity
+2. Animates both the height and opacity simultaneously
+3. Uses a duration of 1 second for the animation
+
+The `element` parameter passed to the tween function is the dropdown content container that will be animated.
 
 
 ## API
@@ -102,9 +135,11 @@ The `dropdownToggle` constructor accepts options as a second argument.
 | `closeOnOutsideClick` | Close dropdown when clicking outside of it | `boolean` | `false` |
 | `closeOnFocusLeave` | Close dropdown when focus moves outside of it | `boolean` | `false` |
 | `openDuration` | Tween duration for open animation | `number` | 0.3 |
-| `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `openEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'`|
+| `openTween` | Function that returns a custom Tween or Timeline to use for the opening animation. See "Using Custom Tweens" section | `function` | `null` |
+| `closeDuration` | Tween duration for close animation | `number` | 0.3 |
 | `closeEase` | [A GSAP ease](https://gsap.com/docs/v3/Eases/) | `string` | `'power2.easeInOut'` |
+| `closeTween` | Function that returns a custom Tween or Timeline to use for the closing animation. See "Using Custom Tweens" section | `function` | `null` |
 | `group` | Assign a group name to a dropdown. Needed if you want to alter a group mode behavior. | `string` | `` |
 | `groupMode` | Determines how dropdowns in a group behave. 'multiple': multiple dropdowns can be open simultaneously. 'single': only one dropdown can be open at a time. 'single-await': only one dropdown can be open at a time and waits for others to finish closing | `'multiple'` \| `'single'` \| `'single-await'` | `'multiple'` |
 | `onOpenStart` | Callback that fires before open animation |  `function` | `null` |
@@ -201,6 +236,9 @@ window.addEventListener('DropdownToggle:group-change', (e) => {
 - Added `groupMode` option.  This allows you to set the group mode to `single`, `single-await`, or `multiple`.  To get the same behavior as prior release you need to set a `group` and`groupMode` to `single`.
 - Changed global defaults for duration and easing.  These can now be set by setting the static properties `DropdownToggle.DURATION_DEFAULT` and `DropdownToggle.EASE_DEFAULT`.
 - Added `closeOnFocusLeave` option.  This will close the dropdown when the user tabs outside of it.  This renames the `onFocusLeave` option.
+
+ **Notes**
+- `openTween`and `closeTween` options for custom tweens added back in to support custom tweens.
 
 ### v1.0.0
 
