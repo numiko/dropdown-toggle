@@ -33,8 +33,7 @@ const s = class s {
    */
   static isGroupAllClosed(e) {
     const t = s.groupInstances[e] || [];
-    if (t.length !== 0)
-      return t.every((i) => !i.isOpen());
+    return t.length > 0 && t.every((i) => !i.isOpen());
   }
   /**
    * Closes all dropdowns in the specified group except for the current instance.
@@ -138,8 +137,8 @@ const s = class s {
     var i, n, o, u;
     const t = this.isOpen() ? ((n = (i = this.openOptions).tween) == null ? void 0 : n.call(i, this.dropdownItem)) || this.defaultOpenTween(this.dropdownItem) : ((u = (o = this.closeOptions).tween) == null ? void 0 : u.call(o, this.dropdownItem)) || this.defaultCloseTween(this.dropdownItem);
     return new Promise((l) => {
-      var p, d, c, m;
-      if (this.isOpen() ? (p = this.onOpenStart) == null || p.call(this, this.dropdownItem) : (d = this.onCloseStart) == null || d.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
+      var d, p, c, m;
+      if (this.isOpen() ? (d = this.onOpenStart) == null || d.call(this, this.dropdownItem) : (p = this.onCloseStart) == null || p.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
         t.progress(1), this.state.isAnimating = !1, this.isOpen() ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (m = this.onCloseEnd) == null || m.call(this, this.dropdownItem), l();
       else {
         const g = t.vars.onComplete;
@@ -243,7 +242,7 @@ const s = class s {
   * called as part of the component teardown process to ensure the component is cleanly reset.
   */
   resetState() {
-    this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
+    h.killTweensOf(this.dropdownItem), this.button.removeAttribute("aria-expanded"), this.openClass && this.removeClasses(this.button, this.openClass), this.openLabel && this.setButtonLabel(this.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
   }
   /**
   * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
