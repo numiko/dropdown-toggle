@@ -137,14 +137,14 @@ const s = class s {
     var i, n, o, u;
     const t = this.isOpen() ? ((n = (i = this.openOptions).tween) == null ? void 0 : n.call(i, this.dropdownItem)) || this.defaultOpenTween(this.dropdownItem) : ((u = (o = this.closeOptions).tween) == null ? void 0 : u.call(o, this.dropdownItem)) || this.defaultCloseTween(this.dropdownItem);
     return new Promise((l) => {
-      var d, p, c, m;
-      if (this.isOpen() ? (d = this.onOpenStart) == null || d.call(this, this.dropdownItem) : (p = this.onCloseStart) == null || p.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
+      var p, d, c, m;
+      if (this.isOpen() ? (p = this.onOpenStart) == null || p.call(this, this.dropdownItem) : (d = this.onCloseStart) == null || d.call(this, this.dropdownItem), this.state.isAnimating = !0, e)
         t.progress(1), this.state.isAnimating = !1, this.isOpen() ? (c = this.onOpenEnd) == null || c.call(this, this.dropdownItem) : (m = this.onCloseEnd) == null || m.call(this, this.dropdownItem), l();
       else {
-        const g = t.vars.onComplete;
+        const O = t.vars.onComplete;
         t.eventCallback("onComplete", () => {
-          var O, f;
-          g && g(), this.state.isAnimating = !1, this.isOpen() ? (O = this.onOpenEnd) == null || O.call(this, this.dropdownItem) : (f = this.onCloseEnd) == null || f.call(this, this.dropdownItem), l();
+          var g, f;
+          O && O(), this.state.isAnimating = !1, this.isOpen() ? (g = this.onOpenEnd) == null || g.call(this, this.dropdownItem) : (f = this.onCloseEnd) == null || f.call(this, this.dropdownItem), l();
         });
       }
     });
@@ -230,7 +230,7 @@ const s = class s {
    * @param {KeyboardEvent} e - The keyboard event.
    */
   onFocusLeaveHandler(e) {
-    if (e.key !== "Tab") return;
+    if (e.key !== "Tab" || !this.isOpen()) return;
     this.dropdownItem.contains(e.target) || this.close();
   }
   destroy() {

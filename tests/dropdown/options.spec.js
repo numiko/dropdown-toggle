@@ -1,4 +1,3 @@
-
 import { expect, describe, it, vi } from 'vitest';
 import { DropdownToggle } from '../../lib/DropdownToggle';
 import { setupTest, delay } from '../test-utils';
@@ -296,6 +295,36 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
     expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
     expect(dropdownContent.style.height).toBe('auto');
     expect(dropdownContent.style.display).toBe('block');
+  });
+
+  it('should not attempt to close the dropdown if it is already closed', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
+    const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      closeOnFocusLeave: true,
+      openDuration: 0.001,
+      closeDuration: 0.001,
+    });
+
+    // Create a spy on the close method
+    const closeSpy = vi.spyOn(dropdownToggle, 'close');
+
+    // Verify the initial state
+    expect(dropdownToggle.isOpen()).toBe(false);
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+
+    // Act
+    const event = new window.KeyboardEvent('keyup', { key: 'Tab' });
+    document.dispatchEvent(event);
+
+    // Wait a bit for any async operations
+    await delay(250);
+
+    // Assert
+    expect(closeSpy).not.toHaveBeenCalled();
+    expect(dropdownElement.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownContent.getAttribute('aria-hidden')).toBe('true');
   });
 });
 
