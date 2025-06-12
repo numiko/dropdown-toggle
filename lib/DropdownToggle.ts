@@ -5,18 +5,10 @@ class DropdownToggle {
   static DURATION_REDUCED_MOTION = 0.001;
   static EASE_DEFAULT = 'power2.easeInOut';
 
-  /**
-   * Checks if the user prefers reduced motion animations.
-   * @returns {boolean} True if reduced motion is preferred, false otherwise.
-   */
   static prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  /**
-   * Gets the appropriate animation duration based on user motion preferences.
-   * @returns {number} The animation duration in seconds.
-   */
   static getAnimationDuration() {
     return DropdownToggle.prefersReducedMotion()
       ? DropdownToggle.DURATION_REDUCED_MOTION
@@ -25,32 +17,16 @@ class DropdownToggle {
 
   static groupInstances = {};
 
-  /**
-   * Checks if all dropdowns in the specified group are open.
-   * @param {string} group - The name of the group.
-   * @returns {boolean} True if all dropdowns in the group are open, false otherwise.
-   */
   static isGroupAllOpen(group) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.length > 0 && members.every(instance => instance.isOpen());
   }
 
-  /**
-   * Checks if all dropdowns in the specified group are closed.
-   * @param {string} group - The name of the group.
-   * @returns {boolean} True if all dropdowns in the group are closed, false otherwise.
-   */
   static isGroupAllClosed(group) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.length > 0 && members.every(instance => !instance.isOpen());
   }
 
-
-  /**
-   * Closes all dropdowns in the specified group except for the current instance.
-   * @param {string} group - The name of the group.
-   * @param {DropdownToggle} currentInstance - The current instance of the dropdown to exclude.
-   */
   static async closeAllInGroup(group, currentInstance) {
     const members = DropdownToggle.groupInstances[group] || [];
     const closePromises = members
@@ -59,11 +35,6 @@ class DropdownToggle {
     await Promise.all(closePromises);
   }
 
-
-  /**
-   * Opens all dropdowns in the specified group.
-   * @param {string} group - The name of the group.
-   */
   static async openAllInGroup(group) {
     const members = DropdownToggle.groupInstances[group] || [];
     const openPromises = members
@@ -72,7 +43,6 @@ class DropdownToggle {
     await Promise.all(openPromises);
   }
 
-  // Add a new static method to check if any dropdowns in a group are animating
   static isGroupAnimating(group) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.some(instance => instance.isAnimating());
@@ -124,10 +94,6 @@ class DropdownToggle {
     this.init();
   }
 
-
-  /**
-   * Binds instance to member functions to preserve the `this` context.
-   */
   bindThisToMemberFunctions() {
     const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
     methods.forEach(method => {
@@ -137,28 +103,14 @@ class DropdownToggle {
     });
   }
 
-  /**
-   * Checks if the dropdown is open.
-   * @returns {boolean} True if the dropdown is open, false otherwise.
-   */
   isOpen() {
     return this.state.isOpen;
   }
 
-  /**
-   * Checks if the dropdown is animating.
-   * @returns {boolean} True if the dropdown is animating, false otherwise.
-   */
   isAnimating() {
     return this.state.isAnimating;
   }
 
-  /**
-   * Opens the dropdown directly, respecting group mode restrictions.
-   * @param {boolean} instant - If true, skips animation
-   * @param {boolean} bypassGroup - If true, bypasses group mode restrictions
-   * @returns {Promise} A promise that resolves when the animation is complete
-   */
   async open(instant = false, bypassGroup = false) {
     if (this.state.isAnimating) return Promise.resolve();
 
@@ -190,11 +142,6 @@ class DropdownToggle {
     return this.animate(instant);
   }
 
-  /**
-   * Closes the dropdown directly.
-   * @param {boolean} instant - If true, skips animation
-   * @returns {Promise} A promise that resolves when the animation is complete
-   */
   async close(instant = false) {
     if (this.state.isAnimating) return Promise.resolve();
 
@@ -210,10 +157,6 @@ class DropdownToggle {
     return this.animate(instant);
   }
 
-  /**
-   * Toggles the dropdown's state while respecting group mode settings.
-   * @returns {Promise} A promise that resolves when the animation is complete
-   */
   async toggle() {
     if (this.state.isAnimating) return Promise.resolve();
 
@@ -224,11 +167,6 @@ class DropdownToggle {
     }
   }
 
-  /**
-   * Animates the opening or closing of the dropdown.
-   * @param {boolean} instant - Indicates if the animation should be instant.
-   * @returns {Promise} A promise that resolves when the animation is complete.
-   */
   animate(instant = false) {
     const tween = this.isOpen()
       ? (this.openOptions.tween?.(this.dropdownItem) || this.defaultOpenTween(this.dropdownItem))
@@ -268,10 +206,6 @@ class DropdownToggle {
     });
   }
 
-  /**
-   * The default opening tween animation.
-   * @param {HTMLElement} element - The element to animate.
-   */
   defaultOpenTween(element) {
     // First make visible but collapsed
     return gsap.timeline()
@@ -283,10 +217,6 @@ class DropdownToggle {
       });
   }
 
-  /**
-   * The default closing tween animation.
-   * @param {HTMLElement} element - The element to animate.
-   */
   defaultCloseTween(element) {
     return gsap.to(element, {
       height: 0,
@@ -298,46 +228,29 @@ class DropdownToggle {
     });
   }
 
-  /**
-   * Sets the ARIA attributes for the button and dropdown item.
-   * @param {boolean} expanded - Indicates whether the dropdown is expanded or not.
-   */
   setAria(expanded) {
     this.button.setAttribute('aria-expanded', expanded);
     this.dropdownItem.setAttribute('aria-hidden', !expanded);
   }
 
-  /*
-  * Add a class (or multiple) to an element.
-  */
   addClasses(el, classes) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.add(...classesArray);
   }
 
-  /*
-  * Removes the class (or multiple) of an element.
-  */
   removeClasses(el, classes) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.remove(...classesArray);
   }
 
-  /**
-   * Sets the label of the dropdown button.
-   * @param {string} label - The string to use for the button's label
-   */
   setButtonLabel(label) {
     if (!label || !this.buttonLabelEl) return;
 
     this.buttonLabelEl.textContent = label;
   }
 
-  /**
-   * Adds event listeners for the dropdown toggle, including click, keydown, and outside click.
-   */
   addEventListeners() {
     this.button.addEventListener('click', this.toggle);
 
@@ -354,20 +267,12 @@ class DropdownToggle {
     }
   }
 
-  /**
-   * Handles the Escape key press to close the dropdown.
-   * @param {KeyboardEvent} e - The keyboard event.
-   */
   onEscKeyPress(e) {
     if (e.key === 'Escape' && this.isOpen()) {
       this.close();
     }
   }
 
-  /**
-   * Handles clicks outside the dropdown to close it.
-   * @param {MouseEvent} e - The mouse event.
-   */
   onClickOutside(e) {
     if (!this.isOpen()) return;
 
@@ -377,10 +282,6 @@ class DropdownToggle {
     }
   }
 
-  /**
-   * Handles the focus leaving the dropdown to close it.
-   * @param {KeyboardEvent} e - The keyboard event.
-   */
   onFocusLeaveHandler(e) {
     if (e.key !== 'Tab') return;
     if (!this.isOpen()) return;
@@ -399,10 +300,6 @@ class DropdownToggle {
     this.onDestroy?.(this.dropdownItem);
   }
 
-  /**
-  * Resets the visual and ARIA state of the dropdown to its initial state. This method is typically
-  * called as part of the component teardown process to ensure the component is cleanly reset.
-  */
   resetState() {
     gsap.killTweensOf(this.dropdownItem);
     this.button.removeAttribute('aria-expanded');
@@ -416,10 +313,6 @@ class DropdownToggle {
     this.dropdownItem.removeAttribute('style');
   }
 
-  /**
-  * Removes all event listeners added by the dropdown instance. This method is crucial for preventing
-  * memory leaks and ensuring that event handlers do not trigger after the component has been destroyed.
-  */
   removeEventListeners() {
     this.button.removeEventListener('click', this.toggle);
     document.removeEventListener('keydown', this.onEscKeyPress);
@@ -427,10 +320,6 @@ class DropdownToggle {
     document.removeEventListener('keyup', this.onFocusLeaveHandler);
   }
 
-  /**
-   * Adds this instance to its specified group in the static groupInstances.
-   * Creates the group array if it doesn't exist.
-   */
   addInstanceToGroup() {
     // Ensure the group array exists for this.group
     DropdownToggle.groupInstances[this.group] = DropdownToggle.groupInstances[this.group] || [];
@@ -439,10 +328,6 @@ class DropdownToggle {
     DropdownToggle.groupInstances[this.group].push(this);
   }
 
-  /**
-   * Removes the current instance from its associated group in `groupInstances`.
-   * If this leaves the group empty, the group is also removed from `groupInstances` to clean up.
-   */
   removeInstanceFromGroup() {
     // Check if this instance belongs to a group and that the group exists
     if (this.group && DropdownToggle.groupInstances[this.group]) {
@@ -459,19 +344,12 @@ class DropdownToggle {
     }
   }
 
-  /**
-   * Checks if the dropdown should be open based on the markup and the openOnLoad option.
-   * @returns {boolean} True if the dropdown should be open, false otherwise.
-   */
   shouldOpenOnLoad() {
     const isExpandedInMarkup = this.button.getAttribute('aria-expanded') === 'true';
     const instanceShouldOpenOnLoad = isExpandedInMarkup || this.openOnLoad;
     return instanceShouldOpenOnLoad;
   }
 
-  /**
-   * Initializes the dropdown toggle, setting its state and adding event listeners.
-   */
   init() {
     // Set the inital state on load
     if (this.shouldOpenOnLoad()) {
