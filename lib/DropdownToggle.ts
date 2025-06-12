@@ -48,7 +48,7 @@ class DropdownToggle {
     return members.some(instance => instance.isAnimating());
   }
 
-  constructor(button, options = {}) {
+  constructor(button: HTMLElement | string, options = {}) {
     this.bindThisToMemberFunctions();
     this.state = {
       isOpen: false,
@@ -206,7 +206,7 @@ class DropdownToggle {
     });
   }
 
-  defaultOpenTween(element) {
+  defaultOpenTween(element: HTMLElement) {
     // First make visible but collapsed
     return gsap.timeline()
       .set(element, { display: 'block', height: 0 })
@@ -217,7 +217,7 @@ class DropdownToggle {
       });
   }
 
-  defaultCloseTween(element) {
+  defaultCloseTween(element: HTMLElement) {
     return gsap.to(element, {
       height: 0,
       duration: this.closeOptions.duration,
@@ -228,24 +228,24 @@ class DropdownToggle {
     });
   }
 
-  setAria(expanded) {
+  setAria(expanded: boolean) {
     this.button.setAttribute('aria-expanded', expanded);
     this.dropdownItem.setAttribute('aria-hidden', !expanded);
   }
 
-  addClasses(el, classes) {
+  addClasses(el: HTMLElement, classes: string) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.add(...classesArray);
   }
 
-  removeClasses(el, classes) {
+  removeClasses(el: HTMLElement, classes: string) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.remove(...classesArray);
   }
 
-  setButtonLabel(label) {
+  setButtonLabel(label: string) {
     if (!label || !this.buttonLabelEl) return;
 
     this.buttonLabelEl.textContent = label;
@@ -267,13 +267,13 @@ class DropdownToggle {
     }
   }
 
-  onEscKeyPress(e) {
+  onEscKeyPress(e: KeyboardEvent) {
     if (e.key === 'Escape' && this.isOpen()) {
       this.close();
     }
   }
 
-  onClickOutside(e) {
+  onClickOutside(e: Event) {
     if (!this.isOpen()) return;
 
     const isClickInside = this.dropdownItem.contains(e.target) || this.button.contains(e.target);
@@ -282,7 +282,7 @@ class DropdownToggle {
     }
   }
 
-  onFocusLeaveHandler(e) {
+  onFocusLeaveHandler(e: KeyboardEvent) {
     if (e.key !== 'Tab') return;
     if (!this.isOpen()) return;
 
