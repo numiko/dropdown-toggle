@@ -229,6 +229,17 @@ window.addEventListener('DropdownToggle:group-change', (e) => {
 
 ## Release notes
 
+### v.3.0.0
+
+Converts to TypeScript
+
+**Breaking changes**
+
+- `options.openDuration` now sits under `options.openOptions.duration`
+- `options.closeDuration` now sits under `options.closeOptions.duration`
+- `options.openTween` now sits under `options.openOptions.tween`
+- `options.closeTween` now sits under `options.closeOptions.tween`
+
 ### v2.0.0
 
 **Breaking changes**

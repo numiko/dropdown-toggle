@@ -25,7 +25,8 @@ export default [
     rules: {
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-undef': 'warn',
-      'no-unused-vars': 'warn',
+      // 'off' because it does not work with TypeScript and function signatures
+      'no-unused-vars': 'off',
       'no-shadow': 'warn',
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/quotes': ['error', 'single'],

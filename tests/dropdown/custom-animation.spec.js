@@ -30,8 +30,12 @@ describe('Custom animations', () => {
         const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
         const dropdown = new DropdownToggle(dropdownElement, {
           onOpenStart: onOpenStartCallback,
-          openTween: fadeDownAccordionTween,
-          closeTween: fadeUpAccordionTween,
+          openOptions: {
+            tween: fadeDownAccordionTween,
+          },
+          closeOptions: {
+            tween: fadeUpAccordionTween,
+          },
         });
 
         await dropdown.open();
@@ -45,8 +49,12 @@ describe('Custom animations', () => {
         const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
         const dropdown = new DropdownToggle(dropdownElement, {
           onOpenEnd: onOpenEndCallback,
-          openTween: fadeDownAccordionTween,
-          closeTween: fadeUpAccordionTween,
+          openOptions: {
+            tween: fadeDownAccordionTween,
+          },
+          closeOptions: {
+            tween: fadeUpAccordionTween,
+          },
         });
 
         await dropdown.open();
@@ -62,8 +70,12 @@ describe('Custom animations', () => {
         const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
         const dropdown = new DropdownToggle(dropdownElement, {
           onCloseStart: onCloseStartCallback,
-          openTween: fadeDownAccordionTween,
-          closeTween: fadeUpAccordionTween,
+          openOptions: {
+            tween: fadeDownAccordionTween,
+          },
+          closeOptions: {
+            tween: fadeUpAccordionTween,
+          },
         });
         await dropdown.open();
         await dropdown.close();
@@ -77,8 +89,12 @@ describe('Custom animations', () => {
         const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
         const dropdown = new DropdownToggle(dropdownElement, {
           onCloseEnd: onCloseEndCallback,
-          openTween: fadeDownAccordionTween,
-          closeTween: fadeUpAccordionTween,
+          openOptions: {
+            tween: fadeDownAccordionTween,
+          },
+          closeOptions: {
+            tween: fadeUpAccordionTween,
+          },
         });
         await dropdown.open();
         await dropdown.close();
@@ -92,8 +108,12 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdown = new DropdownToggle(dropdownElement, {
         onDestroy: onDestroyCallback,
-        openTween: fadeDownAccordionTween,
-        closeTween: fadeUpAccordionTween,
+        openOptions: {
+          tween: fadeDownAccordionTween,
+        },
+        closeOptions: {
+          tween: fadeUpAccordionTween,
+        },
       });
 
       dropdown.destroy();
@@ -106,8 +126,12 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
       const dropdown = new DropdownToggle(dropdownElement, {
-        openTween: openTweenMock,
-        closeTween: fadeUpAccordionTween,
+        openOptions: {
+          tween: openTweenMock,
+        },
+        closeOptions: {
+          tween: fadeUpAccordionTween,
+        },
       });
 
       await dropdown.open();
@@ -120,8 +144,12 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
       const dropdown = new DropdownToggle(dropdownElement, {
-        openTween: fadeDownAccordionTween,
-        closeTween: closeTweenMock,
+        openOptions: {
+          tween: fadeDownAccordionTween,
+        },
+        closeOptions: {
+          tween: closeTweenMock,
+        },
       });
 
       await dropdown.open();
