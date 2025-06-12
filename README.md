@@ -229,7 +229,7 @@ window.addEventListener('DropdownToggle:group-change', (e) => {
 
 ## Release notes
 
-### v.3.0.0
+### v3.0.0
 
 Converts to TypeScript
 
