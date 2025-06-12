@@ -1,5 +1,10 @@
 import gsap from 'gsap';
 
+type State = {
+  isOpen: boolean
+  isAnimating: boolean
+};
+
 class DropdownToggle {
   static DURATION_DEFAULT = 0.3;
   static DURATION_REDUCED_MOTION = 0.001;
@@ -48,12 +53,13 @@ class DropdownToggle {
     return members.some(instance => instance.isAnimating());
   }
 
+  state: State = {
+    isOpen: false,
+    isAnimating: false,
+  };
+
   constructor(button: HTMLElement | string, options = {}) {
     this.bindThisToMemberFunctions();
-    this.state = {
-      isOpen: false,
-      isAnimating: false,
-    };
     this.button = typeof button === 'string' ? document.querySelector(button) : button;
     this.buttonLabelEl = typeof options.buttonLabelEl === 'string' ? this.button.querySelector(options.buttonLabelEl) : options.buttonLabelEl;
     this.dropdownId = this.button.getAttribute('aria-controls');
