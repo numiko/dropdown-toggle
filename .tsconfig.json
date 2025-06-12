@@ -1,0 +1,19 @@
+{
+  "include": ["./lib/**/*"],
+  "compilerOptions": {
+    "strict": true,
+    "composite": true,
+    // Vite will handle the transpilcation and emitting of JS files.
+    "noEmit": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pas/*": ["./src/*"]
+    },
+    "allowJs": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true,
+    "types": ["vitest/globals"]
+  }
+}
