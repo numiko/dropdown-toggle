@@ -1,4 +1,8 @@
-import { DropdownToggle, type GroupMode, type GroupChangeEventDetail } from '../lib/DropdownToggle';
+import {
+  DropdownToggle,
+  type GroupMode,
+  type GroupChangeEventDetail
+} from '../lib/DropdownToggle';
 
 /**
  * This file demonstrates three different group behaviors for DropdownToggle:

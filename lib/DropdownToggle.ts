@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { deepMerge } from './utils/deepMerge';
 
-export type GroupChangeEventDetail = {
+type GroupChangeEventDetail = {
   group: string
   isAllOpen: boolean
 };
@@ -17,7 +17,7 @@ type State = {
   isAnimating: boolean
 };
 
-export type GroupMode = 'single' | 'multiple' | 'single-await';
+type GroupMode = 'single' | 'multiple' | 'single-await';
 
 /**
  * Options that are considered "public" and can
@@ -480,4 +480,8 @@ class DropdownToggle {
   }
 }
 
-export { DropdownToggle };
+export {
+  DropdownToggle,
+  type GroupMode,
+  type GroupChangeEventDetail
+};
