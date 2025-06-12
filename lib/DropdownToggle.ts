@@ -1,6 +1,11 @@
 import gsap from 'gsap';
 import { deepMerge } from './utils/deepMerge';
 
+export type GroupChangeEventDetail = {
+  group: string
+  isAllOpen: boolean
+};
+
 type AnimationOptions = {
   duration: number
   ease: string
@@ -12,7 +17,7 @@ type State = {
   isAnimating: boolean
 };
 
-type GroupMode = 'single' | 'multiple' | 'single-await';
+export type GroupMode = 'single' | 'multiple' | 'single-await';
 
 /**
  * Options that are considered "public" and can
@@ -89,10 +94,10 @@ class DropdownToggle {
     return members.length > 0 && members.every(instance => !instance.isOpen());
   }
 
-  static async closeAllInGroup(group: string, currentInstance: DropdownToggle) {
+  static async closeAllInGroup(group: string) {
     const members = DropdownToggle.groupInstances[group] || [];
     const closePromises = members
-      .filter(instance => instance !== currentInstance && instance.isOpen())
+      .filter(instance => instance.isOpen())
       .map(instance => instance.close());
     await Promise.all(closePromises);
   }
@@ -195,7 +200,7 @@ class DropdownToggle {
   }
 
   dispatchGroupChangeEvent(group: string) {
-    const event = new CustomEvent('DropdownToggle:group-change', {
+    const event = new CustomEvent<GroupChangeEventDetail>('DropdownToggle:group-change', {
       detail: {
         group,
         isAllOpen: DropdownToggle.isGroupAllOpen(group)
