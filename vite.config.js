@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'lib/DropdownToggle.js'),
+      entry: path.resolve(__dirname, 'lib/DropdownToggle.ts'),
       name: 'DropdownToggle',
       fileName: (format) => `DropdownToggle.${format}.js`
     },

@@ -406,8 +406,12 @@ class DropdownToggle {
   resetState() {
     gsap.killTweensOf(this.dropdownItem);
     this.button.removeAttribute('aria-expanded');
-    this.openClass && this.removeClasses(this.button, this.openClass);
-    this.openLabel && this.setButtonLabel(this.openLabel);
+    if (this.openClass) {
+      this.removeClasses(this.button, this.openClass);
+    }
+    if (this.openLabel) {
+      this.setButtonLabel(this.openLabel);
+    }
     this.dropdownItem.removeAttribute('aria-hidden');
     this.dropdownItem.removeAttribute('style');
   }
@@ -440,7 +444,7 @@ class DropdownToggle {
    * If this leaves the group empty, the group is also removed from `groupInstances` to clean up.
    */
   removeInstanceFromGroup() {
-  // Check if this instance belongs to a group and that the group exists
+    // Check if this instance belongs to a group and that the group exists
     if (this.group && DropdownToggle.groupInstances[this.group]) {
       // Find the index of this instance in its group
       const index = DropdownToggle.groupInstances[this.group].indexOf(this);

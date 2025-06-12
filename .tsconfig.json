@@ -1,5 +1,5 @@
 {
-  "include": ["./lib/**/*"],
+  "include": ["**/*.{js,ts}"],
   "compilerOptions": {
     "strict": true,
     "composite": true,
@@ -7,9 +7,6 @@
     "noEmit": true,
     "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {
-      "@pas/*": ["./src/*"]
-    },
     "allowJs": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
