@@ -94,10 +94,10 @@ class DropdownToggle {
     return members.length > 0 && members.every(instance => !instance.isOpen());
   }
 
-  static async closeAllInGroup(group: string) {
+  static async closeAllInGroup(group: string, currentInstance?: DropdownToggle) {
     const members = DropdownToggle.groupInstances[group] || [];
     const closePromises = members
-      .filter(instance => instance.isOpen())
+      .filter(instance => instance !== currentInstance && instance.isOpen())
       .map(instance => instance.close());
     await Promise.all(closePromises);
   }
