@@ -7,8 +7,14 @@ type GroupChangeEventDetail = {
 };
 
 type AnimationOptions = {
+  /**
+   * Duration of the animation in seconds.
+   */
   duration: number
   ease: string
+  /**
+   * The tween function to use for the animation.
+   */
   tween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
 };
 
@@ -17,6 +23,12 @@ type State = {
   isAnimating: boolean
 };
 
+/**
+ * Group mode determines how the dropdowns function in a group
+ * - single: only one dropdown can be open at a time
+ * - multiple: all dropdowns can be open at the same time
+ * - single-await: only one dropdown can be open at a time, and the next dropdown will wait for the current one to close
+ */
 type GroupMode = 'single' | 'multiple' | 'single-await';
 
 /**
@@ -27,6 +39,9 @@ type DropdownOptions = {
   buttonLabelEl?: HTMLElement | string
   openLabel?: string
   closeLabel?: string
+  /**
+   * A space-separated list of classes to add to the button when the dropdown is open.
+   */
   openClass?: string
   openOnLoad?: boolean
   closeOnEsc?: boolean
@@ -37,7 +52,13 @@ type DropdownOptions = {
   onCloseStart?: () => void
   onCloseEnd?: () => void
   onDestroy?: () => void
+  /**
+   * Options for the open animation.
+   */
   openOptions?: AnimationOptions,
+  /**
+   * Options for the close animation.
+   */
   closeOptions?: AnimationOptions,
   group?: string,
   groupMode?: GroupMode
@@ -66,29 +87,34 @@ type InternalOptions = {
   onCloseEnd?: (el: HTMLElement) => void
   onDestroy?: (el: HTMLElement) => void
 };
-
 class DropdownToggle {
   static DURATION_DEFAULT = 0.3;
   static DURATION_REDUCED_MOTION = 0.001;
   static EASE_DEFAULT = 'power2.easeInOut';
 
-  static prefersReducedMotion() {
+  private static prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  static getAnimationDuration() {
+  private static getAnimationDuration() {
     return DropdownToggle.prefersReducedMotion()
       ? DropdownToggle.DURATION_REDUCED_MOTION
       : DropdownToggle.DURATION_DEFAULT;
   }
 
-  static groupInstances: Record<string, DropdownToggle[]> = {};
+  private static groupInstances: Record<string, DropdownToggle[]> = {};
 
+  /**
+   * Checks if all dropdowns in a given group are open.
+   */
   static isGroupAllOpen(group: string) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.length > 0 && members.every(instance => instance.isOpen());
   }
 
+  /**
+   * Checks if all dropdowns in a given group are closed.
+   */
   static isGroupAllClosed(group: string) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.length > 0 && members.every(instance => !instance.isOpen());
@@ -110,22 +136,22 @@ class DropdownToggle {
     await Promise.all(openPromises);
   }
 
-  static isGroupAnimating(group: string) {
+  private static isGroupAnimating(group: string) {
     const members = DropdownToggle.groupInstances[group] || [];
     return members.some(instance => instance.isAnimating());
   }
 
-  button: HTMLElement;
-  buttonLabelEl?: HTMLElement;
-  dropdownId: string;
-  dropdownItem: HTMLElement;
+  private button: HTMLElement;
+  private buttonLabelEl?: HTMLElement;
+  private dropdownId: string;
+  private dropdownItem: HTMLElement;
 
-  state: State = {
+  private state: State = {
     isOpen: false,
     isAnimating: false,
   };
 
-  options: InternalOptions = {
+  private options: InternalOptions = {
     openLabel: 'Open',
     closeLabel: 'Close',
     openClass: 'open',
@@ -199,7 +225,7 @@ class DropdownToggle {
     this.init();
   }
 
-  dispatchGroupChangeEvent(group: string) {
+  private dispatchGroupChangeEvent(group: string) {
     const event = new CustomEvent<GroupChangeEventDetail>('DropdownToggle:group-change', {
       detail: {
         group,
@@ -209,7 +235,7 @@ class DropdownToggle {
     window.dispatchEvent(event);
   }
 
-  bindThisToMemberFunctions() {
+  private bindThisToMemberFunctions() {
     const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
     methods.forEach(method => {
       if (typeof this[method] === 'function') {
@@ -282,7 +308,7 @@ class DropdownToggle {
     }
   }
 
-  animate(instant = false) {
+  private animate(instant = false) {
     const tween = this.isOpen()
       ? this.options.openOptions.tween?.(this.dropdownItem)
       : this.options.closeOptions.tween?.(this.dropdownItem);
@@ -321,7 +347,7 @@ class DropdownToggle {
     });
   }
 
-  defaultOpenTween(element: HTMLElement) {
+  private defaultOpenTween(element: HTMLElement) {
     // First make visible but collapsed
     return gsap.timeline()
       .set(element, { display: 'block', height: 0 })
@@ -332,7 +358,7 @@ class DropdownToggle {
       });
   }
 
-  defaultCloseTween(element: HTMLElement) {
+  private defaultCloseTween(element: HTMLElement) {
     return gsap.to(element, {
       height: 0,
       duration: this.options.closeOptions.duration,
@@ -343,30 +369,30 @@ class DropdownToggle {
     });
   }
 
-  setAria(expanded: boolean) {
+  private setAria(expanded: boolean) {
     this.button.setAttribute('aria-expanded', String(expanded));
     this.dropdownItem.setAttribute('aria-hidden', String(!expanded));
   }
 
-  addClasses(el: HTMLElement, classes: string) {
+  private addClasses(el: HTMLElement, classes: string) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.add(...classesArray);
   }
 
-  removeClasses(el: HTMLElement, classes: string) {
+  private removeClasses(el: HTMLElement, classes: string) {
     if (!el || !classes) return;
     const classesArray = classes.split(' ');
     el.classList.remove(...classesArray);
   }
 
-  setButtonLabel(label: string) {
+  private setButtonLabel(label: string) {
     if (!label || !this.buttonLabelEl) return;
 
     this.buttonLabelEl.textContent = label;
   }
 
-  addEventListeners() {
+  private addEventListeners() {
     this.button.addEventListener('click', this.toggle);
 
     if (this.options.closeOnEsc) {
@@ -382,13 +408,13 @@ class DropdownToggle {
     }
   }
 
-  onEscKeyPress(e: KeyboardEvent) {
+  private onEscKeyPress(e: KeyboardEvent) {
     if (e.key === 'Escape' && this.isOpen()) {
       this.close();
     }
   }
 
-  onClickOutside(e: Event) {
+  private onClickOutside(e: Event) {
     if (!this.isOpen()) return;
 
     const isClickInside = this.dropdownItem.contains(e.target as Node) || this.button.contains(e.target as Node);
@@ -397,7 +423,7 @@ class DropdownToggle {
     }
   }
 
-  onFocusLeaveHandler(e: KeyboardEvent) {
+  private onFocusLeaveHandler(e: KeyboardEvent) {
     if (e.key !== 'Tab') return;
     if (!this.isOpen()) return;
 
@@ -415,7 +441,7 @@ class DropdownToggle {
     this.options.onDestroy?.(this.dropdownItem);
   }
 
-  resetState() {
+  private resetState() {
     gsap.killTweensOf(this.dropdownItem);
     this.button.removeAttribute('aria-expanded');
     if (this.options.openClass) {
@@ -428,14 +454,14 @@ class DropdownToggle {
     this.dropdownItem.removeAttribute('style');
   }
 
-  removeEventListeners() {
+  private removeEventListeners() {
     this.button.removeEventListener('click', this.toggle);
     document.removeEventListener('keydown', this.onEscKeyPress);
     document.removeEventListener('click', this.onClickOutside);
     document.removeEventListener('keyup', this.onFocusLeaveHandler);
   }
 
-  addInstanceToGroup() {
+  private addInstanceToGroup() {
     // Ensure the group array exists for this.group
     DropdownToggle.groupInstances[this.options.group] = DropdownToggle.groupInstances[this.options.group] || [];
 
@@ -443,7 +469,7 @@ class DropdownToggle {
     DropdownToggle.groupInstances[this.options.group].push(this);
   }
 
-  removeInstanceFromGroup() {
+  private removeInstanceFromGroup() {
     // Check if this instance belongs to a group and that the group exists
     if (this.options.group && DropdownToggle.groupInstances[this.options.group]) {
       // Find the index of this instance in its group
@@ -459,13 +485,13 @@ class DropdownToggle {
     }
   }
 
-  shouldOpenOnLoad() {
+  private shouldOpenOnLoad() {
     const isExpandedInMarkup = this.button.getAttribute('aria-expanded') === 'true';
     const instanceShouldOpenOnLoad = isExpandedInMarkup || this.options.openOnLoad;
     return instanceShouldOpenOnLoad;
   }
 
-  init() {
+  private init() {
     // Set the initial state on load
     if (this.shouldOpenOnLoad()) {
       this.open(true);
@@ -482,6 +508,8 @@ class DropdownToggle {
 
 export {
   DropdownToggle,
+  type DropdownOptions,
+  type AnimationOptions,
   type GroupMode,
   type GroupChangeEventDetail
 };

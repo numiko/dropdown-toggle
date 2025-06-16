@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/",
-    "release": "release-it"
+    "release": "release-it",
+    "generate-docs": "typedoc lib/DropdownToggle.ts"
   },
   "main": "./dist/DropdownToggle.umd.js",
   "files": [
@@ -33,6 +34,7 @@
     "globals": "^15.11.0",
     "happy-dom": "^17.4.4",
     "release-it": "^18.1.2",
+    "typedoc": "^0.28.5",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0",
     "vite": "^6.2.2",
@@ -52,6 +54,7 @@
         "vitest run"
       ],
       "after:bump": [
+        "npm run generate-docs",
         "npm run build"
       ]
     }
