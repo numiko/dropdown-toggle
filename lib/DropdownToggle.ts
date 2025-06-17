@@ -141,7 +141,7 @@ class DropdownToggle {
    * });
    * ```
    */
-  readonly GROUP_CHANGE_EVENT = 'DropdownToggle:group-change';
+  readonly GROUP_CHANGE_EVENT_NAME = 'DropdownToggle:group-change';
 
   /**
    * The default animation ease.
@@ -286,7 +286,7 @@ class DropdownToggle {
   }
 
   private dispatchGroupChangeEvent(group: string) {
-    const event = new CustomEvent<GroupChangeEventDetail>(this.GROUP_CHANGE_EVENT, {
+    const event = new CustomEvent<GroupChangeEventDetail>(this.GROUP_CHANGE_EVENT_NAME, {
       detail: {
         group,
         isAllOpen: DropdownToggle.isGroupAllOpen(group)
