@@ -407,24 +407,24 @@ class DropdownToggle {
     });
   }
 
-  private defaultOpenTween(element: HTMLElement) {
+  private defaultOpenTween(dropdownItem: HTMLElement) {
     // First make visible but collapsed
     return gsap.timeline()
-      .set(element, { display: 'block', height: 0 })
-      .to(element, {
+      .set(dropdownItem, { display: 'block', height: 0 })
+      .to(dropdownItem, {
         height: 'auto',
         duration: this.options.openOptions.duration,
         ease: this.options.openOptions.ease
       });
   }
 
-  private defaultCloseTween(element: HTMLElement) {
-    return gsap.to(element, {
+  private defaultCloseTween(dropdownItem: HTMLElement) {
+    return gsap.to(dropdownItem, {
       height: 0,
       duration: this.options.closeOptions.duration,
       ease: this.options.closeOptions.ease,
       onComplete: () => {
-        gsap.set(element, { display: 'none' });
+        gsap.set(dropdownItem, { display: 'none' });
       }
     });
   }
