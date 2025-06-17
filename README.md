@@ -18,10 +18,9 @@ npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:<VERSION>
 
 ## Usage
 
-### Example
 ---
 ```HTML
-<!-- Important! Link your button to your content via the aria-controls attribute -->
+<!-- Important: link your button to your content via the `aria-controls` attribute -->
 <button type="button" data-js-my-dropdown-button aria-controls="mydropdown-container">
   <span data-js-my-dropdown-button-label>Open</span>
 </button>
