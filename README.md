@@ -2,18 +2,6 @@
 
 A package for creating interactive dropdown menus. Utilizing the GreenSock Animation Platform (GSAP) for smooth animations, this class offers a comprehensive set of features for managing dropdown states and behaviors.
 
-## Features
-
-For an exhaustive list of features see the `options` taken by the `constructor`.
-
-### Group mode
-
-Group mode provides the ability to group a collection of dropdowns together, managing their behaviour as a whole; see the `groupMode` documentation.
-
-### Custom tweens
-
-Custom tweens provide the ability to animate dropdowns in a completely customisable way; see `openOptions` and `closeOptions` for documentation.
-
 Visit our [documentation](https://dropdowntoggledocs.netlify.app/modules) for exhaustive information on the module.
 
 ## Installation
@@ -46,10 +34,6 @@ import { DropdownToggle } from '@numiko/dropdown-toggle';
 
 const myDropdown = new DropdownToggle('[data-js-my-dropdown-button]');
 ```
-
-## Dependencies
-
-- GSAP (looking to remove this dependency in future - and allow your own custom tweens)
 
 ## Release notes
 
