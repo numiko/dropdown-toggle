@@ -6,7 +6,7 @@ Visit our [documentation](https://dropdowntoggledocs.netlify.app/) for exhaustiv
 
 ## Installation
 
-**Please install a specific tagged version.**
+Please install a specific tagged version.
 
 ```bash
 npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#[VERSION]
