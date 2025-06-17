@@ -112,7 +112,7 @@ class DropdownToggle {
    *
    * @event
    * @example
-   * ```js
+   * ```ts
    * const dropdown = new DropdownToggle(button, {
    *   group: 'group-1',
    * });
