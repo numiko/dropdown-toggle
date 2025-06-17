@@ -103,8 +103,26 @@ class DropdownToggle {
    * The animation duration to use if a user has reduced motion enabled.
    *
    * Note: this will not apply if a custom animation is provided.
+   *
    */
   static DURATION_REDUCED_MOTION = 0.001;
+
+  /**
+   * The event that is emitted when a dropdown in a group is opened or closed.
+   *
+   * @event
+   * @example
+   * ```js
+   * const dropdown = new DropdownToggle(button, {
+   *   group: 'group-1',
+   * });
+   *
+   * window.addEventListener('DropdownToggle:group-change', (event: CustomEvent<GroupChangeEventDetail>) => {
+   *   console.log(event.detail);
+   * });
+   * ```
+   */
+  readonly GROUP_CHANGE_EVENT = 'DropdownToggle:group-change';
 
   /**
    * The default animation ease.
@@ -249,7 +267,7 @@ class DropdownToggle {
   }
 
   private dispatchGroupChangeEvent(group: string) {
-    const event = new CustomEvent<GroupChangeEventDetail>('DropdownToggle:group-change', {
+    const event = new CustomEvent<GroupChangeEventDetail>(this.GROUP_CHANGE_EVENT, {
       detail: {
         group,
         isAllOpen: DropdownToggle.isGroupAllOpen(group)
