@@ -71,10 +71,14 @@ type DropdownOptions = {
   onDestroy?: () => void
   /**
    * Options for the open animation.
+   *
+   * These are ignored if a custom tween is provided.
    */
   openOptions?: AnimationOptions,
   /**
    * Options for the close animation.
+   *
+   * These are ignored if a custom tween is provided.
    */
   closeOptions?: AnimationOptions,
   group?: string,
