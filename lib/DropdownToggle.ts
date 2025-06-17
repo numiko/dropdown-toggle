@@ -1,4 +1,4 @@
-import gsap from 'gsap';
+import { gsap } from 'gsap';
 import { deepMerge } from './utils/deepMerge';
 
 /**
@@ -92,8 +92,23 @@ type InternalOptions = {
   onDestroy?: (el: HTMLElement) => void
 };
 class DropdownToggle {
+  /**
+   * The default animation duration.
+   * Note: this will not apply if a custom animation is provided.
+   */
   static DURATION_DEFAULT = 0.3;
+
+  /**
+   * The animation duration to use if a user has reduced motion enabled.
+   * Note: this will not apply if a custom animation is provided.
+   */
   static DURATION_REDUCED_MOTION = 0.001;
+
+  /**
+   * The default animation ease.
+   * {@link https://gsap.com/docs/v3/Eases/}
+   * Note: this will not apply if a custom animation is provided.
+   */
   static EASE_DEFAULT = 'power2.easeInOut';
 
   private static prefersReducedMotion() {
