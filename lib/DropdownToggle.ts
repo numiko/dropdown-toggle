@@ -112,14 +112,14 @@ type InternalOptions = {
 };
 class DropdownToggle {
   /**
-   * The default animation duration.
+   * The default animation duration in seconds.
    *
    * Note: this will not apply if a custom animation is provided.
    */
   static DURATION_DEFAULT = 0.3;
 
   /**
-   * The animation duration to use if a user has reduced motion enabled.
+   * The animation duration to use if a user has reduced motion enabled, in seconds.
    *
    * Note: this will not apply if a custom animation is provided.
    *
