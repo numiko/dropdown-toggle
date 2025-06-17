@@ -36,9 +36,21 @@ type GroupMode = 'single' | 'multiple' | 'single-await';
  * be passed to the constructor.
  */
 type DropdownOptions = {
+  /**
+   * The element to set for the label when the dropdown is open.
+   * This can be a valid CSS selector or an element.
+   */
   buttonLabelEl?: HTMLElement | string
+  /**
+   * The text to set for the label when the dropdown is closed.
+   */
   openLabel?: string
+
+  /**
+   * The text to set for the label when the dropdown is open.
+   */
   closeLabel?: string
+
   /**
    * A space-separated list of classes to add to the button when the dropdown is open.
    */
