@@ -106,7 +106,7 @@ class DropdownToggle {
 
   /**
    * The default animation ease.
-   * {@link https://gsap.com/docs/v3/Eases/}
+   * See GSAP documentation for available easings: {@link https://gsap.com/docs/v3/Eases/}
    * Note: this will not apply if a custom animation is provided.
    */
   static EASE_DEFAULT = 'power2.easeInOut';
