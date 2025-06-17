@@ -25,9 +25,13 @@ Custom tweens provide the ability to animate dropdowns in a completely customisa
 
 **Please install a specific tagged version.**
 
-`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>`
+```bash
+npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>
+```
 
-`npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:<VERSION>`
+```bash
+npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:<VERSION>
+```
 
 ## Usage
 
