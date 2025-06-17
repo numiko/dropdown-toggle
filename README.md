@@ -44,8 +44,6 @@ Converts to TypeScript
 
 - `options.openDuration` now sits under `options.openOptions.duration`
 - `options.closeDuration` now sits under `options.closeOptions.duration`
-- `options.openTween` now sits under `options.openOptions.tween`
-- `options.closeTween` now sits under `options.closeOptions.tween`
 
 ### v2.0.0
 

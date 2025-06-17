@@ -16,10 +16,6 @@ type AnimationOptions = {
    */
   duration: number
   ease: string
-  /**
-   * The tween function to use for the animation.
-   */
-  tween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
 };
 
 type State = {
@@ -83,8 +79,10 @@ type InternalOptions = {
   closeOnFocusLeave: boolean
   group: string
   groupMode: GroupMode
-  openOptions: AnimationOptions,
-  closeOptions: AnimationOptions,
+  openOptions: AnimationOptions
+  closeOptions: AnimationOptions
+  openTween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  closeTween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   onOpenStart?: (el: HTMLElement) => void
   onOpenEnd?: (el: HTMLElement) => void
   onCloseStart?: (el: HTMLElement) => void
@@ -202,15 +200,15 @@ class DropdownToggle {
     closeOnFocusLeave: false,
     group: '',
     groupMode: 'multiple',
+    openTween: this.defaultOpenTween.bind(this),
+    closeTween: this.defaultCloseTween.bind(this),
     openOptions: {
       duration: DropdownToggle.getAnimationDuration(),
       ease: DropdownToggle.EASE_DEFAULT,
-      tween: this.defaultOpenTween.bind(this),
     },
     closeOptions: {
       duration: DropdownToggle.getAnimationDuration(),
       ease: DropdownToggle.EASE_DEFAULT,
-      tween: this.defaultCloseTween.bind(this),
     },
   };
 
@@ -351,8 +349,8 @@ class DropdownToggle {
 
   private animate(instant = false) {
     const tween = this.isOpen()
-      ? this.options.openOptions.tween?.(this.dropdownItem)
-      : this.options.closeOptions.tween?.(this.dropdownItem);
+      ? this.options.openTween(this.dropdownItem)
+      : this.options.closeTween(this.dropdownItem);
 
     return new Promise<void>((resolve) => {
       if (this.isOpen()) {

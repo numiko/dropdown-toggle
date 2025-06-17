@@ -30,12 +30,8 @@ describe('Custom animations', () => {
         const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
         const dropdown = new DropdownToggle(dropdownElement, {
           onOpenStart: onOpenStartCallback,
-          openOptions: {
-            tween: fadeDownAccordionTween,
-          },
-          closeOptions: {
-            tween: fadeUpAccordionTween,
-          },
+          openTween: fadeDownAccordionTween,
+          closeTween: fadeUpAccordionTween,
         });
 
         await dropdown.open();
@@ -108,12 +104,8 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdown = new DropdownToggle(dropdownElement, {
         onDestroy: onDestroyCallback,
-        openOptions: {
-          tween: fadeDownAccordionTween,
-        },
-        closeOptions: {
-          tween: fadeUpAccordionTween,
-        },
+        openTween: fadeDownAccordionTween,
+        closeTween: fadeUpAccordionTween,
       });
 
       dropdown.destroy();
@@ -126,12 +118,8 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
       const dropdown = new DropdownToggle(dropdownElement, {
-        openOptions: {
-          tween: openTweenMock,
-        },
-        closeOptions: {
-          tween: fadeUpAccordionTween,
-        },
+        openTween: openTweenMock,
+        closeTween: fadeUpAccordionTween,
       });
 
       await dropdown.open();
@@ -144,12 +132,8 @@ describe('Custom animations', () => {
       const dropdownElement = document.querySelector('[data-js-dropdown]');
       const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
       const dropdown = new DropdownToggle(dropdownElement, {
-        openOptions: {
-          tween: fadeDownAccordionTween,
-        },
-        closeOptions: {
-          tween: closeTweenMock,
-        },
+        openTween: fadeDownAccordionTween,
+        closeTween: closeTweenMock,
       });
 
       await dropdown.open();
