@@ -1,6 +1,10 @@
 import gsap from 'gsap';
 import { deepMerge } from './utils/deepMerge';
 
+/**
+ * Detail of the group change event that is emitted
+ * when a dropdown in a group is opened or closed.
+ */
 type GroupChangeEventDetail = {
   group: string
   isAllOpen: boolean
