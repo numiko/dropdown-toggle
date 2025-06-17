@@ -47,6 +47,8 @@ type DropdownOptions = {
   closeOnEsc?: boolean
   closeOnOutsideClick?: boolean
   closeOnFocusLeave?: boolean
+  openTween?: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  closeTween?: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   onOpenStart?: () => void
   onOpenEnd?: () => void
   onCloseStart?: () => void
