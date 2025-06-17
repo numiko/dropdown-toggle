@@ -14,13 +14,6 @@ Group mode provides the ability to group a collection of dropdowns together, man
 
 Custom tweens provide the ability to animate dropdowns in a completely customisable way; see `openOptions` and `closeOptions` for documentation.
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Dependencies](#dependencies)
-- [Release Notes](#release-notes)
-
 Visit our [documentation](https://dropdowntoggledocs.netlify.app/modules) for exhaustive information on the module.
 
 ## Installation
