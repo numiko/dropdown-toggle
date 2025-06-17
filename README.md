@@ -1,6 +1,6 @@
 # Dropdown Toggle
 
-A package for creating interactive dropdown menus. Utilizing the GreenSock Animation Platform (GSAP) for smooth animations, this class offers a comprehensive set of features for managing dropdown states and behaviors.
+A package for creating interactive dropdowns. Utilizing the GreenSock Animation Platform (GSAP) for smooth animations, this class offers a comprehensive set of features for managing dropdown states and behaviors.
 
 Visit our [documentation](https://dropdowntoggledocs.netlify.app/modules) for exhaustive information on the module.
 
