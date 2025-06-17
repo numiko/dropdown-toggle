@@ -7,6 +7,9 @@ import { deepMerge } from './utils/deepMerge';
  */
 type GroupChangeEventDetail = {
   group: string
+  /**
+   * Whether all dropdowns in the group are open.
+   */
   isAllOpen: boolean
 };
 
