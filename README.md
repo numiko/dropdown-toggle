@@ -17,10 +17,10 @@ npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:[VERSION]
 ```
 
 ## Usage
+At its core, a dropdown needs a `button` and an element to toggle the visibility of. It's important
+that an `aria-controls` attribute is used to connect the two elements, for accessibility.
 
----
 ```HTML
-<!-- Important: link your button to your content via the `aria-controls` attribute -->
 <button type="button" data-js-my-dropdown-button aria-controls="mydropdown-container">
   <span data-js-my-dropdown-button-label>Open</span>
 </button>
