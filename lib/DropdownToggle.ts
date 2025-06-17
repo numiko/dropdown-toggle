@@ -64,11 +64,11 @@ type DropdownOptions = {
   closeOnFocusLeave?: boolean
   openTween?: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   closeTween?: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
-  onOpenStart?: () => void
-  onOpenEnd?: () => void
-  onCloseStart?: () => void
-  onCloseEnd?: () => void
-  onDestroy?: () => void
+  onOpenStart?: (dropdownItem: HTMLElement) => void
+  onOpenEnd?: (dropdownItem: HTMLElement) => void
+  onCloseStart?: (dropdownItem: HTMLElement) => void
+  onCloseEnd?: (dropdownItem: HTMLElement) => void
+  onDestroy?: (dropdownItem: HTMLElement) => void
   /**
    * Options for the open animation.
    *
@@ -104,11 +104,11 @@ type InternalOptions = {
   closeOptions: AnimationOptions
   openTween: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   closeTween: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
-  onOpenStart?: (el: HTMLElement) => void
-  onOpenEnd?: (el: HTMLElement) => void
-  onCloseStart?: (el: HTMLElement) => void
-  onCloseEnd?: (el: HTMLElement) => void
-  onDestroy?: (el: HTMLElement) => void
+  onOpenStart?: (dropdownItem: HTMLElement) => void
+  onOpenEnd?: (dropdownItem: HTMLElement) => void
+  onCloseStart?: (dropdownItem: HTMLElement) => void
+  onCloseEnd?: (dropdownItem: HTMLElement) => void
+  onDestroy?: (dropdownItem: HTMLElement) => void
 };
 class DropdownToggle {
   /**
@@ -494,6 +494,19 @@ class DropdownToggle {
     }
   }
 
+  /**
+   * Destroys the dropdown instance.
+   *
+   * This will:
+   * - Remove all event listeners
+   * - Immediately stop any animation on the dropdown item
+   * - Reset the markup to its initial state
+   * - Remove the instance from its group
+   * - Call the `onDestroy` callback
+   *
+   * Note: if you are using a custom animation, you may need to run additional cleanup code.
+   * This can be done by passing a custom `onDestroy` callback to the constructor.
+   */
   destroy() {
     this.resetState();
     this.removeEventListeners();
