@@ -21,6 +21,8 @@ Custom tweens provide the ability to animate dropdowns in a completely customisa
 - [Dependencies](#dependencies)
 - [Release Notes](#release-notes)
 
+Visit our [documentation](https://dropdowntoggledocs.netlify.app/modules) for exhaustive information on the module.
+
 ## Installation
 
 **Please install a specific tagged version.**
