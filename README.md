@@ -9,11 +9,11 @@ Visit our [documentation](https://dropdowntoggledocs.netlify.app/modules) for ex
 **Please install a specific tagged version.**
 
 ```bash
-npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#<VERSION>
+npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#[VERSION]
 ```
 
 ```bash
-npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:<VERSION>
+npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:[VERSION]
 ```
 
 ## Usage
