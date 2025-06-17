@@ -47,8 +47,8 @@ type DropdownOptions = {
   closeOnEsc?: boolean
   closeOnOutsideClick?: boolean
   closeOnFocusLeave?: boolean
-  openTween?: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
-  closeTween?: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  openTween?: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  closeTween?: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   onOpenStart?: () => void
   onOpenEnd?: () => void
   onCloseStart?: () => void
@@ -83,8 +83,8 @@ type InternalOptions = {
   groupMode: GroupMode
   openOptions: AnimationOptions
   closeOptions: AnimationOptions
-  openTween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
-  closeTween: (el: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  openTween: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
+  closeTween: (dropdownItem: HTMLElement) => gsap.core.Timeline | gsap.core.Tween
   onOpenStart?: (el: HTMLElement) => void
   onOpenEnd?: (el: HTMLElement) => void
   onCloseStart?: (el: HTMLElement) => void
