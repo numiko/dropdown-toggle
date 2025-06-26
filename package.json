@@ -19,11 +19,12 @@
     "package.json",
     "README.md"
   ],
-  "types": "./dist/DropdownToggle.d.ts",
-  "module": "./dist/DropdownToggle.es.js",
   "exports": {
     ".": {
-      "import": "./dist/DropdownToggle.es.js",
+      "import": {
+        "types": "./dist/DropdownToggle.d.ts",
+        "default": "./dist/DropdownToggle.es.js"
+      },
       "require": "./dist/DropdownToggle.umd.js"
     }
   },
