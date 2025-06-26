@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [eslint(), dts({
-    exclude: ['**/*.d.ts', 'node_modules', 'dist'],
+    exclude: ['**/*.d.ts', 'node_modules', 'dist', 'lib/utils'],
     external: ['gsap'],
     skipDiagnostics: true,
     tsconfigPath: './tsconfig.dts.json',
