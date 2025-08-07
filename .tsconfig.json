@@ -3,7 +3,6 @@
   "compilerOptions": {
     "strict": true,
     "composite": true,
-    // Vite will handle the transpilcation and emitting of JS files.
     "noEmit": true,
     "esModuleInterop": true,
     "baseUrl": ".",
