@@ -8,24 +8,24 @@ describe('Initialisations', () => {
 
   it('should use the default open duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
-    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_DEFAULT);
+    expect(dropdown.options.openOptions.duration).toBe(DropdownToggle.DURATION_DEFAULT);
   });
 
   it('should use the default close duration if no duration is passed in', () => {
     const dropdown = new DropdownToggle('[data-js-dropdown]');
-    expect(dropdown.closeOptions.duration).toBe(DropdownToggle.DURATION_DEFAULT);
+    expect(dropdown.options.closeOptions.duration).toBe(DropdownToggle.DURATION_DEFAULT);
   });
 
   it('should use the custom global default duration if provided', () => {
     DropdownToggle.DURATION_DEFAULT = 0.2;
     const dropdown = new DropdownToggle('[data-js-dropdown]');
-    expect(dropdown.openOptions.duration).toBe(0.2);
+    expect(dropdown.options.openOptions.duration).toBe(0.2);
   });
 
   it('should use the custom global default ease if provided', () => {
     DropdownToggle.EASE_DEFAULT = 'power1.easeInOut';
     const dropdown = new DropdownToggle('[data-js-dropdown]');
-    expect(dropdown.openOptions.ease).toBe('power1.easeInOut');
+    expect(dropdown.options.openOptions.ease).toBe('power1.easeInOut');
   });
 
   it('should set the button element properly if a string is passed in', () => {
