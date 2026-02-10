@@ -240,43 +240,54 @@ class DropdownToggle {
       this.options = deepMerge(this.options, options);
     }
 
+    this.resolveButton(button);
+    this.resolveButtonLabel(options?.buttonLabelEl);
+    this.resolveDropdownId();
+    this.resolveDropdownElement();
+
+    this.init();
+  }
+
+  private resolveButton(button: HTMLElement | string) {
     if (typeof button === 'string') {
       const btn = document.querySelector<HTMLElement>(button);
-      if (btn) {
-        this.button = btn;
-      } else {
+      if (!btn) {
         throw new Error(`Button element not found: ${button}`);
       }
+      this.button = btn;
     } else {
       this.button = button;
     }
+  }
 
-    if (options?.buttonLabelEl) {
-      if (typeof options.buttonLabelEl === 'string') {
-        const labelEl = this.button.querySelector<HTMLElement>(options.buttonLabelEl);
-        if (labelEl) {
-          this.buttonLabelEl = labelEl;
-        } else {
-          throw new Error(`Button label element not found: ${options.buttonLabelEl}`);
-        }
-      } else {
-        this.buttonLabelEl = options.buttonLabelEl;
+  private resolveButtonLabel(buttonLabelEl: HTMLElement | string | undefined) {
+    if (!buttonLabelEl) return;
+
+    if (typeof buttonLabelEl === 'string') {
+      const labelEl = this.button.querySelector<HTMLElement>(buttonLabelEl);
+      if (!labelEl) {
+        throw new Error(`Button label element not found: ${buttonLabelEl}`);
       }
+      this.buttonLabelEl = labelEl;
+    } else {
+      this.buttonLabelEl = buttonLabelEl;
     }
+  }
 
-    const dropdownId = this.button.getAttribute('aria-controls')?.trim();
-    if (!dropdownId) {
+  private resolveDropdownId() {
+    const id = this.button.getAttribute('aria-controls')?.trim();
+    if (!id) {
       throw new Error('Button must have an aria-controls attribute pointing to the dropdown id');
     }
-    this.dropdownId = dropdownId;
+    this.dropdownId = id;
+  }
 
-    const dropdownEl = document.getElementById(this.dropdownId);
-    if (!dropdownEl) {
+  private resolveDropdownElement() {
+    const el = document.getElementById(this.dropdownId);
+    if (!el) {
       throw new Error(`Dropdown element not found: #${this.dropdownId}`);
     }
-    this.dropdownItem = dropdownEl;
-
-    this.init();
+    this.dropdownItem = el;
   }
 
   private dispatchGroupChangeEvent(group: string) {
