@@ -11,7 +11,8 @@
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/",
     "release": "release-it",
-    "generate-docs": "typedoc lib/DropdownToggle.ts"
+    "generate-docs": "typedoc lib/DropdownToggle.ts",
+    "deploy-docs": "netlify deploy --dir=docs --alias=v$(node -p \"require('./package.json').version\")"
   },
   "main": "./dist/DropdownToggle.umd.js",
   "files": [
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@j-ulrich/release-it-regex-bumper": "^5.3.1",
     "@nabla/vite-plugin-eslint": "^2.0.5",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@types/node": "^24.0.4",
@@ -54,6 +56,17 @@
   },
   "release-it": {
     "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "plugins": {
+      "@j-ulrich/release-it-regex-bumper": {
+        "out": [
+          {
+            "file": "README.md",
+            "search": "\\d+-\\d+-\\d+",
+            "replace": "{{major}}-{{minor}}-{{patch}}"
+          }
+        ]
+      }
+    },
     "hooks": {
       "before:init": [
         "vitest run"
