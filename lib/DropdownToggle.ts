@@ -264,23 +264,17 @@ class DropdownToggle {
       }
     }
 
-    if (this.button.getAttribute('aria-controls')) {
-      const dropdownId = this.button.getAttribute('aria-controls');
-      if (dropdownId) {
-        this.dropdownId = dropdownId;
-      } else {
-        throw new Error('Dropdown ID not found');
-      }
-    } else {
-      throw new Error('Dropdown ID not found');
+    const dropdownId = this.button.getAttribute('aria-controls')?.trim();
+    if (!dropdownId) {
+      throw new Error('Button must have an aria-controls attribute pointing to the dropdown id');
     }
+    this.dropdownId = dropdownId;
 
     const dropdownEl = document.getElementById(this.dropdownId);
-    if (dropdownEl) {
-      this.dropdownItem = dropdownEl;
-    } else {
-      throw new Error('Dropdown element not found');
+    if (!dropdownEl) {
+      throw new Error(`Dropdown element not found: #${this.dropdownId}`);
     }
+    this.dropdownItem = dropdownEl;
 
     this.init();
   }
