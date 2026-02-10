@@ -1,6 +1,6 @@
 {
   "name": "@numiko/dropdown-toggle",
-  "private": true,
+  "private": false,
   "version": "2.0.1",
   "type": "module",
   "scripts": {
@@ -67,13 +67,21 @@
         ]
       }
     },
+    "npm": {
+      "publish": true,
+      "publishArgs": [
+        "--access",
+        "public"
+      ]
+    },
     "hooks": {
       "before:init": [
         "vitest run"
       ],
       "after:bump": [
         "npm run generate-docs",
-        "npm run build"
+        "npm run build",
+        "npm run deploy-docs"
       ]
     }
   }
