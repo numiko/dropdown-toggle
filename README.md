@@ -7,11 +7,7 @@ A package for creating interactive dropdowns. Utilizing the GreenSock Animation 
 Please install a specific tagged version.
 
 ```bash
-npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#[VERSION]
-```
-
-```bash
-npm install ssh://git@bitbucket.org:numiko/dropdown-toggle.git#semver:[VERSION]
+npm install @numiko/dropdown-toggle
 ```
 
 ## API
