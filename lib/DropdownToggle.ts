@@ -217,6 +217,11 @@ class DropdownToggle {
     openClass: 'open',
     openOnLoad: false,
     closeOnEsc: false,
+    /**
+     * Whether to close the dropdown when clicking outside of the dropdown, or the button
+     * used to toggle the dropdown. This is not supported in group mode, as the two
+     * behaviours conflict.
+     */
     closeOnOutsideClick: false,
     closeOnFocusLeave: false,
     group: '',
@@ -476,6 +481,11 @@ class DropdownToggle {
 
   private onClickOutside(e: Event) {
     if (!this.isOpen()) return;
+
+    if (this.options.group) {
+      console.warn('closeOnOutsideClick is not supported in a group');
+      return;
+    }
 
     const isClickInside = this.dropdownItem.contains(e.target as Node) || this.button.contains(e.target as Node);
     if (!isClickInside) {
