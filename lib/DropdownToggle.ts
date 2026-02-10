@@ -21,11 +21,6 @@ type AnimationOptions = {
   ease: string
 };
 
-type State = {
-  isOpen: boolean
-  isAnimating: boolean
-};
-
 /**
  * Group mode determines how the dropdowns function in a group
  * - single: only one dropdown can be open at a time
@@ -206,7 +201,7 @@ class DropdownToggle {
   private dropdownId: string;
   private dropdownItem: HTMLElement;
 
-  private state: State = {
+  private state = {
     isOpen: false,
     isAnimating: false,
   };
