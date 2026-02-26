@@ -19,6 +19,6 @@ describe('Accessibility considerations', () => {
 
     const dropdown = new DropdownToggle('[data-js-dropdown]');
 
-    expect(dropdown.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
+    expect(dropdown.options.openOptions.duration).toBe(DropdownToggle.DURATION_REDUCED_MOTION);
   });
 });

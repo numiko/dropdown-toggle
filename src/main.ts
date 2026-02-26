@@ -1,4 +1,9 @@
-import { DropdownToggle } from '../lib/DropdownToggle';
+import {
+  DropdownToggle,
+  type GroupMode,
+  type GroupChangeEventDetail
+} from '../lib/DropdownToggle';
+
 /**
  * This file demonstrates three different group behaviors for DropdownToggle:
  *
@@ -23,8 +28,8 @@ import { DropdownToggle } from '../lib/DropdownToggle';
  * - Smooth animations between states
  */
 
-const groups = ['multiple', 'single', 'single-await'];
-const instances = [];
+const groups: GroupMode[] = ['multiple', 'single', 'single-await'];
+const instances: DropdownToggle[] = [];
 
 /*
 * Group Change Event
@@ -33,6 +38,7 @@ const toggleButtons = document.querySelectorAll('[data-js-dropdown-toggle]');
 toggleButtons.forEach(button => {
   // Store the group value
   const group = button.getAttribute('data-js-dropdown-toggle');
+  if (!group) return;
 
   // Add click handler
   button.addEventListener('click', () => {
@@ -45,10 +51,11 @@ toggleButtons.forEach(button => {
   });
 
   // Add group change handler for this specific button
-  window.addEventListener('DropdownToggle:group-change', (e) => {
-    if (e.detail.group === group) {
-      button.setAttribute('aria-pressed', e.detail.isAllOpen);
-      button.innerHTML = `${e.detail.isAllOpen ? 'Hide' : 'Show'} All`;
+  window.addEventListener('DropdownToggle:group-change', (e: Event) => {
+    const customEvent = e as CustomEvent<GroupChangeEventDetail>;
+    if (customEvent.detail.group === group) {
+      button.setAttribute('aria-pressed', String(customEvent.detail.isAllOpen));
+      button.innerHTML = `${customEvent.detail.isAllOpen ? 'Hide' : 'Show'} All`;
     }
   });
 });
@@ -57,7 +64,7 @@ toggleButtons.forEach(button => {
 * Initialize Dropdown Toggles
 */
 groups.forEach(group => {
-  document.querySelectorAll(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
+  document.querySelectorAll<HTMLElement>(`[data-js-group-${group}] [data-js-dropdown]`).forEach(dropdown => {
     const instance = new DropdownToggle(dropdown, {
       group,
       groupMode: group,

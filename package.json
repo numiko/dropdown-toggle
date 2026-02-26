@@ -1,6 +1,6 @@
 {
   "name": "@numiko/dropdown-toggle",
-  "private": true,
+  "private": false,
   "version": "2.0.1",
   "type": "module",
   "scripts": {
@@ -10,7 +10,9 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/",
-    "release": "release-it"
+    "release": "release-it",
+    "generate-docs": "typedoc lib/DropdownToggle.ts",
+    "deploy-docs": "netlify deploy --dir=docs --alias=v$(node -p \"require('./package.json').version\")"
   },
   "main": "./dist/DropdownToggle.umd.js",
   "files": [
@@ -20,18 +22,29 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/DropdownToggle.es.js",
+      "import": {
+        "types": "./dist/DropdownToggle.d.ts",
+        "default": "./dist/DropdownToggle.es.js"
+      },
       "require": "./dist/DropdownToggle.umd.js"
     }
   },
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@j-ulrich/release-it-regex-bumper": "^5.3.1",
+    "@nabla/vite-plugin-eslint": "^2.0.5",
     "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/node": "^24.0.4",
     "@vitest/coverage-v8": "^3.0.9",
-    "eslint": "^9.12.0",
+    "eslint": "^9.28.0",
     "globals": "^15.11.0",
     "happy-dom": "^17.4.4",
     "release-it": "^18.1.2",
+    "typedoc": "^0.28.5",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0",
     "vite": "^6.2.2",
+    "vite-plugin-dts": "^4.5.4",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^3.0.9"
   },
@@ -43,12 +56,32 @@
   },
   "release-it": {
     "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "plugins": {
+      "@j-ulrich/release-it-regex-bumper": {
+        "out": [
+          {
+            "file": "README.md",
+            "search": "\\d+-\\d+-\\d+",
+            "replace": "{{major}}-{{minor}}-{{patch}}"
+          }
+        ]
+      }
+    },
+    "npm": {
+      "publish": true,
+      "publishArgs": [
+        "--access",
+        "public"
+      ]
+    },
     "hooks": {
       "before:init": [
         "vitest run"
       ],
       "after:bump": [
-        "npm run build"
+        "npm run generate-docs",
+        "npm run build",
+        "npm run deploy-docs"
       ]
     }
   }

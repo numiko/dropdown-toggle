@@ -131,8 +131,12 @@ describe('Close on esc: closeOnEsc', () => {
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       closeOnEsc: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open(); // Open dropdown for testing
 
@@ -140,7 +144,7 @@ describe('Close on esc: closeOnEsc', () => {
     const event = new window.KeyboardEvent('keydown', { key: 'Escape' });
     document.dispatchEvent(event);
 
-    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesn't return
     // a promise so we can simply wait a little.
     await delay(250);
 
@@ -159,8 +163,12 @@ describe('Close on outside click: closeOnOutsideClick', () => {
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       closeOnOutsideClick: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open(); // Open dropdown for testing
 
@@ -168,7 +176,7 @@ describe('Close on outside click: closeOnOutsideClick', () => {
     const event = new window.MouseEvent('click', { target: document.body });
     document.dispatchEvent(event);
 
-    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesnt return
+    // Because 'esc' calls close() which is asynchronous we need to wait for it to complete but the event itself doesn't return
     // a promise so we can simply wait a little.
     await delay(250);
 
@@ -187,8 +195,12 @@ describe('Open class: openClass', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       openClass: openClass,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
 
     // Act
@@ -204,8 +216,12 @@ describe('Open class: openClass', () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       openClass: openClasses,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open();
 
@@ -224,8 +240,12 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       closeOnFocusLeave: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open(); // Open dropdown for testing
 
@@ -250,8 +270,12 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       onFocusLeave: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open(); // Open dropdown for testing
 
@@ -277,8 +301,12 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
     const dropdownLink = document.querySelector('[data-js-dropdown-link]');
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       onFocusLeave: true,
-      openDuration: 0.001,
-      closeDuration: 0.001,
+      openOptions: {
+        duration: 0.001,
+      },
+      closeOptions: {
+        duration: 0.001,
+      },
     });
     await dropdownToggle.open(); // Open dropdown for testing
 
