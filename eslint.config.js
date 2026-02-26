@@ -4,14 +4,15 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import stylistic from '@stylistic/eslint-plugin';
+import tseslint from 'typescript-eslint';
 
 export default [
   // Base recommended config
   js.configs.recommended,
-
+  ...tseslint.configs.recommended,
   // Custom configuration for your files
   {
-    files: ['**/*.js'],
+    files: ['**/*.{js,ts}'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -24,7 +25,8 @@ export default [
     rules: {
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-undef': 'warn',
-      'no-unused-vars': 'warn',
+      // 'off' because it does not work with TypeScript and function signatures
+      'no-unused-vars': 'off',
       'no-shadow': 'warn',
       '@stylistic/semi': ['warn', 'always'],
       '@stylistic/quotes': ['warn', 'single'],

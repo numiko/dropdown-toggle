@@ -1,4 +1,4 @@
-import { expect, describe, it } from 'vitest';
+import { expect, describe, it, vi } from 'vitest';
 import { DropdownToggle } from '../../lib/DropdownToggle';
 import { setupTest, delay } from '../test-utils';
 
@@ -292,5 +292,26 @@ describe('When the dropdown getters are interacted with', () => {
 
     // Assert
     expect(dropdownToggle.isOpen()).toBeFalsy();
+  });
+
+  it('should show a console warning if closeOnOutsideClick is used in group mode', async () => {
+    // Arrange
+    const dropdownElement = document.querySelector('[data-js-dropdown]');
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
+      closeOnOutsideClick: true,
+      group: 'test-group',
+    });
+
+    const consoleWarnSpy = vi.spyOn(console, 'warn');
+
+    // Act
+    dropdownToggle.open();
+
+    // Trigger a click event
+    const event = new window.MouseEvent('click', { target: document.body });
+    document.dispatchEvent(event);
+
+    // Assert
+    expect(consoleWarnSpy).toHaveBeenCalledWith('closeOnOutsideClick is not supported in a group');
   });
 });

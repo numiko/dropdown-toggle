@@ -1,9 +1,15 @@
 import path from 'path';
 import eslint from 'vite-plugin-eslint';
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [eslint()],
+  plugins: [eslint(), dts({
+    exclude: ['**/*.d.ts', 'node_modules', 'dist', 'lib/utils'],
+    external: ['gsap'],
+    skipDiagnostics: true,
+    tsconfigPath: './tsconfig.dts.json',
+  })],
   test: {
     environment: 'happy-dom',
     coverage: {
@@ -12,7 +18,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'lib/DropdownToggle.js'),
+      entry: path.resolve(__dirname, 'lib/DropdownToggle.ts'),
       name: 'DropdownToggle',
       fileName: (format) => `DropdownToggle.${format}.js`
     },
