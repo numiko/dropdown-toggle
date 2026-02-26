@@ -130,6 +130,10 @@ declare class DropdownToggle {
     private state;
     private options;
     constructor(button: HTMLElement | string, options?: DropdownOptions);
+    private resolveButton;
+    private resolveButtonLabel;
+    private resolveDropdownId;
+    private resolveDropdownElement;
     private dispatchGroupChangeEvent;
     private bindThisToMemberFunctions;
     isOpen(): boolean;

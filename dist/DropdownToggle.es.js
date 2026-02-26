@@ -7,7 +7,7 @@ function A(r, t) {
 }
 const i = class i {
   constructor(t, e) {
-    if (this.GROUP_CHANGE_EVENT_NAME = "DropdownToggle:group-change", this.state = {
+    this.GROUP_CHANGE_EVENT_NAME = "DropdownToggle:group-change", this.state = {
       isOpen: !1,
       isAnimating: !1
     }, this.options = {
@@ -16,6 +16,11 @@ const i = class i {
       openClass: "open",
       openOnLoad: !1,
       closeOnEsc: !1,
+      /**
+       * Whether to close the dropdown when clicking outside of the dropdown, or the button
+       * used to toggle the dropdown. This is not supported in group mode, as the two
+       * behaviours conflict.
+       */
       closeOnOutsideClick: !1,
       closeOnFocusLeave: !1,
       group: "",
@@ -30,37 +35,7 @@ const i = class i {
         duration: i.getAnimationDuration(),
         ease: i.EASE_DEFAULT
       }
-    }, this.bindThisToMemberFunctions(), e && (this.options = A(this.options, e)), typeof t == "string") {
-      const n = document.querySelector(t);
-      if (n)
-        this.button = n;
-      else
-        throw new Error(`Button element not found: ${t}`);
-    } else
-      this.button = t;
-    if (e != null && e.buttonLabelEl)
-      if (typeof e.buttonLabelEl == "string") {
-        const n = this.button.querySelector(e.buttonLabelEl);
-        if (n)
-          this.buttonLabelEl = n;
-        else
-          throw new Error(`Button label element not found: ${e.buttonLabelEl}`);
-      } else
-        this.buttonLabelEl = e.buttonLabelEl;
-    if (this.button.getAttribute("aria-controls")) {
-      const n = this.button.getAttribute("aria-controls");
-      if (n)
-        this.dropdownId = n;
-      else
-        throw new Error("Dropdown ID not found");
-    } else
-      throw new Error("Dropdown ID not found");
-    const s = document.getElementById(this.dropdownId);
-    if (s)
-      this.dropdownItem = s;
-    else
-      throw new Error("Dropdown element not found");
-    this.init();
+    }, this.bindThisToMemberFunctions(), e && (this.options = A(this.options, e)), this.button = this.resolveButton(t), this.buttonLabelEl = this.resolveButtonLabel(e == null ? void 0 : e.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement(), this.init();
   }
   static prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -92,6 +67,38 @@ const i = class i {
   }
   static isGroupAnimating(t) {
     return (i.groupInstances[t] || []).some((s) => s.isAnimating());
+  }
+  resolveButton(t) {
+    if (typeof t == "string") {
+      const e = document.querySelector(t);
+      if (!e)
+        throw new Error(`Button element not found: ${t}`);
+      return e;
+    } else
+      return t;
+  }
+  resolveButtonLabel(t) {
+    if (t)
+      if (typeof t == "string") {
+        const e = this.button.querySelector(t);
+        if (!e)
+          throw new Error(`Button label element not found: ${t}`);
+        return e;
+      } else
+        return t;
+  }
+  resolveDropdownId() {
+    var e;
+    const t = (e = this.button.getAttribute("aria-controls")) == null ? void 0 : e.trim();
+    if (!t)
+      throw new Error("Button must have an aria-controls attribute pointing to the dropdown id");
+    return t;
+  }
+  resolveDropdownElement() {
+    const t = document.getElementById(this.dropdownId);
+    if (!t)
+      throw new Error(`Dropdown element not found: #${this.dropdownId}`);
+    return t;
   }
   dispatchGroupChangeEvent(t) {
     const e = new CustomEvent(this.GROUP_CHANGE_EVENT_NAME, {
@@ -132,9 +139,9 @@ const i = class i {
   animate(t = !1) {
     const e = this.isOpen() ? this.options.openTween(this.dropdownItem) : this.options.closeTween(this.dropdownItem);
     return new Promise((s) => {
-      var n, o, p, h, l, u, c, d;
+      var n, o, p, h, u, l, d, c;
       if (this.isOpen() ? (o = (n = this.options).onOpenStart) == null || o.call(n, this.dropdownItem) : (h = (p = this.options).onCloseStart) == null || h.call(p, this.dropdownItem), this.state.isAnimating = !0, t)
-        e.progress(1), this.state.isAnimating = !1, this.isOpen() ? (u = (l = this.options).onOpenEnd) == null || u.call(l, this.dropdownItem) : (d = (c = this.options).onCloseEnd) == null || d.call(c, this.dropdownItem), s();
+        e.progress(1), this.state.isAnimating = !1, this.isOpen() ? (l = (u = this.options).onOpenEnd) == null || l.call(u, this.dropdownItem) : (c = (d = this.options).onCloseEnd) == null || c.call(d, this.dropdownItem), s();
       else {
         const m = e.vars.onComplete;
         e.eventCallback("onComplete", () => {
@@ -185,6 +192,10 @@ const i = class i {
   }
   onClickOutside(t) {
     if (!this.isOpen()) return;
+    if (this.options.group) {
+      console.warn("closeOnOutsideClick is not supported in a group");
+      return;
+    }
     this.dropdownItem.contains(t.target) || this.button.contains(t.target) || this.close();
   }
   onFocusLeaveHandler(t) {
@@ -231,7 +242,7 @@ const i = class i {
   }
 };
 i.DURATION_DEFAULT = 0.3, i.DURATION_REDUCED_MOTION = 1e-3, i.EASE_DEFAULT = "power2.easeInOut", i.groupInstances = {};
-let b = i;
+let w = i;
 export {
-  b as DropdownToggle
+  w as DropdownToggle
 };
