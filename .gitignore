@@ -29,3 +29,6 @@ reports/
 
 # Ignore docs
 docs/
+
+# Local Netlify folder
+.netlify

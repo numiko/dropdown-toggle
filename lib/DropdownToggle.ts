@@ -240,10 +240,10 @@ class DropdownToggle {
       this.options = deepMerge(this.options, options);
     }
 
-    this.resolveButton(button);
-    this.resolveButtonLabel(options?.buttonLabelEl);
-    this.resolveDropdownId();
-    this.resolveDropdownElement();
+    this.button = this.resolveButton(button);
+    this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
+    this.dropdownId = this.resolveDropdownId();
+    this.dropdownItem = this.resolveDropdownElement();
 
     this.init();
   }
@@ -254,9 +254,9 @@ class DropdownToggle {
       if (!btn) {
         throw new Error(`Button element not found: ${button}`);
       }
-      this.button = btn;
+      return btn;
     } else {
-      this.button = button;
+      return button;
     }
   }
 
@@ -268,9 +268,9 @@ class DropdownToggle {
       if (!labelEl) {
         throw new Error(`Button label element not found: ${buttonLabelEl}`);
       }
-      this.buttonLabelEl = labelEl;
+      return labelEl;
     } else {
-      this.buttonLabelEl = buttonLabelEl;
+      return buttonLabelEl;
     }
   }
 
@@ -279,7 +279,7 @@ class DropdownToggle {
     if (!id) {
       throw new Error('Button must have an aria-controls attribute pointing to the dropdown id');
     }
-    this.dropdownId = id;
+    return id;
   }
 
   private resolveDropdownElement() {
@@ -287,7 +287,7 @@ class DropdownToggle {
     if (!el) {
       throw new Error(`Dropdown element not found: #${this.dropdownId}`);
     }
-    this.dropdownItem = el;
+    return el;
   }
 
   private dispatchGroupChangeEvent(group: string) {
