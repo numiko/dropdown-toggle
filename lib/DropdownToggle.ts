@@ -234,7 +234,6 @@ class DropdownToggle {
   };
 
   constructor(button: HTMLElement | string, options?: DropdownOptions) {
-    this.bindThisToMemberFunctions();
 
     if (options) {
       this.options = deepMerge(this.options, options);
@@ -244,6 +243,8 @@ class DropdownToggle {
     this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
     this.dropdownId = this.resolveDropdownId();
     this.dropdownItem = this.resolveDropdownElement();
+
+    this.bindThisToMemberFunctions();
 
     if (this.shouldOpenOnLoad()) {
       void this.open(true);
