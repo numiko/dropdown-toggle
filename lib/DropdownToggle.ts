@@ -244,6 +244,16 @@ class DropdownToggle {
     this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
     this.dropdownId = this.resolveDropdownId();
     this.dropdownItem = this.resolveDropdownElement();
+
+    if (this.shouldOpenOnLoad()) {
+      void this.open(true);
+    }
+
+    if (this.options.group) {
+      this.addInstanceToGroup();
+    }
+
+    this.addEventListeners();
   }
 
   private resolveButton(button: HTMLElement | string) {
@@ -572,20 +582,6 @@ class DropdownToggle {
     const isExpandedInMarkup = this.button.getAttribute('aria-expanded') === 'true';
     const instanceShouldOpenOnLoad = isExpandedInMarkup || this.options.openOnLoad;
     return instanceShouldOpenOnLoad;
-  }
-
-  public init() {
-    // Set the initial state on load
-    if (this.shouldOpenOnLoad()) {
-      this.open(true);
-    }
-
-    // Add the instance to its group if specified
-    if (this.options.group) {
-      this.addInstanceToGroup();
-    }
-
-    this.addEventListeners();
   }
 }
 
