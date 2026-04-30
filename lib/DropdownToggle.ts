@@ -557,10 +557,8 @@ class DropdownToggle {
     // Ensure the group array exists for this.group
     DropdownToggle.groupInstances[this.options.group] = DropdownToggle.groupInstances[this.options.group] || [];
 
-    // Only add this instance to the group if it is not already in it
-    if (!DropdownToggle.groupInstances[this.options.group].includes(this)) {
-      DropdownToggle.groupInstances[this.options.group].push(this);
-    }
+    // Add this instance to the group
+    DropdownToggle.groupInstances[this.options.group].push(this);
   }
 
   private removeInstanceFromGroup() {
