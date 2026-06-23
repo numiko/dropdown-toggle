@@ -69,6 +69,7 @@ groups.forEach(group => {
       group,
       groupMode: group,
     });
+    instance.init();
     instances.push(instance);
   });
 });

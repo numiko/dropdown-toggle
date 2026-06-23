@@ -234,6 +234,7 @@ class DropdownToggle {
   };
 
   constructor(button: HTMLElement | string, options?: DropdownOptions) {
+    this.bindThisToMemberFunctions();
 
     if (options) {
       this.options = deepMerge(this.options, options);
@@ -243,18 +244,6 @@ class DropdownToggle {
     this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
     this.dropdownId = this.resolveDropdownId();
     this.dropdownItem = this.resolveDropdownElement();
-
-    this.bindThisToMemberFunctions();
-
-    if (this.shouldOpenOnLoad()) {
-      void this.open(true);
-    }
-
-    if (this.options.group) {
-      this.addInstanceToGroup();
-    }
-
-    this.addEventListeners();
   }
 
   private resolveButton(button: HTMLElement | string) {
@@ -557,8 +546,10 @@ class DropdownToggle {
     // Ensure the group array exists for this.group
     DropdownToggle.groupInstances[this.options.group] = DropdownToggle.groupInstances[this.options.group] || [];
 
-    // Add this instance to the group
-    DropdownToggle.groupInstances[this.options.group].push(this);
+    // Only add this instance to the group if it's not already there
+    if (!DropdownToggle.groupInstances[this.options.group].includes(this)) {
+      DropdownToggle.groupInstances[this.options.group].push(this);
+    }
   }
 
   private removeInstanceFromGroup() {
@@ -581,6 +572,20 @@ class DropdownToggle {
     const isExpandedInMarkup = this.button.getAttribute('aria-expanded') === 'true';
     const instanceShouldOpenOnLoad = isExpandedInMarkup || this.options.openOnLoad;
     return instanceShouldOpenOnLoad;
+  }
+
+  init() {
+    // Set the initial state on load
+    if (this.shouldOpenOnLoad()) {
+      this.open(true);
+    }
+
+    // Add the instance to its group if specified
+    if (this.options.group) {
+      this.addInstanceToGroup();
+    }
+
+    this.addEventListeners();
   }
 }
 
