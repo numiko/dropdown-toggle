@@ -12,7 +12,7 @@
     "test:ci": "vitest --run --reporter junit --outputFile ./reports/results.xml --coverage.enabled --coverage.include lib --coverage.reporter=html --coverage.reportsDirectory ./reports/",
     "release": "release-it",
     "generate-docs": "typedoc lib/DropdownToggle.ts",
-    "deploy-docs": "netlify deploy --dir=docs --alias=v$(node -p \"require('./package.json').version\")"
+    "deploy-docs": "netlify deploy --dir=docs --site=d2597929-1240-4766-9a36-1eef20846cb3 --alias=v$(node -p \"require('./package.json').version\") && netlify deploy --dir=docs --site=d2597929-1240-4766-9a36-1eef20846cb3 --prod"
   },
   "main": "./dist/DropdownToggle.umd.js",
   "files": [
