@@ -12,4 +12,4 @@ npm install @numiko/dropdown-toggle
 
 ## API
 
-Visit our [documentation](https://v3-1-0--numiko-dropdown.netlify.app/) for exhaustive information on the module.
+Visit our [documentation](https://v3-2-0--numiko-dropdown.netlify.app/) for exhaustive information on the module.
