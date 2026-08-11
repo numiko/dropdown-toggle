@@ -39,6 +39,7 @@
     "eslint": "^9.28.0",
     "globals": "^15.11.0",
     "happy-dom": "^20.11.2",
+    "netlify-cli": "^23.9.1",
     "release-it": "^21.0.2",
     "typedoc": "^0.28.5",
     "typescript": "^5.8.3",
