@@ -16,11 +16,6 @@ export default defineConfig({
       skipDiagnostics: true
     })
   ],
-  server: {
-    watch: {
-      include: ['src/**', 'lib/**']
-    }
-  },
   test: {
     environment: 'happy-dom',
     coverage: {
