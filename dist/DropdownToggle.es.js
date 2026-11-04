@@ -8,17 +8,24 @@ function t(e, n) {
 //#endregion
 //#region lib/DropdownToggle.ts
 var n = class n {
-	static DURATION_DEFAULT = .3;
-	static DURATION_REDUCED_MOTION = .001;
-	GROUP_CHANGE_EVENT_NAME = "DropdownToggle:group-change";
-	static EASE_DEFAULT = "power2.easeInOut";
+	static {
+		this.DURATION_DEFAULT = .3;
+	}
+	static {
+		this.DURATION_REDUCED_MOTION = .001;
+	}
+	static {
+		this.EASE_DEFAULT = "power2.easeInOut";
+	}
 	static prefersReducedMotion() {
 		return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	}
 	static getAnimationDuration() {
 		return n.prefersReducedMotion() ? n.DURATION_REDUCED_MOTION : n.DURATION_DEFAULT;
 	}
-	static groupInstances = {};
+	static {
+		this.groupInstances = {};
+	}
 	static isGroupAllOpen(e) {
 		let t = n.groupInstances[e] || [];
 		return t.length > 0 && t.every((e) => e.isOpen());
@@ -38,37 +45,31 @@ var n = class n {
 	static isGroupAnimating(e) {
 		return (n.groupInstances[e] || []).some((e) => e.isAnimating());
 	}
-	button;
-	buttonLabelEl;
-	dropdownId;
-	dropdownItem;
-	state = {
-		isOpen: !1,
-		isAnimating: !1
-	};
-	options = {
-		openLabel: "Open",
-		closeLabel: "Close",
-		openClass: "open",
-		openOnLoad: !1,
-		closeOnEsc: !1,
-		closeOnOutsideClick: !1,
-		closeOnFocusLeave: !1,
-		group: "",
-		groupMode: "multiple",
-		openTween: this.defaultOpenTween.bind(this),
-		closeTween: this.defaultCloseTween.bind(this),
-		openOptions: {
-			duration: n.getAnimationDuration(),
-			ease: n.EASE_DEFAULT
-		},
-		closeOptions: {
-			duration: n.getAnimationDuration(),
-			ease: n.EASE_DEFAULT
-		}
-	};
-	constructor(e, n) {
-		this.bindThisToMemberFunctions(), n && (this.options = t(this.options, n)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(n?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement(), this.init();
+	constructor(e, r) {
+		this.GROUP_CHANGE_EVENT_NAME = "DropdownToggle:group-change", this.state = {
+			isOpen: !1,
+			isAnimating: !1
+		}, this.options = {
+			openLabel: "Open",
+			closeLabel: "Close",
+			openClass: "open",
+			openOnLoad: !1,
+			closeOnEsc: !1,
+			closeOnOutsideClick: !1,
+			closeOnFocusLeave: !1,
+			group: "",
+			groupMode: "multiple",
+			openTween: this.defaultOpenTween.bind(this),
+			closeTween: this.defaultCloseTween.bind(this),
+			openOptions: {
+				duration: n.getAnimationDuration(),
+				ease: n.EASE_DEFAULT
+			},
+			closeOptions: {
+				duration: n.getAnimationDuration(),
+				ease: n.EASE_DEFAULT
+			}
+		}, this.bindThisToMemberFunctions(), r && (this.options = t(this.options, r)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(r?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement(), this.init();
 	}
 	resolveButton(e) {
 		if (typeof e == "string") {

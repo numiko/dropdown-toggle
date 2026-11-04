@@ -4,12 +4,23 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [eslint(), dts({
-    exclude: ['**/*.d.ts', 'node_modules', 'dist', 'lib/utils'],
-    external: ['gsap'],
-    skipDiagnostics: true,
-    tsconfigPath: './tsconfig.dts.json',
-  })],
+  plugins: [
+    eslint(),
+    dts({
+      tsconfigPath: './tsconfig.dts.json',
+      entryRoot: 'lib',
+      outDir: 'dist',
+      rollupTypes: true,
+      exclude: ['**/*.d.ts', 'node_modules', 'dist', 'lib/utils'],
+      external: ['gsap'],
+      skipDiagnostics: true
+    })
+  ],
+  server: {
+    watch: {
+      include: ['src/**', 'lib/**']
+    }
+  },
   test: {
     environment: 'happy-dom',
     coverage: {
@@ -23,12 +34,8 @@ export default defineConfig({
       fileName: (format) => `DropdownToggle.${format}.js`
     },
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
       external: ['gsap'],
       output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
           gsap: 'gsap',
         },
