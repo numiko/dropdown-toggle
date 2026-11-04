@@ -28,7 +28,7 @@ export default defineConfig({
       name: 'DropdownToggle',
       fileName: (format) => `DropdownToggle.${format}.js`
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['gsap'],
       output: {
         globals: {
