@@ -1,12 +1,11 @@
 import { gsap as e } from "gsap";
-//#region lib/utils/deepMerge.ts
+// lib/utils/deepMerge.ts
 function t(e, n) {
 	let r = { ...e };
 	for (let i in n) Object.prototype.hasOwnProperty.call(n, i) && (r[i] = n[i] !== null && typeof n[i] == "object" && typeof e[i] == "object" && e[i] !== null && !Array.isArray(n[i]) && !Array.isArray(e[i]) && typeof n[i] != "function" && typeof e[i] != "function" ? t(e[i], n[i]) : n[i]);
 	return r;
 }
-//#endregion
-//#region lib/DropdownToggle.ts
+// lib/DropdownToggle.ts
 var n = class n {
 	static {
 		this.DURATION_DEFAULT = .3;
@@ -178,7 +177,7 @@ var n = class n {
 		e.classList.remove(...n);
 	}
 	setButtonLabel(e) {
-		!e || !this.buttonLabelEl || (this.buttonLabelEl.textContent = e);
+		e && this.buttonLabelEl && (this.buttonLabelEl.textContent = e);
 	}
 	addEventListeners() {
 		this.button.addEventListener("click", this.toggle), this.options.closeOnEsc && document.addEventListener("keydown", this.onEscKeyPress), this.options.closeOnOutsideClick && document.addEventListener("click", this.onClickOutside), this.options.closeOnFocusLeave && document.addEventListener("keyup", this.onFocusLeaveHandler);
@@ -187,13 +186,7 @@ var n = class n {
 		e.key === "Escape" && this.isOpen() && this.close();
 	}
 	onClickOutside(e) {
-		if (this.isOpen()) {
-			if (this.options.group) {
-				console.warn("closeOnOutsideClick is not supported in a group");
-				return;
-			}
-			this.dropdownItem.contains(e.target) || this.button.contains(e.target) || this.close();
-		}
+		this.isOpen() && (this.options.group ? console.warn("closeOnOutsideClick is not supported in a group") : this.dropdownItem.contains(e.target) || this.button.contains(e.target) || this.close());
 	}
 	onFocusLeaveHandler(e) {
 		e.key === "Tab" && this.isOpen() && (this.dropdownItem.contains(e.target) || this.close());
@@ -223,5 +216,4 @@ var n = class n {
 		this.shouldOpenOnLoad() && this.open(!0), this.options.group && this.addInstanceToGroup(), this.addEventListeners();
 	}
 };
-//#endregion
 export { n as DropdownToggle };
