@@ -15,6 +15,7 @@ describe('Group Mode Behaviors', () => {
         closeDuration: 0.2,
         group: 'test-group'  // No groupMode specified = default multiple mode
       });
+      firstInstance.init();
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
       const secondInstance = new DropdownToggle(secondDropdown, {
@@ -22,6 +23,7 @@ describe('Group Mode Behaviors', () => {
         closeDuration: 0.2,
         group: 'test-group'  // No groupMode specified = default multiple mode
       });
+      secondInstance.init();
 
       // Act - Open first dropdown
       await firstInstance.open();
@@ -52,6 +54,7 @@ describe('Group Mode Behaviors', () => {
         group: 'test-group',
         groupMode: 'single'
       });
+      firstInstance.init();
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
       const secondInstance = new DropdownToggle(secondDropdown, {
@@ -60,6 +63,7 @@ describe('Group Mode Behaviors', () => {
         group: 'test-group',
         groupMode: 'single'
       });
+      secondInstance.init();
 
       // Ensure first dropdown is open
       await firstInstance.open();
@@ -93,6 +97,7 @@ describe('Group Mode Behaviors', () => {
         group: 'test-group',
         groupMode: 'single-await'
       });
+      firstInstance.init();
 
       const secondDropdown = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
       const secondInstance = new DropdownToggle(secondDropdown, {
@@ -101,6 +106,7 @@ describe('Group Mode Behaviors', () => {
         group: 'test-group',
         groupMode: 'single-await'
       });
+      secondInstance.init();
 
       // Act - open first dropdown (even though this is already open due to aria-expanded="true" in the DOM)
       // Happy-dom doesn't see it as open, so we need to wait for the animation to complete

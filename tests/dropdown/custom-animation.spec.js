@@ -33,6 +33,7 @@ describe('Custom animations', () => {
           openTween: fadeDownAccordionTween,
           closeTween: fadeUpAccordionTween,
         });
+        dropdown.init();
 
         await dropdown.open();
 
@@ -48,6 +49,7 @@ describe('Custom animations', () => {
           openTween: fadeDownAccordionTween,
           closeTween: fadeUpAccordionTween,
         });
+        dropdown.init();
 
         await dropdown.open();
 
@@ -65,6 +67,7 @@ describe('Custom animations', () => {
           openTween: fadeDownAccordionTween,
           closeTween: fadeUpAccordionTween,
         });
+        dropdown.init();
         await dropdown.open();
         await dropdown.close();
 
@@ -80,6 +83,7 @@ describe('Custom animations', () => {
           openTween: fadeDownAccordionTween,
           closeTween: fadeUpAccordionTween,
         });
+        dropdown.init();
         await dropdown.open();
         await dropdown.close();
 
@@ -95,6 +99,7 @@ describe('Custom animations', () => {
         openTween: fadeDownAccordionTween,
         closeTween: fadeUpAccordionTween,
       });
+      dropdown.init();
 
       dropdown.destroy();
 
@@ -109,6 +114,7 @@ describe('Custom animations', () => {
         openTween: openTweenMock,
         closeTween: fadeUpAccordionTween,
       });
+      dropdown.init();
 
       await dropdown.open();
 
@@ -123,6 +129,7 @@ describe('Custom animations', () => {
         openTween: fadeDownAccordionTween,
         closeTween: closeTweenMock,
       });
+      dropdown.init();
 
       await dropdown.open();
       await dropdown.close();

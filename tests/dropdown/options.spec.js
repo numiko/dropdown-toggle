@@ -11,6 +11,7 @@ describe('Button Label: buttonLabelEl', () => {
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       buttonLabelEl: '[data-js-dropdown-label]'
     });
+    dropdownToggle.init();
 
     // Assert
     expect(dropdownToggle.buttonLabelEl).toBe(
@@ -25,6 +26,7 @@ describe('Button Label: buttonLabelEl', () => {
     const dropdownToggle = new DropdownToggle(dropdownElement, {
       buttonLabelEl: labelElement
     });
+    dropdownToggle.init();
 
     // Assert
     expect(dropdownToggle.buttonLabelEl).toBe(labelElement);
@@ -42,6 +44,7 @@ describe('Open Label: openLabel', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -59,6 +62,7 @@ describe('Open Label: openLabel', () => {
       buttonLabelEl: '[data-js-dropdown-label]',
       openLabel: openLabelText
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -80,6 +84,7 @@ describe('Close Label: closeLabel', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
 
     // Act
     await dropdownToggle.open();
@@ -93,9 +98,10 @@ describe('Open on load: openOnLoad', () => {
   it('should open on load immediately if openOnLoad is true', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    new DropdownToggle(dropdownElement, {
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
       openOnLoad: true,
     });
+    dropdownToggle.init();
 
     // A minor delay ensures the dropdown is open before we
     // assert against it.
@@ -111,9 +117,10 @@ describe('Open on load: openOnLoad', () => {
   it('should open on load if html markup states aria-expanded=true', async () => {
     const dropdownElement = document.querySelector('[data-js-dropdown]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    new DropdownToggle(dropdownElement, {
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
       openOnLoad: true,
     });
+    dropdownToggle.init();
 
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true');
     expect(dropdownContent.getAttribute('aria-hidden')).toBe('false');
@@ -138,6 +145,7 @@ describe('Close on esc: closeOnEsc', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -170,6 +178,7 @@ describe('Close on outside click: closeOnOutsideClick', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -202,6 +211,7 @@ describe('Open class: openClass', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
 
     // Act
     await dropdownToggle.open();
@@ -223,6 +233,7 @@ describe('Open class: openClass', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -247,6 +258,7 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -277,6 +289,7 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -308,6 +321,7 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
         duration: 0.001,
       },
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Open dropdown for testing
 
     // Act
@@ -334,6 +348,7 @@ describe('Close on focus leave: closeOnFocusLeave', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
 
     // Create a spy on the close method
     const closeSpy = vi.spyOn(dropdownToggle, 'close');
@@ -367,6 +382,7 @@ describe('On Open Start callback: onOpenStart', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
 
     // Act
     await dropdown.open();
@@ -386,6 +402,7 @@ describe('On Open End callback: onOpenEnd', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
 
     // Act
     await dropdown.open();
@@ -404,6 +421,7 @@ describe('On Open End callback: onOpenEnd', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
 
     // Act
     await dropdown.open();
@@ -423,6 +441,7 @@ describe('On Close Start callback: onCloseStart', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
     await dropdown.open();
 
     // Act
@@ -442,6 +461,7 @@ describe('On Close Start callback: onCloseStart', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
     await dropdown.open();
 
     // Act
@@ -462,6 +482,7 @@ describe('On Close End callback: onCloseEnd', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
     await dropdown.open();
 
     // Act
@@ -481,6 +502,7 @@ describe('On Close End callback: onCloseEnd', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdown.init();
     await dropdown.open();
 
     // Act
@@ -499,6 +521,7 @@ describe('On Destroy callback: onDestroy', () => {
     const dropdown = new DropdownToggle(dropdownElement, {
       onDestroy: onDestroyCallback
     });
+    dropdown.init();
 
     // Act
     dropdown.destroy();
@@ -515,6 +538,7 @@ describe('On Destroy callback: onDestroy', () => {
     const dropdown = new DropdownToggle(dropdownElement, {
       onDestroy: onDestroyCallback
     });
+    dropdown.init();
 
     // Act
     dropdown.destroy();
@@ -534,6 +558,7 @@ describe('Group: group', () => {
       closeDuration: 0.001,
       group: 'group'
     });
+    dropdown.init();
 
     // Act
     dropdown.destroy();
