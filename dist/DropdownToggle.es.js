@@ -68,7 +68,7 @@ var n = class n {
 		}
 	};
 	constructor(e, n) {
-		this.bindThisToMemberFunctions(), n && (this.options = t(this.options, n)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(n?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement(), this.init();
+		this.bindThisToMemberFunctions(), n && (this.options = t(this.options, n)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(n?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement();
 	}
 	resolveButton(e) {
 		if (typeof e == "string") {
@@ -207,7 +207,7 @@ var n = class n {
 		this.button.removeEventListener("click", this.toggle), document.removeEventListener("keydown", this.onEscKeyPress), document.removeEventListener("click", this.onClickOutside), document.removeEventListener("keyup", this.onFocusLeaveHandler);
 	}
 	addInstanceToGroup() {
-		n.groupInstances[this.options.group] = n.groupInstances[this.options.group] || [], n.groupInstances[this.options.group].push(this);
+		n.groupInstances[this.options.group] = n.groupInstances[this.options.group] || [], n.groupInstances[this.options.group].includes(this) || n.groupInstances[this.options.group].push(this);
 	}
 	removeInstanceFromGroup() {
 		if (this.options.group && n.groupInstances[this.options.group]) {

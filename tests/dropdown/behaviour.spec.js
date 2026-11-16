@@ -13,6 +13,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
 
     // Act
     await dropdownToggle.open();
@@ -32,6 +33,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Ensure it's open before trying to close
 
     // Act
@@ -52,6 +54,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open(); // Ensure it's open before trying to close
     expect(dropdownElement.getAttribute('aria-expanded')).toBe('true'); // Confirm it's open before destroy
 
@@ -73,6 +76,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -89,10 +93,11 @@ describe('When the dropdown is clicked', () => {
     // Choose a dropdown that is closed by default
     const dropdownElement = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
     const dropdownContent = document.querySelector(`#${dropdownElement.getAttribute('aria-controls')}`);
-    new DropdownToggle(dropdownElement, {
+    const dropdownToggle = new DropdownToggle(dropdownElement, {
       openDuration: 0.25,
       closeDuration: 0.25,
     });
+    dropdownToggle.init();
 
     // Act
     // We use a click method instead of a public method because
@@ -120,20 +125,22 @@ describe('When the dropdown is clicked', () => {
     // Choose a dropdown that is closed by default
     const dropdownElementTwo = document.querySelector('[data-js-dropdown][aria-controls="accordion2"]');
     const dropdownContentTwo = document.querySelector(`#${dropdownElementTwo.getAttribute('aria-controls')}`);
-    new DropdownToggle(dropdownElementTwo, {
+    const dropdownToggleTwo = new DropdownToggle(dropdownElementTwo, {
       openDuration: 0.1,
       closeDuration: 0.1,
       group: 'test-group',
     });
+    dropdownToggleTwo.init();
 
     const dropdownElementThree = document.querySelector('[data-js-dropdown][aria-controls="accordion3"]');
     const dropdownContentThree = document.querySelector(`#${dropdownElementThree.getAttribute('aria-controls')}`);
 
-    new DropdownToggle(dropdownElementThree, {
+    const dropdownToggleThree = new DropdownToggle(dropdownElementThree, {
       openDuration: 0.1,
       closeDuration: 0.1,
       group: 'test-group',
     });
+    dropdownToggleThree.init();
     // Act
     // We use a click method instead of a public method because
     // we don't want to wait for the open animation to resolve
@@ -167,6 +174,7 @@ describe('When the dropdown is clicked', () => {
       closeDuration: 0.001,
       openClass: classThatShouldBeRemoved,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -184,6 +192,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // We cache the HTML of the dropdown so we can assert that
@@ -208,6 +217,7 @@ describe('When the dropdown is clicked', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
     await dropdownToggle.close();
 
@@ -236,6 +246,7 @@ describe('When the dropdown getters are interacted with', () => {
       openDuration: 0.3,
       closeDuration: 0.3,
     });
+    dropdownToggle.init();
 
     // Act
     dropdownElement.click();
@@ -254,6 +265,7 @@ describe('When the dropdown getters are interacted with', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -270,6 +282,7 @@ describe('When the dropdown getters are interacted with', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
 
     // Act
     await dropdownToggle.open();
@@ -285,6 +298,7 @@ describe('When the dropdown getters are interacted with', () => {
       openDuration: 0.001,
       closeDuration: 0.001,
     });
+    dropdownToggle.init();
     await dropdownToggle.open();
 
     // Act
@@ -301,6 +315,7 @@ describe('When the dropdown getters are interacted with', () => {
       closeOnOutsideClick: true,
       group: 'test-group',
     });
+    dropdownToggle.init();
 
     const consoleWarnSpy = vi.spyOn(console, 'warn');
 

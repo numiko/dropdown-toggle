@@ -244,8 +244,6 @@ class DropdownToggle {
     this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
     this.dropdownId = this.resolveDropdownId();
     this.dropdownItem = this.resolveDropdownElement();
-
-    this.init();
   }
 
   private resolveButton(button: HTMLElement | string) {
@@ -548,8 +546,10 @@ class DropdownToggle {
     // Ensure the group array exists for this.group
     DropdownToggle.groupInstances[this.options.group] = DropdownToggle.groupInstances[this.options.group] || [];
 
-    // Add this instance to the group
-    DropdownToggle.groupInstances[this.options.group].push(this);
+    // Only add this instance to the group if it's not already there
+    if (!DropdownToggle.groupInstances[this.options.group].includes(this)) {
+      DropdownToggle.groupInstances[this.options.group].push(this);
+    }
   }
 
   private removeInstanceFromGroup() {
@@ -574,7 +574,7 @@ class DropdownToggle {
     return instanceShouldOpenOnLoad;
   }
 
-  private init() {
+  init() {
     // Set the initial state on load
     if (this.shouldOpenOnLoad()) {
       this.open(true);

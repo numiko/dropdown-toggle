@@ -171,6 +171,6 @@ declare class DropdownToggle {
     private addInstanceToGroup;
     private removeInstanceFromGroup;
     private shouldOpenOnLoad;
-    private init;
+    init(): void;
 }
 export { DropdownToggle, type DropdownOptions, type AnimationOptions, type GroupMode, type GroupChangeEventDetail };
