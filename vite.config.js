@@ -10,16 +10,10 @@ export default defineConfig({
       tsconfigPath: './tsconfig.dts.json',
       entryRoot: 'lib',
       outDirs: 'dist',
-      exclude: ['**/*.d.ts', 'node_modules', 'dist'],
-      // `lib/utils` holds internal helpers that are not part of the public API,
-      // so their declaration files are not published. They cannot be handled via
-      // `exclude`, as that drops them from the type-check program and breaks the
-      // imports in `lib/DropdownToggle.ts`.
-      beforeWriteFile: (filePath) => {
-        if (filePath.includes(`${path.sep}utils${path.sep}`)) {
-          return false;
-        }
-      }
+      // Do not add `lib/utils` here. Excluding it drops the file from the
+      // type-check program, which breaks the import in `lib/DropdownToggle.ts`
+      // with TS6307.
+      exclude: ['**/*.d.ts', 'node_modules', 'dist']
     })
   ],
   test: {
@@ -29,6 +23,10 @@ export default defineConfig({
     }
   },
   build: {
+    // Pinned so the published bundles do not drift with the toolchain's
+    // default baseline. This matches the support matrix of 4.0.0; raising
+    // it is a breaking change for consumers who load `dist` directly.
+    target: ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14'],
     lib: {
       entry: path.resolve(import.meta.dirname, 'lib/DropdownToggle.ts'),
       name: 'DropdownToggle',

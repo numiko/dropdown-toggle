@@ -12,24 +12,12 @@ function n(e, r) {
 	return o;
 }
 // lib/DropdownToggle.ts
-var r = class t {
-	static {
-		this.DURATION_DEFAULT = .3;
-	}
-	static {
-		this.DURATION_REDUCED_MOTION = .001;
-	}
-	static {
-		this.EASE_DEFAULT = "power2.easeInOut";
-	}
+var r, i = class t {
 	static prefersReducedMotion() {
 		return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	}
 	static getAnimationDuration() {
 		return t.prefersReducedMotion() ? t.DURATION_REDUCED_MOTION : t.DURATION_DEFAULT;
-	}
-	static {
-		this.groupInstances = {};
 	}
 	static isGroupAllOpen(e) {
 		let n = t.groupInstances[e] || [];
@@ -74,7 +62,7 @@ var r = class t {
 				duration: t.getAnimationDuration(),
 				ease: t.EASE_DEFAULT
 			}
-		}, this.bindThisToMemberFunctions(), r && (this.options = n(this.options, r)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(r?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement();
+		}, this.bindThisToMemberFunctions(), r && (this.options = n(this.options, r)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(r == null ? void 0 : r.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement();
 	}
 	resolveButton(e) {
 		if (typeof e == "string") {
@@ -95,9 +83,10 @@ var r = class t {
 		}
 	}
 	resolveDropdownId() {
-		let e = this.button.getAttribute("aria-controls")?.trim();
-		if (!e) throw Error("Button must have an aria-controls attribute pointing to the dropdown id");
-		return e;
+		var e;
+		let t = (e = this.button.getAttribute("aria-controls")) == null ? void 0 : e.trim();
+		if (!t) throw Error("Button must have an aria-controls attribute pointing to the dropdown id");
+		return t;
 	}
 	resolveDropdownElement() {
 		let e = document.getElementById(this.dropdownId);
@@ -142,11 +131,33 @@ var r = class t {
 	animate(e = !1) {
 		let t = this.isOpen() ? this.options.openTween(this.dropdownItem) : this.options.closeTween(this.dropdownItem);
 		return new Promise((n) => {
-			if (this.isOpen() ? this.options.onOpenStart?.(this.dropdownItem) : this.options.onCloseStart?.(this.dropdownItem), this.state.isAnimating = !0, e) t.progress(1), this.state.isAnimating = !1, this.isOpen() ? this.options.onOpenEnd?.(this.dropdownItem) : this.options.onCloseEnd?.(this.dropdownItem), n();
-			else {
+			if (this.isOpen()) {
+				var r, i;
+				(r = (i = this.options).onOpenStart) == null || r.call(i, this.dropdownItem);
+			} else {
+				var a, o;
+				(a = (o = this.options).onCloseStart) == null || a.call(o, this.dropdownItem);
+			}
+			if (this.state.isAnimating = !0, e) {
+				if (t.progress(1), this.state.isAnimating = !1, this.isOpen()) {
+					var s, c;
+					(s = (c = this.options).onOpenEnd) == null || s.call(c, this.dropdownItem);
+				} else {
+					var l, u;
+					(l = (u = this.options).onCloseEnd) == null || l.call(u, this.dropdownItem);
+				}
+				n();
+			} else {
 				let e = t.vars.onComplete;
 				t.eventCallback("onComplete", () => {
-					e && e(), this.state.isAnimating = !1, this.isOpen() ? this.options.onOpenEnd?.(this.dropdownItem) : this.options.onCloseEnd?.(this.dropdownItem), n();
+					if (e && e(), this.state.isAnimating = !1, this.isOpen()) {
+						var t, r;
+						(t = (r = this.options).onOpenEnd) == null || t.call(r, this.dropdownItem);
+					} else {
+						var i, a;
+						(i = (a = this.options).onCloseEnd) == null || i.call(a, this.dropdownItem);
+					}
+					n();
 				});
 			}
 		});
@@ -200,7 +211,8 @@ var r = class t {
 		e.key === "Tab" && this.isOpen() && (this.dropdownItem.contains(e.target) || this.close());
 	}
 	destroy() {
-		this.resetState(), this.removeEventListeners(), this.removeInstanceFromGroup(), this.options.onDestroy?.(this.dropdownItem);
+		var e, t;
+		this.resetState(), this.removeEventListeners(), this.removeInstanceFromGroup(), (e = (t = this.options).onDestroy) == null || e.call(t, this.dropdownItem);
 	}
 	resetState() {
 		e.killTweensOf(this.dropdownItem), this.button.removeAttribute("aria-expanded"), this.options.openClass && this.removeClasses(this.button, this.options.openClass), this.options.openLabel && this.setButtonLabel(this.options.openLabel), this.dropdownItem.removeAttribute("aria-hidden"), this.dropdownItem.removeAttribute("style");
@@ -226,4 +238,5 @@ var r = class t {
 		this.shouldOpenOnLoad() && this.open(!0), this.options.group && this.addInstanceToGroup(), this.addEventListeners();
 	}
 };
-export { r as DropdownToggle };
+r = i, r.DURATION_DEFAULT = .3, r.DURATION_REDUCED_MOTION = .001, r.EASE_DEFAULT = "power2.easeInOut", r.groupInstances = {};
+export { i as DropdownToggle };
