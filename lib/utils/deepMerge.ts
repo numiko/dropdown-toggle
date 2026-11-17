@@ -1,26 +1,33 @@
-function deepMerge(obj1, obj2) {
-  const result = { ...obj1 };
+type UnknownRecord = Record<string, unknown>;
 
-  for (const key in obj2) {
-    if (Object.prototype.hasOwnProperty.call(obj2, key)) {
-      if (
-        obj2[key] !== null &&
-        typeof obj2[key] === 'object' &&
-        typeof obj1[key] === 'object' &&
-        obj1[key] !== null &&
-        !Array.isArray(obj2[key]) &&
-        !Array.isArray(obj1[key]) &&
-        typeof obj2[key] !== 'function' &&
-        typeof obj1[key] !== 'function'
-      ) {
-        result[key] = deepMerge(obj1[key], obj2[key]);
+/**
+ * Narrow a value to a plain object that is safe to merge into.
+ * Arrays, functions and `null` are treated as leaf values and
+ * therefore overwrite rather than merge.
+ */
+function isMergeableObject(value: unknown): value is UnknownRecord {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function deepMerge<T, U>(obj1: T, obj2: U): T & U {
+  const source1 = (obj1 ?? {}) as UnknownRecord;
+  const source2 = (obj2 ?? {}) as UnknownRecord;
+  const result: UnknownRecord = { ...source1 };
+
+  for (const key in source2) {
+    if (Object.prototype.hasOwnProperty.call(source2, key)) {
+      const value1 = source1[key];
+      const value2 = source2[key];
+
+      if (isMergeableObject(value1) && isMergeableObject(value2)) {
+        result[key] = deepMerge(value1, value2);
       } else {
-        result[key] = obj2[key];
+        result[key] = value2;
       }
     }
   }
 
-  return result;
+  return result as T & U;
 }
 
 export { deepMerge };

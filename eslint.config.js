@@ -10,6 +10,7 @@ export default [
   // Base recommended config
   js.configs.recommended,
   ...tseslint.configs.recommended,
+
   // Custom configuration for your files
   {
     files: ['**/*.{js,ts}'],
@@ -25,13 +26,23 @@ export default [
     rules: {
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-undef': 'warn',
-      // 'off' because it does not work with TypeScript and function signatures
+      // Base rule misreports TS-only constructs; replaced by @typescript-eslint/no-unused-vars below
       'no-unused-vars': 'off',
       'no-shadow': 'warn',
       '@stylistic/semi': ['warn', 'always'],
       '@stylistic/quotes': ['warn', 'single'],
       '@stylistic/indent': ['warn', 2],
       '@stylistic/keyword-spacing': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+    }
+  },
+  // TypeScript handles undefined variables natively - TypeScript's compiler already
+  // checks for undefined variables and does this more accurately than ESLint
+  // can for TypeScript code.
+  {
+    files: ['**/*.ts'],
+    rules: {
+      'no-undef': 'off',
     }
   }
 ];
