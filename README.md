@@ -60,4 +60,4 @@ DropdownToggle.isGroupAllOpen('my-group');
 
 ## API
 
-Visit our [documentation](https://v4-0-0--numiko-dropdown.netlify.app/) for exhaustive information on the module.
+Visit our [documentation](https://v4-1-0--numiko-dropdown.netlify.app/) for exhaustive information on the module.
