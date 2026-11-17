@@ -1,12 +1,18 @@
 import { gsap as e } from "gsap";
 // lib/utils/deepMerge.ts
-function t(e, n) {
-	let r = { ...e };
-	for (let i in n) Object.prototype.hasOwnProperty.call(n, i) && (r[i] = n[i] !== null && typeof n[i] == "object" && typeof e[i] == "object" && e[i] !== null && !Array.isArray(n[i]) && !Array.isArray(e[i]) && typeof n[i] != "function" && typeof e[i] != "function" ? t(e[i], n[i]) : n[i]);
-	return r;
+function t(e) {
+	return typeof e == "object" && !!e && !Array.isArray(e);
+}
+function n(e, r) {
+	let i = e ?? {}, a = r ?? {}, o = { ...i };
+	for (let e in a) if (Object.prototype.hasOwnProperty.call(a, e)) {
+		let r = i[e], s = a[e];
+		o[e] = t(r) && t(s) ? n(r, s) : s;
+	}
+	return o;
 }
 // lib/DropdownToggle.ts
-var n = class n {
+var r = class t {
 	static {
 		this.DURATION_DEFAULT = .3;
 	}
@@ -20,29 +26,29 @@ var n = class n {
 		return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	}
 	static getAnimationDuration() {
-		return n.prefersReducedMotion() ? n.DURATION_REDUCED_MOTION : n.DURATION_DEFAULT;
+		return t.prefersReducedMotion() ? t.DURATION_REDUCED_MOTION : t.DURATION_DEFAULT;
 	}
 	static {
 		this.groupInstances = {};
 	}
 	static isGroupAllOpen(e) {
-		let t = n.groupInstances[e] || [];
-		return t.length > 0 && t.every((e) => e.isOpen());
+		let n = t.groupInstances[e] || [];
+		return n.length > 0 && n.every((e) => e.isOpen());
 	}
 	static isGroupAllClosed(e) {
-		let t = n.groupInstances[e] || [];
-		return t.length > 0 && t.every((e) => !e.isOpen());
+		let n = t.groupInstances[e] || [];
+		return n.length > 0 && n.every((e) => !e.isOpen());
 	}
-	static async closeAllInGroup(e, t) {
-		let r = (n.groupInstances[e] || []).filter((e) => e !== t && e.isOpen()).map((e) => e.close());
+	static async closeAllInGroup(e, n) {
+		let r = (t.groupInstances[e] || []).filter((e) => e !== n && e.isOpen()).map((e) => e.close());
 		await Promise.all(r);
 	}
 	static async openAllInGroup(e) {
-		let t = (n.groupInstances[e] || []).filter((e) => !e.isOpen()).map((e) => e.open(!1, !0));
-		await Promise.all(t);
+		let n = (t.groupInstances[e] || []).filter((e) => !e.isOpen()).map((e) => e.open(!1, !0));
+		await Promise.all(n);
 	}
 	static isGroupAnimating(e) {
-		return (n.groupInstances[e] || []).some((e) => e.isAnimating());
+		return (t.groupInstances[e] || []).some((e) => e.isAnimating());
 	}
 	constructor(e, r) {
 		this.GROUP_CHANGE_EVENT_NAME = "DropdownToggle:group-change", this.state = {
@@ -61,14 +67,14 @@ var n = class n {
 			openTween: this.defaultOpenTween.bind(this),
 			closeTween: this.defaultCloseTween.bind(this),
 			openOptions: {
-				duration: n.getAnimationDuration(),
-				ease: n.EASE_DEFAULT
+				duration: t.getAnimationDuration(),
+				ease: t.EASE_DEFAULT
 			},
 			closeOptions: {
-				duration: n.getAnimationDuration(),
-				ease: n.EASE_DEFAULT
+				duration: t.getAnimationDuration(),
+				ease: t.EASE_DEFAULT
 			}
-		}, this.bindThisToMemberFunctions(), r && (this.options = t(this.options, r)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(r?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement(), this.init();
+		}, this.bindThisToMemberFunctions(), r && (this.options = n(this.options, r)), this.button = this.resolveButton(e), this.buttonLabelEl = this.resolveButtonLabel(r?.buttonLabelEl), this.dropdownId = this.resolveDropdownId(), this.dropdownItem = this.resolveDropdownElement();
 	}
 	resolveButton(e) {
 		if (typeof e == "string") {
@@ -99,15 +105,17 @@ var n = class n {
 		return e;
 	}
 	dispatchGroupChangeEvent(e) {
-		let t = new CustomEvent(this.GROUP_CHANGE_EVENT_NAME, { detail: {
+		let n = new CustomEvent(this.GROUP_CHANGE_EVENT_NAME, { detail: {
 			group: e,
-			isAllOpen: n.isGroupAllOpen(e)
+			isAllOpen: t.isGroupAllOpen(e)
 		} });
-		window.dispatchEvent(t);
+		window.dispatchEvent(n);
 	}
 	bindThisToMemberFunctions() {
-		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((e) => {
-			typeof this[e] == "function" && (this[e] = this[e].bind(this));
+		let e = Object.getOwnPropertyNames(Object.getPrototypeOf(this)), t = this;
+		e.forEach((e) => {
+			let n = t[e];
+			typeof n == "function" && (t[e] = n.bind(this));
 		});
 	}
 	isOpen() {
@@ -116,11 +124,11 @@ var n = class n {
 	isAnimating() {
 		return this.state.isAnimating;
 	}
-	async open(e = !1, t = !1) {
+	async open(e = !1, n = !1) {
 		if (this.state.isAnimating) return Promise.resolve();
-		if (this.options.group && !t) {
-			if (n.isGroupAnimating(this.options.group)) return Promise.resolve();
-			this.options.groupMode === "single" ? n.closeAllInGroup(this.options.group, this) : this.options.groupMode === "single-await" && await n.closeAllInGroup(this.options.group, this);
+		if (this.options.group && !n) {
+			if (t.isGroupAnimating(this.options.group)) return Promise.resolve();
+			this.options.groupMode === "single" ? t.closeAllInGroup(this.options.group, this) : this.options.groupMode === "single-await" && await t.closeAllInGroup(this.options.group, this);
 		}
 		return this.state.isOpen = !0, this.addClasses(this.button, this.options.openClass), this.setAria(!0), this.setButtonLabel(this.options.closeLabel), this.options.group && this.dispatchGroupChangeEvent(this.options.group), this.animate(e);
 	}
@@ -201,12 +209,14 @@ var n = class n {
 		this.button.removeEventListener("click", this.toggle), document.removeEventListener("keydown", this.onEscKeyPress), document.removeEventListener("click", this.onClickOutside), document.removeEventListener("keyup", this.onFocusLeaveHandler);
 	}
 	addInstanceToGroup() {
-		n.groupInstances[this.options.group] = n.groupInstances[this.options.group] || [], n.groupInstances[this.options.group].push(this);
+		let e = t.groupInstances[this.options.group] || [];
+		t.groupInstances[this.options.group] = e, e.includes(this) || e.push(this);
 	}
 	removeInstanceFromGroup() {
-		if (this.options.group && n.groupInstances[this.options.group]) {
-			let e = n.groupInstances[this.options.group].indexOf(this);
-			e > -1 && n.groupInstances[this.options.group].splice(e, 1), n.groupInstances[this.options.group].length === 0 && delete n.groupInstances[this.options.group];
+		let e = t.groupInstances[this.options.group];
+		if (this.options.group && e) {
+			let n = e.indexOf(this);
+			n > -1 && e.splice(n, 1), e.length === 0 && delete t.groupInstances[this.options.group];
 		}
 	}
 	shouldOpenOnLoad() {
@@ -216,4 +226,4 @@ var n = class n {
 		this.shouldOpenOnLoad() && this.open(!0), this.options.group && this.addInstanceToGroup(), this.addEventListeners();
 	}
 };
-export { n as DropdownToggle };
+export { r as DropdownToggle };

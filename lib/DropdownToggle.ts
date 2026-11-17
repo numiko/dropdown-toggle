@@ -244,8 +244,6 @@ class DropdownToggle {
     this.buttonLabelEl = this.resolveButtonLabel(options?.buttonLabelEl);
     this.dropdownId = this.resolveDropdownId();
     this.dropdownItem = this.resolveDropdownElement();
-
-    this.init();
   }
 
   private resolveButton(button: HTMLElement | string) {
@@ -301,10 +299,12 @@ class DropdownToggle {
   }
 
   private bindThisToMemberFunctions() {
-    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
+    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this) as object);
+    const instance = this as unknown as Record<string, unknown>;
     methods.forEach(method => {
-      if (typeof this[method] === 'function') {
-        this[method] = this[method].bind(this);
+      const value = instance[method];
+      if (typeof value === 'function') {
+        instance[method] = value.bind(this);
       }
     });
   }
@@ -546,23 +546,27 @@ class DropdownToggle {
 
   private addInstanceToGroup() {
     // Ensure the group array exists for this.group
-    DropdownToggle.groupInstances[this.options.group] = DropdownToggle.groupInstances[this.options.group] || [];
+    const members = DropdownToggle.groupInstances[this.options.group] || [];
+    DropdownToggle.groupInstances[this.options.group] = members;
 
-    // Add this instance to the group
-    DropdownToggle.groupInstances[this.options.group].push(this);
+    // Only add this instance to the group if it's not already there
+    if (!members.includes(this)) {
+      members.push(this);
+    }
   }
 
   private removeInstanceFromGroup() {
     // Check if this instance belongs to a group and that the group exists
-    if (this.options.group && DropdownToggle.groupInstances[this.options.group]) {
+    const members = DropdownToggle.groupInstances[this.options.group];
+    if (this.options.group && members) {
       // Find the index of this instance in its group
-      const index = DropdownToggle.groupInstances[this.options.group].indexOf(this);
+      const index = members.indexOf(this);
       // If found, remove this instance from the group
       if (index > -1) {
-        DropdownToggle.groupInstances[this.options.group].splice(index, 1);
+        members.splice(index, 1);
       }
       // If the group is now empty, delete it from `groupInstances`
-      if (DropdownToggle.groupInstances[this.options.group].length === 0) {
+      if (members.length === 0) {
         delete DropdownToggle.groupInstances[this.options.group];
       }
     }
@@ -574,7 +578,7 @@ class DropdownToggle {
     return instanceShouldOpenOnLoad;
   }
 
-  private init() {
+  init() {
     // Set the initial state on load
     if (this.shouldOpenOnLoad()) {
       this.open(true);
