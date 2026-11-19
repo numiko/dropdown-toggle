@@ -1,6 +1,16 @@
 {
   "name": "@numiko/dropdown-toggle",
+  "description": "A package for creating interactive dropdowns.",
   "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/numiko/dropdown-toggle.git"
+  },
+  "homepage": "https://github.com/numiko/dropdown-toggle#readme",
+  "bugs": {
+    "url": "https://github.com/numiko/dropdown-toggle/issues"
+  },
   "version": "4.1.0",
   "type": "module",
   "engines": {
